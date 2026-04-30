@@ -90,6 +90,40 @@
         
         /* Smooth Scrolling für Anchor Links */
         html { scroll-behavior: smooth; }
+
+        /* --- DASHBOARD STYLING --- */
+        #tab-dashboard { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        #tab-dashboard input[type=number], #tab-dashboard input[type=text] { font-size: 16px !important; }
+        #tab-dashboard input[type=number]::-webkit-inner-spin-button, #tab-dashboard input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        .city-card { 
+            background-size: cover; 
+            background-position: center; 
+            position: relative; 
+            min-height: 140px; 
+            border-radius: 1rem; 
+            border: 1px solid #334155;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .city-overlay { 
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.98) 35%, rgba(15, 23, 42, 0.7) 100%); 
+            position: absolute; 
+            inset: 0; 
+            padding: 1rem; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+        }
+        .sticky-header { 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            backdrop-filter: blur(12px); 
+            background: rgba(15, 23, 42, 0.9); 
+            border-bottom: 1px solid #334155; 
+        }
+        #tab-dashboard input[type=range] { height: 8px; border-radius: 5px; background: #334155; appearance: none; }
     </style>
 </head>
 <body class="flex h-screen w-full bg-stone-50 overflow-hidden">
@@ -130,7 +164,7 @@
                 </ul>
             </div>
 
-            <div>
+             <div>
                 <h2 class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Anhänge</h2>
                 <ul class="space-y-1">
                     <li><button onclick="switchTab('tab-ancestries')" id="btn-ancestries" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
@@ -141,7 +175,12 @@
                         <span>Vampirkulte (Interaktiv)</span>
                         <span>🩸</span>
                     </button></li>
+                    <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+                        <span>Mobiles Dashboard</span>
+                        <span>📱</span>
+                    </button></li>
                 </ul>
+
             </div>
         </nav>
     </aside>
@@ -692,7 +731,7 @@
                             <li><strong>Populationsdichte:</strong> Extrem gering (2 Personen pro km²).</li>
                             <li><strong>Die Untoten Herrscher:</strong> Es gibt <a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-1')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">5 Vampirgötter</a>, die jeweils einer Farbe zugeordnet werden können (Weiße Gott-Hochkönigin: <em>Elidia</em>, Blauer Gott: <em>Efaro</em>, Schwarze Göttin: <em>Erebia</em>, Rote Göttin: <em>Porfira</em>, Grüner Gott: <em>Nileo</em>). Vampire in Osmieen sind eine komplett eigene Rasse. Sie sind Untote. Wer zu einem Vampir wird, stirbt faktisch und wird in einem neuen, untoten Körper neu erschaffen.</li>
                             <li><strong>Der Blutbedarf:</strong> Vampire "essen" Blut nicht in den Mengen, wie Menschen Nahrung benötigen. Das abgelieferte Blut der Sterblichen wird an den Blutschreinen direkt magisch in Blut-Substrat (unverarbeiteter Blutstaub) verkocht um ihn haltbar zu machen. Verarbeitetes Blutpulver ist eine hochkonzentrierte magische Energiequelle. Daher brauchen Vampire verhältnismäßig wenig Blut, um selbst zu überleben – die „Reststoffe“ des Blut-Substrats werden für den Betrieb der Züge, der Infrastruktur und der Magie verwendet.</li>
-                            <li><strong>Die Vampir-Fraktion:</strong> Das theokratische Verhältnis liegt bei 1 Vampir auf 50 Sterbliche. Das ergibt in absoluten Zahlen etwa 300.000 bis 400.000 Vampire auf dem gesamten Kontinent.</li>
+                            <li><strong>Die Vampir-Fraktion:</strong> Das theokratische Verhältnis liegt bei 1 Vampir auf 50 Sterbliche. Das ergibt in absoluten Zahlen etwa 300.000 bis 400.000 Vampire auf dem Kontinent.</li>
                         </ul>
                     </div>
                 </details>
@@ -803,7 +842,7 @@
                             <li><strong>Absolute Theokratie:</strong> Fünf Vampirgötter sind die unangefochtenen Gottkönige und Herrscher des Landes. Jeder Einwohner ist in dieses theokratische System eingeordnet. Es gibt keine nennenswerten Widerstandsbewegungen oder unreligiöse Bereiche.</li>
                             <li><strong>Die Dreifaltigkeit der Macht:</strong> Religion ist Gesetz. Die Kulte bilden gleichzeitig die Legislative, Exekutive und Judikative. Ein Verstoß gegen das Gesetz ist automatisch ein Akt der Ketzerei gegen die Götter.</li>
                             <li><strong>Die Einheit im Widerspruch:</strong> Trotz ihrer gegensätzlichen Ideologien bilden die fünf Vampir-Götter ein politisch geschlossenes Pantheon. Der zwingende gemeinsame Nenner ist das absolute Herrschaftsmonopol über die Sterblichen und die lückenlose Sicherung der Blutversorgung. Ein offener Krieg der Götter untereinander würde das Reich zerstören.</li>
-                            <li><strong>Die Vormachtstellung von Weiß:</strong> Die <a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-5')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Gott-Königin Elidiades</a> weißen Kults (Gesetz & Ordnung) ist die Hochkönigin und Hauptgöttin der Theokratie. Da Ordnung, Struktur und Gesetzgebung das Fundament eines jeden Staates sind, stehen ihre Erlasse am Ende über den Launen der anderen Götter.</li>
+                            <li><strong>Die Vormachtstellung von Weiß:</strong> Die <a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-5')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Gott-Königin Elidia</a> des weißen Kults (Gesetz & Ordnung) ist die Hochkönigin und Hauptgöttin der Theokratie. Da Ordnung, Struktur und Gesetzgebung das Fundament eines jeden Staates sind, stehen ihre Erlasse am Ende über den Launen der anderen Götter.</li>
                         </ul>
                     </div>
                 </details>
@@ -1147,7 +1186,7 @@
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
-                        <p>Wenn es einer Bevölkerungsgruppe besonders schlecht geht und politische Unruhen drohen, greift die theokratische Führung zu einem Werkzeug des Populismus: Sie opfert öffentlich einen Vampir. Meistens handelt es sich hierbei um unbeliebte Vampire, lästige Konkurrenten oder politische Feinde, die man ohnehin aus dem Weg räumen wollte. Diese gigantisch inszenierten Schauprozesse geben den Massen ein falsches Gefühl von Gerechtigkeit. Noch wichtiger: Es befeuert bei den Sterblichen sofort den Glauben, dass nun offiziell wieder ein Platz für die <a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-4')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Erhebung zum untoten Vampir</a> freigeworden ist. Sie arbeiten noch härter und gehorsamer in class Illusion, diesen Platz einnehmen zu können – völlig unwissend, dass der vampirische Untergrund den Nachfolger bereits längst intern vergeben hat.</p>
+                        <p>Wenn es einer Bevölkerungsgruppe besonders schlecht geht und politische Unruhen drohen, greift die theokratische Führung zu einem Werkzeug des Populismus: Sie opfert öffentlich einen Vampir. Meistens handelt es sich hierbei um unbeliebte Vampire, lästige Konkurrenten oder politische Feinde, die man ohnehin aus dem Weg räumen wollte. Diese gigantisch inszenierten Schauprozesse geben den Massen ein falsches Gefühl von Gerechtigkeit. Noch wichtiger: Es befeuert bei den Sterblichen sofort den Glauben, dass nun offiziell wieder ein Platz für die <a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-4')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Erhebung zum untoten Vampir</a> freigeworden ist. Sie arbeiten noch härter und gehorsamer in der Illusion, diesen Platz einnehmen zu können – völlig unwissend, dass der vampirische Untergrund den Nachfolger bereits längst intern vergeben hat.</p>
                     </div>
                 </details>
 
@@ -1198,7 +1237,7 @@
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
-                        <p>Ein derart striktes System benötigt einen gigantischen Apparat, um die Bevölkerung in Schach zu halten. Etwa 150.000 Menschen dienen in den Reihen der theokratischen Wachen. Diese Wachen sind sehr präsent: Sie patrouillieren in cities, bewachen die befestigten Marktflecken und besetzen bewaffnete Posten entlang der wichtigen Straßen und Handelsrouten. Sie sind das Werkzeug, mit dem die Kulte die tägliche Ordnung aufrechterhalten. Gleichzeitig sind Bürger angehalten, verdächtiges Verhalten zu melden.</p>
+                        <p>Ein derart striktes System benötigt einen gigantischen Apparat, um die Bevölkerung in Schach zu halten. Etwa 150.000 Menschen dienen in den Reihen der theokratischen Wachen. Diese Wachen sind sehr präsent: Sie patrouillieren in Städten, bewachen die befestigten Marktflecken und besetzen bewaffnete Posten entlang der wichtigen Straßen und Handelsrouten. Sie sind das Werkzeug, mit dem die Kulte die tägliche Ordnung aufrechterhalten. Gleichzeitig sind Bürger angehalten, verdächtiges Verhalten zu melden.</p>
                     </div>
                 </details>
 
@@ -1334,12 +1373,12 @@
                                 <li><strong>Biologische Reife:</strong> 20 Jahre.</li>
                                 <li><strong>Legisches Alter (Mündigkeit):</strong> 35 bis 40 Jahre.</li>
                             </ul>
-                            <p><strong>Ontogenetische Analyse:</strong> Zwerge haben eine Lebenserwartung von bis zu 250 Jahren und die bemerkenswerte Eigenschaft, ihre massive Muskelmasse bis weit in das späte Alter hinein zu erhalten. Ihre durchschnittliche Größe von 4 bis 5,5 Fuß erreichen sie zeitgleich mit Menschen um das 20. Lebensjahr. Die zwergische Physiologie zeichnet sich durch einen enorm hohen Keratingehalt in Haut und Nägeln aus ("Thick Skin"). Diese biologische Beschaffenheit macht sie von Natur aus widerstandsfähig und erlaubt es ihnen, Edelsteine direkt in ihren Körper einzubetten und komplexe Piercings zu tragen. Der Aushärtungsprozess dieser Hautschichten ist in den Zwanzigern abgeschlossen. Das legische Alter wird in zwergischen Gemeinschaften traditionell an handwerkliche oder kulturelle Meilensteine geknüpft. Erst wenn ein Zwerg ein Handwerk auf Meisterniveau erlernt hat, seinen Bart oder sein Haar in den traditionellen, elaborierten Mustern seiner Sippe tragen darf oder die erste große Edelstein-Inkrustation schmerzfrei überstanden hat, gilt er als vollwertiger, mündiger Erwachsener. Dies geschieht in der Regel im Alter von 35 bis 40 Jahren.</p>
+                            <p><strong>Ontogenetische Analyse:</strong> Zwerge haben eine Lebenserwartung von bis zu 250 Jahren und die bemerkenswerte Eigenschaft, ihre massive Muskelmasse bis weit in das späte Alter hinein zu erhalten. Ihre durchschnittliche Größe von 4 bis 5,5 Fuß erreichen sie zeitgleich mit Menschen um das 20. Lebensjahr. Die zwergische Physiologie zeichnet sich durch enorm hohen Keratingehalt in Haut und Nägeln aus ("Thick Skin"). Diese biologische Beschaffenheit macht sie von Natur aus widerstandsfähig und erlaubt es ihnen, Edelsteine direkt in ihren Körper einzubetten und komplexe Piercings zu tragen. Der Aushärtungsprozess dieser Hautschichten ist in den Zwanzigern abgeschlossen. Das legische Alter wird in zwergischen Gemeinschaften traditionell an handwerkliche oder kulturelle Meilensteine geknüpft. Erst wenn ein Zwerg ein Handwerk auf Meisterniveau erlernt hat, seinen Bart oder sein Haar in den traditionellen, elaborierten Mustern seiner Sippe tragen darf oder die erste große Edelstein-Inkrustation schmerzfrei überstanden hat, gilt er als vollwertiger, mündiger Erwachsener. Dies geschieht in der Regel im Alter von 35 bis 40 Jahren.</p>
                         </div>
 
                         <p><strong>Merkmale:</strong></p>
                         <ul>
-                            <li><strong>Dicke Haut (Thick Skin):</strong> Wenn du leichten Schaden (Minor damage) erleidest, kannst du 2 <a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Stress markieren</a>, anstatt einen Lebenspunkt zu markieren.</li>
+                            <li><strong>Dicke Haut (Thick Skin):</strong> Wenn du leichten Schaden (Minor damage) erleiden würdest, kannst du 2 <a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Stress markieren</a>, anstatt einen Lebenspunkt zu markieren.</li>
                             <li><strong>Erhöhte Zähigkeit (Increased Fortitude):</strong> Gib 3 <a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Hoffnung (Hope)</a> aus, um eingehenden physischen Schaden zu halbieren.</li>
                         </ul>
                     </div>
@@ -1459,13 +1498,13 @@
                                 <li><strong>Biologische Reife:</strong> 8 Jahre.</li>
                                 <li><strong>Legisches Alter (Mündigkeit):</strong> 15 Jahre.</li>
                             </ul>
-                            <p><strong>Ontogenetische Analyse:</strong> Die Ontogenese der Fungril ist stark von botanischen und mykologischen Mustern geprägt. Sie pflanzen sich vermutlich über Sporen fort und erleben in der Frühphase eine rasante zelluläre Reproduktion. Ein Fungril-Fruchtkörper (der humanoide Körper) formt sich schnell und ist mit etwa 8 Jahren physisch ausgewachsen. Ihr zelluläres Netzwerk ist extrem widerstandsfähig, was ihnen eine Lebenserwartung von über 300 Jahren sichert. Die kulture und kognitive Mündigkeit ist jedoch weitaus komplexer. Jeder Fungril ist an ein kollektives "Fungril Network" angeschlossen, ein myzeliales Array, das es ihnen ermöglicht, auf große Distanzen chemisch und nonverbal mit anderen ihrer Art zu kommunizieren. Zudem besitzen sie die unheimliche Fähigkeit der "Death Connection", mit der sie Erinnerungen aus frischen Leichen extrahieren können. Die Integration in das Myzel-Netzwerk ohne Verlust der individuellen Persönlichkeit sowie die psychologische Verarbeitung der Emotionen und Todeserinnerungen anderer Wesen erfordert tiefes mentales Training. Das legische Alter wird einem Fungril zugesprochen, wenn er diese psychischen Belastungen souverän filtern kann, meist im Alter von 15 Jahren.</p>
+                            <p><strong>Ontogenetische Analyse:</strong> Die Ontogenese der Fungril ist stark von botanischen und mykologischen Mustern gepależy. Sie pflanzen sich vermutlich über Sporen fort und erleben in der Frühphase eine rasante zelluläre Reproduktion. Ein Fungril-Fruchtkörper (der humanoide Körper) formt sich schnell und ist mit etwa 8 Jahren physisch ausgewachsen. Ihr zelluläres Netzwerk ist extrem widerstandsfähig, was ihnen eine Lebenserwartung von über 300 Jahren sichert. Die kulture und kognitive Mündigkeit ist jedoch weitaus komplexer. Jeder Fungril ist an ein kollektives "Fungril Network" angeschlossen, ein myzeliales Array, das es ihnen ermöglicht, auf große Distanzen chemisch und nonverbal mit anderen ihrer Art zu kommunizieren. Zudem besitzen sie die unheimliche Fähigkeit der "Death Connection", mit der sie Erinnerungen aus frischen Leichen extrahieren können. Die Integration in das Myzel-Netzwerk ohne Verlust der individuellen Persönlichkeit sowie die psychologische Verarbeitung der Emotionen und Todeserinnerungen anderer Wesen erfordert tiefes mentales Training. Das legische Alter wird einem Fungril zugesprochen, wenn er diese psychischen Belastungen souverän filtern kann, meist im Alter von 15 Jahren.</p>
                         </div>
 
                         <p><strong>Merkmale:</strong></p>
                         <ul>
                             <li><strong>Fungril-Netzwerk (Fungril Network):</strong> Mache einen Instinktwurf (12) (Instinct Roll), um dein Myzelnetzwerk zu nutzen, um mit anderen deiner Rasse zu sprechen. Bei Erfolg kannst du über jede Entfernung kommunizieren.</li>
-                            <li><strong>Todesverbindung (Death Connection):</strong> Während du eine kürzlich verstorbene Leiche berührst, kannst du einen <a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Stress markieren</a>, um der Leiche eine Erinnerung zu entnehmen, die sich auf eine bestimmte Emotion oder Empfindung deiner Wahl bezieht.</li>
+                            <li><strong>Todesverbindung (Death Connection):</strong> Während du eine kürzlich verstorbene Leiche berührst, kannst du einen <a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="text-amber-600 hover:text-amber-800 underline decoration-amber-300 decoration-1 transition">Stress markieren</a>, um der Leiche eine Erinnerung zu entnehmen, die sich auf eine bestimmte Emotion oder Empfindung deiner Wahl.</li>
                         </ul>
                     </div>
                 </details>
@@ -1779,6 +1818,102 @@
                     </div>
                 </div>
             </section>
+
+            <!-- NEUER TAB: MOBILES DASHBOARD -->
+            <section id="tab-dashboard" class="content-tab w-full h-full hidden overflow-y-auto custom-scrollbar relative">
+                <div id="dashboard-root" class="pb-10 min-h-full">
+                    <header class="sticky-header mb-4 shadow-xl">
+                        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+                            <h1 class="text-lg md:text-2xl font-black text-red-600 uppercase italic tracking-tighter">Osmieen</h1>
+                            <div class="bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-[10px] font-mono">
+                                Pop: <span id="display-total-pop">0</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main class="max-w-7xl mx-auto px-4 space-y-6">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-800 p-3 rounded-xl shadow border border-slate-700">
+                                <h3 class="text-center text-[9px] font-bold text-slate-400 uppercase mb-2">Stadt vs. Land</h3>
+                                <div class="h-32 md:h-40"><canvas id="chartUrbanRural"></canvas></div>
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded-xl shadow border border-slate-700">
+                                <h3 class="text-center text-[9px] font-bold text-slate-400 uppercase mb-2">Siedlungsstrukturen</h3>
+                                <div class="h-32 md:h-40"><canvas id="chartSiedlung"></canvas></div>
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded-xl shadow border border-slate-700">
+                                <h3 class="text-center text-[9px] font-bold text-slate-400 uppercase mb-2">Metropolen-Gewichtung</h3>
+                                <div class="h-32 md:h-40"><canvas id="chartBig5"></canvas></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            
+                            <div class="lg:col-span-5 space-y-4">
+                                <section class="bg-slate-800 rounded-2xl p-5 shadow-xl border border-slate-700 space-y-6">
+                                    <h2 class="text-lg font-bold border-b border-slate-700 pb-2">Globale Einstellungen</h2>
+                                    
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <label class="text-xs font-semibold text-slate-400 uppercase">Population (Mio.)</label>
+                                            <input type="number" id="input-pop-mio" step="0.5" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-white text-sm">
+                                        </div>
+                                        <input type="range" id="range-pop-mio" min="1" max="50" step="0.5" class="w-full accent-red-600">
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <label class="text-xs font-semibold text-slate-400 uppercase">Urbanisierung (%)</label>
+                                            <input type="number" id="input-urban-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-blue-400 text-sm">
+                                        </div>
+                                        <input type="range" id="range-urban-rate" min="1" max="100" class="w-full accent-blue-600">
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <label class="text-xs font-semibold text-slate-400 uppercase">Metropolen-Fokus (%)</label>
+                                            <input type="number" id="input-big5-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-slate-300 text-sm">
+                                        </div>
+                                        <input type="range" id="range-big5-rate" min="0" max="100" class="w-full accent-slate-500">
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <label class="text-xs font-semibold text-slate-400 uppercase">Marktflecken-Anteil (%)</label>
+                                            <input type="number" id="input-markt-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-teal-400 text-sm">
+                                        </div>
+                                        <input type="range" id="range-markt-rate" min="0" max="100" class="w-full accent-teal-600">
+                                    </div>
+                                </section>
+
+                                <section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner">
+                                    <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest mb-4">Siedlungs-Bestand</h3>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
+                                            <div class="text-[8px] text-slate-500 uppercase">Provinz (~8k)</div>
+                                            <div class="text-sm font-bold" id="display-provinz-count">0</div>
+                                        </div>
+                                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
+                                            <div class="text-[8px] text-teal-600 uppercase">Märkte (~1.2k)</div>
+                                            <div class="text-sm font-bold text-teal-500" id="display-markt-count">0</div>
+                                        </div>
+                                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center col-span-2">
+                                            <div class="text-[8px] text-green-600 uppercase">Dörfer & Weiler (~150)</div>
+                                            <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div class="lg:col-span-7 space-y-4" id="city-cards-container">
+                                <!-- Wird per JS befüllt -->
+                            </div>
+
+                        </div>
+                    </main>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -1793,27 +1928,20 @@
         }
 
         function crossReference(tabId, targetId) {
-            // Wechsele zuerst in den korrekten Tab
             switchTab(tabId);
-            
-            // Warte ganz kurz, damit das DOM den Tab sichtbar gemacht hat
             setTimeout(() => {
                 const target = document.getElementById(targetId);
                 if (target) {
-                    // Wenn das Ziel in einem <details> Tag liegt (oder selbst das <summary> ist), klappe es auf
                     const details = target.closest('details');
                     if (details && !details.open) {
                         details.open = true;
                     }
 
-                    // Scrolle weich zur entsprechenden Überschrift, mittig auf dem Bildschirm
                     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     
-                    // Ein kurzes visuelles Aufleuchten der Überschrift, zur besseren Orientierung
                     target.style.transition = 'background-color 0.5s ease-in-out';
                     target.style.backgroundColor = '#fde68a'; // amber-200
                     
-                    // Nach 1.5 Sekunden wieder zur originalen Farbe zurückkehren
                     setTimeout(() => {
                         target.style.backgroundColor = ''; 
                     }, 1500);
@@ -1821,7 +1949,6 @@
             }, 100);
         }
 
-        // Neue Funktion: Direkt in das Kult-Tool wechseln und dort eine Kategorie aufschlagen
         function openCultsTool(categoryId) {
             switchTab('tab-cults');
             if (categoryId) {
@@ -1891,6 +2018,12 @@
                 
                 if(radarChartInstance) { radarChartInstance.resize(); } 
                 else { initApp(); }
+            } else if(tabId === 'tab-dashboard') {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('block');
+                
+                if(!dashboardInitialized) { initDashboard(); } 
+                else { refreshDashboardCharts(); }
             } else {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('block');
@@ -2140,6 +2273,214 @@
             radarChartInstance.data.datasets[0].pointHoverBorderColor = pointBgColors;
             radarChartInstance.update();
         }
+
+        // --- 4. DASHBOARD LOGIK ---
+        let dashboardInitialized = false;
+        
+        const dashboardState = {
+            totalPopMio: 20,
+            urbanRate: 15,
+            big5Rate: 60,
+            marktRate: 15,
+            cities: [
+                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865' },
+                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193' },
+                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158' },
+                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747' },
+                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780' }
+            ]
+        };
+
+        let dashboardCharts = {};
+
+        function formatNum(n) { 
+            return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
+        }
+
+        function getCalculatedValues() {
+            const totalPop = dashboardState.totalPopMio * 1000000;
+            const urbanPop = Math.round(totalPop * (dashboardState.urbanRate / 100));
+            const ruralPop = totalPop - urbanPop;
+            const big5Pop = Math.round(urbanPop * (dashboardState.big5Rate / 100));
+            const provinzPop = urbanPop - big5Pop;
+            const marktPop = Math.round(ruralPop * (dashboardState.marktRate / 100));
+            const weilerPop = ruralPop - marktPop;
+
+            return {
+                totalPop, urbanPop, ruralPop, big5Pop, provinzPop, marktPop, weilerPop,
+                provinzCount: Math.max(0, Math.round(provinzPop / 8000)),
+                marktCount: Math.max(0, Math.round(marktPop / 1200)),
+                weilerCount: Math.max(0, Math.round(weilerPop / 150))
+            };
+        }
+
+        function balance(idx, newPct) {
+            const vals = getCalculatedValues();
+            let lockedSum = 0;
+            dashboardState.cities.forEach((c, i) => { 
+                if(c.locked && i !== idx) lockedSum += c.pct; 
+            });
+
+            if(newPct + lockedSum > 100) newPct = 100 - lockedSum;
+            dashboardState.cities[idx].pct = Math.max(0, newPct);
+
+            let remainder = 100 - dashboardState.cities[idx].pct - lockedSum;
+            let unlocked = dashboardState.cities.map((c, i) => ({...c, originalIndex: i})).filter((c, i) => !c.locked && i !== idx);
+            let oldSum = unlocked.reduce((s, c) => s + c.pct, 0);
+
+            if(unlocked.length > 0) {
+                unlocked.forEach(c => {
+                    const indexInState = c.originalIndex;
+                    dashboardState.cities[indexInState].pct = oldSum > 0 
+                        ? (c.pct / oldSum) * remainder 
+                        : remainder / unlocked.length;
+                });
+            } else {
+                dashboardState.cities[idx].pct = 100 - lockedSum;
+            }
+            updateDashboardUI();
+        }
+
+        function updateDashboardUI() {
+            const vals = getCalculatedValues();
+
+            document.getElementById('display-total-pop').innerText = formatNum(vals.totalPop);
+            document.getElementById('display-provinz-count').innerText = vals.provinzCount;
+            document.getElementById('display-markt-count').innerText = vals.marktCount;
+            document.getElementById('display-weiler-count').innerText = formatNum(vals.weilerCount);
+
+            document.getElementById('input-pop-mio').value = dashboardState.totalPopMio;
+            document.getElementById('range-pop-mio').value = dashboardState.totalPopMio;
+            document.getElementById('input-urban-rate').value = dashboardState.urbanRate;
+            document.getElementById('range-urban-rate').value = dashboardState.urbanRate;
+            document.getElementById('input-big5-rate').value = dashboardState.big5Rate;
+            document.getElementById('range-big5-rate').value = dashboardState.big5Rate;
+            document.getElementById('input-markt-rate').value = dashboardState.marktRate;
+            document.getElementById('range-markt-rate').value = dashboardState.marktRate;
+
+            const container = document.getElementById('city-cards-container');
+            container.innerHTML = `<h2 class="text-lg font-bold px-1">Machtbalance der Fünf</h2>`;
+            
+            dashboardState.cities.forEach((city, index) => {
+                const absPop = Math.round(vals.big5Pop * (city.pct / 100));
+                const card = document.createElement('div');
+                card.className = 'city-card shadow-lg';
+                card.style.backgroundImage = `url(${city.img})`;
+                card.innerHTML = `
+                    <div class="city-overlay">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleCityLock(${index})" 
+                                        class="p-2 rounded-lg border transition-all bg-slate-900/90 shadow-md ${city.locked ? 'border-red-500 text-red-500' : 'border-slate-700 text-slate-500'}">
+                                    ${city.locked ? '🔒' : '🔓'}
+                                </button>
+                                <div>
+                                    <h3 class="text-base font-black italic tracking-tight" style="color: ${city.color}">${city.name}</h3>
+                                    <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">${formatNum(absPop)} Ew.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1 items-end">
+                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
+                                    <span class="text-[7px] text-slate-500 uppercase font-bold">Ew.</span>
+                                    <input type="number" onchange="updateCityByAbs(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                           value="${absPop}" 
+                                           class="bg-transparent text-right font-mono text-xs w-24 focus:outline-none disabled:opacity-50 text-white">
+                                </div>
+                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
+                                    <span class="text-[7px] text-slate-500 uppercase font-bold">%</span>
+                                    <input type="number" onchange="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                           value="${city.pct.toFixed(2)}" 
+                                           class="bg-transparent text-right font-mono text-[10px] w-12 focus:outline-none disabled:opacity-50 text-slate-300">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex items-center gap-2">
+                            <input type="range" oninput="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                   value="${city.pct}" min="0" max="100" step="0.01" 
+                                   class="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-20" 
+                                   style="accent-color: ${city.color}">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            refreshDashboardCharts();
+        }
+
+        window.toggleCityLock = (index) => {
+            dashboardState.cities[index].locked = !dashboardState.cities[index].locked;
+            updateDashboardUI();
+        };
+
+        window.updateCityByPct = (index, val) => {
+            balance(index, parseFloat(val) || 0);
+        };
+
+        window.updateCityByAbs = (index, val) => {
+            const vals = getCalculatedValues();
+            const pct = ((parseFloat(val) || 0) / vals.big5Pop) * 100;
+            balance(index, pct);
+        };
+
+        document.getElementById('input-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value) || 1; updateDashboardUI(); });
+        document.getElementById('range-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value); updateDashboardUI(); });
+        document.getElementById('input-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value) || 1; updateDashboardUI(); });
+        document.getElementById('range-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value); updateDashboardUI(); });
+        document.getElementById('input-big5-rate').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value) || 0; updateDashboardUI(); });
+        document.getElementById('range-big5-rate').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value); updateDashboardUI(); });
+        document.getElementById('input-markt-rate').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value) || 0; updateDashboardUI(); });
+        document.getElementById('range-markt-rate').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value); updateDashboardUI(); });
+
+        function initDashboard() {
+            const tooltips = { 
+                callbacks: { label: (ctx) => `${ctx.label}: ${formatNum(ctx.raw)} Ew.` },
+                backgroundColor: '#1e293b', padding: 8, titleFont: { size: 10 }, bodyFont: { size: 10 }
+            };
+            const options = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltips } };
+
+            dashboardCharts.urban = new Chart(document.getElementById('chartUrbanRural'), {
+                type: 'doughnut',
+                data: { labels: ['Stadtbewohner', 'Landbevölkerung'], datasets: [{ data: [0,0], backgroundColor: ['#ef4444', '#334155'], borderWidth: 0 }] },
+                options: { ...options, cutout: '80%' }
+            });
+
+            dashboardCharts.siedlung = new Chart(document.getElementById('chartSiedlung'), {
+                type: 'bar',
+                data: { labels: ['Big 5', 'Provinz', 'Märkte', 'Dörfer'], datasets: [{ data: [0,0,0,0], backgroundColor: ['#ef4444', '#64748b', '#0d9488', '#166534'], borderRadius: 4 }] },
+                options: { ...options, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 8 } } } } }
+            });
+
+            dashboardCharts.big5 = new Chart(document.getElementById('chartBig5'), {
+                type: 'pie',
+                data: { labels: dashboardState.cities.map(c => c.name), datasets: [{ data: [0,0,0,0,0], backgroundColor: dashboardState.cities.map(c => c.color), borderWidth: 2, borderColor: '#0f172a' }] },
+                options: options
+            });
+            
+            updateDashboardUI();
+            dashboardInitialized = true;
+        }
+
+        function refreshDashboardCharts() {
+            if(!dashboardCharts.urban) return;
+            const vals = getCalculatedValues();
+            
+            dashboardCharts.urban.data.datasets[0].data = [vals.urbanPop, vals.ruralPop];
+            dashboardCharts.urban.update('none');
+
+            dashboardCharts.siedlung.data.datasets[0].data = [vals.big5Pop, vals.provinzPop, vals.marktPop, vals.weilerPop];
+            dashboardCharts.siedlung.update('none');
+
+            dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
+            dashboardCharts.big5.update('none');
+        }
+
+        // Init Cults App by default, Dashboard gets initialized when its tab opens
+        window.onload = () => {
+            initApp();
+        };
     </script>
 </body>
 </html>
