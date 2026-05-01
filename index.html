@@ -4313,20 +4313,18 @@
 
 
 
-        function initApp() {
-
+function initApp() {
+    
             if(appInitialized) return;
-
+    
+            initChart(); // 1. Zuerst das leere Diagramm vorbereiten
+    
             renderCategoryNav();
-
-            selectCategory('mono');
-
-            initChart();
-
-            updateContent();
-
+    
+            selectCategory('mono'); // 2. Das lädt automatisch den Text UND malt die Farben korrekt aus
+    
             appInitialized = true;
-
+    
         }
 
 
@@ -5059,7 +5057,6 @@
 
         // Init Cults App by default & Comments
         window.onload = () => {
-            initApp();
             renderComments();
         };
 // --- ZWEISTUFIGE FEEDBACK LOGIK ---
