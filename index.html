@@ -343,6 +343,14 @@
                         <span>🧬</span>
 
                     </button></li>
+		<li><button onclick="switchTab('tab-agrarsystem')" id="btn-agrarsystem" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Agrarsystem (Idee)</span>
+                        <span>🌾</span>
+                    </button></li>
+<li><button onclick="switchTab('tab-blutprozession')" id="btn-blutprozession" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Blutprozession (Idee)</span>
+                        <span>🩸</span>
+                    </button></li>
 
                     <li><button onclick="switchTab('tab-cults')" id="btn-cults" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
 
@@ -1412,6 +1420,7 @@
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-6')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚙️</span> 6. Binnenwirtschaft, Spezial-Bestien & Der Metall-Boom</a></li>
 
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-7')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>📜</span> 7. Die Handelsdynastien (Lizenzierte Monopole)</a></li>
+
 
                     </ul>
 
@@ -2655,9 +2664,9 @@
 
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-ancestries', 'ancestry-goblin')" class="text-amber-700 hover:text-amber-900 transition">Goblin</a></li>
 
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-ancestries', 'ancestry-halfling')" class="text-amber-700 hover:text-amber-900 transition">Halbling (Halfling)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-ancestries', 'ancestry-halfling')" class="text-amber-700 hover:text-amber-900 transition">Halbling (Halbling)</a></li>
 
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-ancestries', 'ancestry-human')" class="text-amber-700 hover:text-amber-900 transition">Mensch (Human)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-ancestries', 'ancestry-human')" class="text-amber-700 hover:text-amber-900 transition">Human (Mensch)</a></li>
 
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-ancestries', 'ancestry-inferis')" class="text-amber-700 hover:text-amber-900 transition">Inferis</a></li>
 
@@ -3181,7 +3190,7 @@
 
                     <summary id="ancestry-halfling" class="section-summary">
 
-                        <div class="summary-title"><span class="text-amber-600">🧬</span> Halbling (Halfling)</div>
+                        <div class="summary-title"><span class="text-amber-600">🧬</span> Halfling (Halbling)</div>
 
                         <div class="summary-icon">▼</div>
 
@@ -3231,7 +3240,7 @@
 
                     <summary id="ancestry-human" class="section-summary">
 
-                        <div class="summary-title"><span class="text-amber-600">🧬</span> Mensch (Human)</div>
+                        <div class="summary-title"><span class="text-amber-600">🧬</span> Human (Mensch)</div>
 
                         <div class="summary-icon">▼</div>
 
@@ -3871,6 +3880,140 @@
                         <button type="submit" id="btn-submit-all" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>Gesammeltes Feedback abschicken</button>
                     </form>
                 </div>
+            </section>
+<section id="tab-agrarsystem" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <h1>Das Agrarsystem (Konzept-Idee)</h1>
+                <p class="text-lg text-stone-500 font-medium mb-4">Dieses Kapitel ist ein aktueller Entwurf und befindet sich noch in der Ideenfindungsphase. Es skizziert das ländliche Ökosystem, die Abhängigkeiten der Bauern und den Handelsfluss der Nahrung.</p>
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 text-sm text-amber-900 rounded-r-lg">
+                    <strong>Hinweis:</strong> Die hier beschriebenen Mechaniken und Lore-Hintergründe sind noch nicht final und repräsentieren den aktuellen Stand der Diskussionen und Überlegungen.
+                </div>
+
+                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
+                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
+                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
+                        <div class="flex gap-3 text-xs font-semibold">
+                            <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
+                            <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
+                        </div>
+                    </div>
+                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏘️</span> 1. Die Dörfer & Weiler (Mikrokosmen)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌾</span> 2. Die Marktflecken (Kornkammern)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🚂</span> 3. Der Nahrungsfluss zu den Metropolen</a></li>
+                    </ul>
+                </div>
+
+                <details class="section-details">
+                    <summary id="agrar-1" class="section-summary">
+                        <div class="summary-title"><span>🏘️</span> <span class="text-amber-600">1.</span> Die Dörfer & Weiler (Das Bauern-Ökosystem)</div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>In den unzähligen Dörfern der Weite findet kein überregionaler Handel statt. Die Ländereien und Höfe sind stattdessen in sich geschlossene, lebendige soziale Mikrokosmen, die durch ein klares Risiko-Belohnungs-Gefälle geprägt sind:</p>
+                        <ul>
+                            <li><strong>Die Innere Sphäre (Die Patriarchen):</strong> Höfe, die geografisch nah an den befestigten Marktflecken liegen, profitieren von maximaler Sicherheit vor den Gefahren der Wildnis. Ihr Platz ist jedoch begrenzt. Die alteingesessenen Familien hier definieren ihren Reichtum durch Stabilität, sichere Ernten und exzellente politische Verbindungen zu den lokalen Blut-Priestern.</li>
+                            <li><strong>Das Grenzland (Die Landbarone):</strong> Je weiter ein Hof in die ungezügelte Wildnis hineinreicht, desto mehr freie Fläche steht zur massiven Expansion zur Verfügung. Diese Bauern können enorm reich werden, zahlen aber einen hohen Preis: Sie müssen ständige Angriffe von Bestien abwehren, Mauern errichten und aus eigener Tasche Söldner oder Wachen finanzieren. </li>
+                            <li><strong>Soziales Gefälle:</strong> Zwischen den elitären Landbaronen am Rand und den sicheren Patriarchen im Zentrum existiert eine breite Schicht aus einfachen Pächtern, die in ständiger Abhängigkeit wirtschaften und oft in die Mühlen der theokratischen Quoten geraten.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="agrar-2" class="section-summary">
+                        <div class="summary-title"><span>🌾</span> <span class="text-amber-600">2.</span> Die Marktflecken (Handelszentren & Kornkammern)</div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Das gesammelte landwirtschaftliche Rückgrat der Theokratie konzentriert sich in den etwa 2.000 befestigten Marktflecken und Sammelorten, die über das Land verteilt sind:</p>
+                        <ul>
+                            <li><strong>Das Nadelöhr des Handels:</strong> Alle Bauern bringen ihre Erträge zwingend zu diesen Marktplätzen. Erst hier wird die Nahrung offiziell gehandelt, gewogen und verkauft.</li>
+                            <li><strong>Die Eisernen Reserven:</strong> Diese Marktflecken bestehen nicht nur aus Wohnraum für ihre durchschnittlich 1.200 Einwohner, sondern aus gigantischen, gesicherten Speichern, Silos und Kühlkammern. Da nicht überall im Land Nahrung angebaut werden kann, dienen diese gesammelten Reserven als Überlebensgarantie für das Reich.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="agrar-3" class="section-summary">
+                        <div class="summary-title"><span>🚂</span> <span class="text-amber-600">3.</span> Der Nahrungsfluss zu den Metropolen</div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Die großen Städte sind absolut unfähig, sich selbst zu ernähren, was eine kritische logistische Kette erzwingt:</p>
+                        <ul>
+                            <li><strong>Das Transport-Monopol:</strong> Die riesigen, lizenzierten Handelsdynastien kaufen die massiven Nahrungsreserven an den Marktflecken auf. Sie übernehmen den gefährlichen Transport durch das unerschlossene Land, oft mithilfe schwerfälliger, gezüchteter Monstrositäten oder Karawanen.</li>
+                            <li><strong>Absolute Abhängigkeit:</strong> Ohne diesen konstanten Nahrungsfluss würden gigantische urbane Zentren sofort kollabieren. Die massiv übervölkerte Schwarze Stadt hat schlichtweg keinen Platz für Agrarwirtschaft. Auch die Blaue Stadt, die fast ausschließlich aus elitären Forschern, Bibliotheken und Observatorien besteht, ist vollständig auf den externen Handel über die Marktflecken angewiesen.</li>
+                            <li><strong>Strategische Verwundbarkeit:</strong> Dieses System macht die Getreidespeicher der Marktflecken zu den wichtigsten strategischen Knotenpunkten. Eine gezielte Sabotage in einem der Sammelorte kann eine Hungersnot in einer hundert Kilometer entfernten Metropole auslösen.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+<section id="tab-blutprozession" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <h1>Die Blutprozession (Konzept-Idee)</h1>
+                <p class="text-lg text-stone-500 font-medium mb-4">Dieses Kapitel beleuchtet die Logistik, Zusammensetzung und Arbeitsweise der gigantischen theokratischen Kolonnen, die das Land auf der Suche nach Tributen und Nachwuchs durchkämmen.</p>
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 text-sm text-amber-900 rounded-r-lg">
+                    <strong>Hinweis:</strong> Die hier beschriebenen Mechaniken und Zahlen sind noch nicht final und repräsentieren den aktuellen Stand der "Work in Progress"-Überlegungen.
+                </div>
+
+                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
+                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
+                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
+                        <div class="flex gap-3 text-xs font-semibold">
+                            <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
+                            <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
+                        </div>
+                    </div>
+                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏰</span> 1. Das Bezirks-Modell (Logistik & Hubs)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>👥</span> 2. Zusammensetzung einer Kolonne</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚙️</span> 3. Mobilität & Daggerheart-Einflüsse</a></li>
+                    </ul>
+                </div>
+
+                <details class="section-details">
+                    <summary id="blut-1" class="section-summary">
+                        <div class="summary-title"><span>🏰</span> <span class="text-amber-600">1.</span> Das Bezirks-Modell (Logistik & Hubs)</div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Das Land umfasst ca. 100.000 Dörfer, die im 6-Monats-Rhythmus besucht werden müssen. Eine solch gigantische Aufgabe ist nicht durch einfache Rundreisen zu bewältigen. Die Theokratie hat das Land logistisch streng aufgeteilt:</p>
+                        <ul>
+                            <li><strong>Die 500 Trupps:</strong> Es sind permanent 500 dieser Kolonnen auf dem Kontinent im Einsatz. Sie bilden das direkte ausführende Werkzeug der Götter auf dem Land.</li>
+                            <li><strong>Die Hubs (Marktflecken):</strong> Die ca. 2.000 Marktflecken (mit durchschnittlich 1.200 Einwohnern) dienen als militärische und logistische Basisstationen (Hubs) für die Trupps. Hier befinden sich gesicherte Blut-Tresore und theokratische Verwahranstalten für eingesammelte Kinder.</li>
+                            <li><strong>Die Bezirke:</strong> Jedem Trupp sind exakt 4 Marktflecken fest zugeteilt (ein Bezirk). Der Trupp schlägt sein Lager in einem Marktplatz auf, reitet im Sternmuster (1–2 Tagesmärsche) in die 50 umliegenden Dörfer aus, kehrt zurück, um Fracht und Gefangene abzuladen, und zieht dann zum nächsten Marktplatz weiter. Dies garantiert, dass die 200 Dörfer eines Bezirks sauber und verlustfrei innerhalb von 6 Monaten abgearbeitet werden können.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="blut-2" class="section-summary">
+                        <div class="summary-title"><span>👥</span> <span class="text-amber-600">2.</span> Zusammensetzung einer Kolonne</div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Eine Blutprozession ist kein freundlicher Besuch, sondern eine unaufhaltsame bürokratische und militärische Naturgewalt. Jeder der 500 Trupps besteht exakt aus 35 Personen, um Autarkie und absolute Kontrolle zu gewährleisten:</p>
+                        <ul>
+                            <li><strong>2 Lektoren:</strong> Hochgebildete Gelehrte, welche die Prüfungen der Kinder abnehmen und die Arbeitsquoten protokollieren.</li>
+                            <li><strong>2 Beamte:</strong> Verwalten die administrativen Abläufe, die Ressourcen des Trupps und den Papierkram für das Blutsubstrat.</li>
+                            <li><strong>3 Inquisitoren (Richter):</strong> Theokratische Fanatiker, die vor Ort Strafen und Justizfälle verhandeln und die Arbeit des lokalen Blut-Priesters penibel überwachen.</li>
+                            <li><strong>25 Soldaten:</strong> Schwer bewaffnete, oft berittene Wachen. Sie bilden eine erdrückende Präsenz in kleinen Dörfern, sichern die Transporte vor Monsterangriffen oder Rebellen und trennen Kinder notfalls mit Gewalt von ihren Familien.</li>
+                            <li><strong>3 Maschinisten:</strong> Techniker und Alchemisten. Sie warten die Transportkutschen, reparieren Waffensysteme und überwachen die sensiblen blutmagischen Konservierungssysteme für das abgezapfte Substrat.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="blut-3" class="section-summary">
+                        <div class="summary-title"><span>⚙️</span> <span class="text-amber-600">3.</span> Mobilität & Daggerheart-Einflüsse</div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Das weite Land erfordert Flexibilität, weshalb sich die Prozessionen an das Terrain anpassen und die Fähigkeiten (Domains) des Daggerheart-Systems aktiv nutzen:</p>
+                        <ul>
+                            <li><strong>Wagenburgen & Packtiere:</strong> Auf guten Handelsstraßen zwischen den Städten und Marktflecken nutzt die Kolonne eine befestigte Wagenburg (Laborwagen für Richter, gesicherte Gefangenentransporte, Tresorkutschen). In den unwegsamen, wilden Gebieten müssen Kutschen zurückgelassen und die Reise auf Pferden und schwerem Packgetier fortgesetzt werden.</li>
+                            <li><strong>Magische Effizienz:</strong> Die Beamten und Inquisitoren sind nicht fähigkeitslos. Magie (wie aus den Bereichen <em>Knowledge</em> oder <em>Grace</em>) wird genutzt, um bei Gerichtsverfahren Lügen sofort zu erkennen oder Akten magisch zu versiegeln. Heiler der Kolonne sorgen dafür, dass Krankheiten bei Pferden, Soldaten oder der wertvollen "Fracht" sofort beseitigt werden, was Ausfallzeiten auf nahezu Null reduziert.</li>
+                        </ul>
+                    </div>
+                </details>
             </section>
         </main>
 
