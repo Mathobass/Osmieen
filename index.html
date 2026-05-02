@@ -367,6 +367,10 @@
                         <span>📱</span>
 
                     </button></li>
+		<li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+   		 <span>Storybook: Geschichte (Test)</span>
+    		<span>📖</span>
+		</button></li>
 
 <!-- KOMMENTARFUNKTION BUTTON START -->
                     <li><button onclick="switchTab('tab-feedback')" id="btn-feedback" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
@@ -3854,7 +3858,44 @@
 
             </section>
 
+<section id="tab-storybook" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+    <h1>Osmieen Storybook</h1>
+    <p class="text-lg text-stone-500 font-medium mb-8">Erlebe die Welt und die Konflikte der Kulte in einer einfachen von Gemini erstellten Geschichte</p>
 
+    <div class="bg-stone-100 border border-stone-200 rounded-xl p-4 mb-6 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-2">
+            <button id="btn-play-story" onclick="toggleStoryPlayback()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded shadow transition flex items-center gap-2">
+                <span id="play-icon">▶️</span> <span id="play-text">Vorlesen starten</span>
+            </button>
+            <button onclick="stopStoryPlayback()" class="bg-stone-300 hover:bg-stone-400 text-stone-800 font-bold py-2 px-3 rounded shadow transition" title="Stoppen">
+                ⏹️
+            </button>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <button onclick="prevStoryPage()" class="text-stone-600 hover:text-amber-600 font-bold text-xl px-2 transition disabled:opacity-30" id="btn-prev-page">«</button>
+            <span class="text-sm font-bold text-stone-500 uppercase tracking-widest">Seite <span id="current-page-num">1</span> / <span id="total-page-num">?</span></span>
+            <button onclick="nextStoryPage()" class="text-stone-600 hover:text-amber-600 font-bold text-xl px-2 transition disabled:opacity-30" id="btn-next-page">»</button>
+        </div>
+    </div>
+
+    <div class="bg-white border border-stone-200 rounded-xl p-8 shadow-md min-h-[400px] relative">
+        <h2 id="story-chapter-title" class="text-2xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-2 mt-0">Kapitel Titel</h2>
+        
+        <div id="story-image-container" class="mb-6 hidden">
+            <img id="story-image" src="" alt="Szenenbild" class="w-full max-h-80 object-cover rounded-xl shadow-sm border border-stone-200">
+        </div>
+
+        <!-- Hier war der Fehler: Das div war doppelt und ungeschlossen! -->
+        <div id="story-content" class="text-stone-700 leading-relaxed text-lg whitespace-pre-wrap">
+            Hier erscheint gleich der Text...
+        </div>
+        
+        <div id="reading-indicator" class="absolute top-4 right-4 text-xs font-bold text-amber-500 uppercase tracking-widest hidden animate-pulse">
+            🔊 Wird vorgelesen...
+        </div>
+    </div>
+</section>
 
 <!-- === DER FEEDBACK TAB (DER "WARENKORB") === -->
             <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
@@ -5322,6 +5363,205 @@ function initApp() {
             }
             if(tabId === 'tab-feedback') { renderFeedbackCart(); }
         };
+const storyPages = [
+    {
+        title: "Die Venen von Osmieen: Der Sektor 4",
+        img: "titelbild.jpg", 
+        text: "Das ist eine Beispiel-Kurzgeschichte."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Der Himmel über Sektor 4 war kein Firmament, sondern ein schwelendes Leichentuch aus Ruß und geronnenem Eisen. Hier, im industriellen Schlund der Vampir-Theokratie, roch die Luft nach verbranntem Blut-Substrat und dem herben Aroma sterbender Träume. Der gepanzerte Blutmagie-Zug, eine monströse Schlange aus vernietetem Stahl, hockte auf den Schienen und wartete darauf, die Lebenskraft von Tausenden in die Paläste der Vampirgötter zu pumpen. Vespera stand im Schatten eines rostigen Krans, ihre Haut so blass wie der Mond von Osmieen, während ihr Blick die kinetische Unruhe des Bahnhofs sezierte. Die Welt war ein Mechanismus aus Gewalt und Gier, und sie war gekommen, um eine Feder in das Getriebe zu werfen."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Mit der Präzision eines Skalpells trat Vespera in das kalte Licht des Kontrollpunkts. Vor ihr ragte ein Inquisitor auf, eine groteske Statue aus poliertem Plattenpanzer, dessen Helmvisier nur die Leere des religiösen Wahns widerspiegelte. Vespera entfaltete die gefälschten Dokumente mit einer Geste, die so schneidend war wie das Eis in ihrer Stimme. „Sonderinspektion für thermodynamische Blutzellen-Effizienz im Namen von Erebia“, zischte sie. Die Kälte, die sie ausstrahlte, war keine bloße Maske; sie war die Waffe einer Frau, die gelernt hatte, dass in Osmieen Papier oft schärfer war als Stahl. Der Inquisitor zögerte, die magische Tätowierung auf seinem Handgelenk pulsierte in einem unsicheren Violett."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Während Vespera die theokratische Bestie mit Bürokratie fesselte, glitt Kaelen in den Schatten der Verladekonsole. Seine Finger, gezeichnet von den Brandmalen unzähliger Experimente, tanzten über die Hebel. Er war kein Kämpfer der Klingen, sondern ein Meister der instabilen Logik. Vor ihm pulsierte das Blut-Substrat in gläsernen Leitungen, ein hypnotisches Rubinrot, das die Energie für ein ganzes Viertel lieferte. Kaelen spürte das Flüstern der roten Magie, ein hungriges Echo der Vampire, die diesen Kontinent knechteten. Er begann, die energetische Signatur der Zellen zu verändern, indem er ein korruptes Muster in den Fluss webte."
+    },
+    {
+        title: "",
+        img: "",
+        text: "„Noch sechzig Sekunden bis zur Überlastung“, murmelte Kaelen, als er die Weichen für den Untergrund-Waggon manipulierte. Neben ihm tauchte Aris aus der Dunkelheit auf, ihre Augen funkelten vor unterdrückter Gewalt. Sie war die kinetische Antwort auf die Unterdrückung, eine Kriegerin, die in der weißen und roten Tracht der Geächteten gekleidet war. Aris legte eine Hand auf den Griff ihres massiven Brecher-Schwerts. Sie beobachtete, wie die schweren Blutzellen mit einem metallischen Mahlen in den falschen Waggon glitten. Die Tarnung war dünn wie Pergament, und das Reißen der Stille kündigte sich bereits an."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Plötzlich zerriss ein Alarm die morbide Ruhe von Sektor 4. Die Inquisition hatte den Betrug gewittert. Aris wartete nicht auf Befehle; sie wurde zu einem Wirbelwind aus weißem Tuch und rotem Blut. Mit einem animalischen Brüllen stürzte sie sich auf die herbeieilenden Wachen. Ihr Schwert grub sich mit viszeraler Wucht in das Fleisch des ersten Angreifers, ein nasser Laut, der in der metallischen Halle widerhallte. Blut spritzte gegen die rostigen Rohrleitungen, während Aris die rohe Gewalt der Umgebung nutzte, um sich einen Weg durch die Phalanx aus Speeren zu bahnen."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Die Halle verwandelte sich in ein Schlachthaus der industriellen Dekadenz. Aris griff nach einer glühenden Zuleitung für Blut-Substrat, die durch den Kampf von der Decke gerissen worden war. Mit übermenschlicher Kraft schwang sie das heiße Rohr wie eine Peitsche. Dampf und kochendes Blut zischten, als sie die Rüstungen der Inquisitoren wie Papier auf riss. Jeder Schlag war ein Statement gegen die fünf Götter, eine kinetische Entladung von Jahren angestauter Wut. Sie war kein Mensch mehr; sie war die personifizierte Entgleisung der göttlichen Ordnung."
+    },
+    {
+        title: "",
+        img: "",
+        text: "„Der Zug fährt an! Los, jetzt!“, schrie Vespera über den Lärm der Kämpfe hinweg. Sie war bereits auf die flache Plattform des letzten Waggons gesprungen, ihre blaue Kleidung flatterte im Fahrtwind. Kaelen rannte mit der Agilität eines Mannes, der nichts mehr zu verlieren hatte, auf den abfahrenden Zug zu. Vespera streckte ihm die Hand entgegen, ihre Finger fest und unnachgiebig. Kaelen griff zu, und mit einem Ruck wurde er auf das vibrierende Metall gezogen, während die Räder des Zuges auf den Schienen zu schreien begannen."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Aris war die Letzte. Sie sprintete über den Bahnsteig, während hinter ihr die von Kaelen manipulierte Energiezelle am Kran kritisch zu glühen begann. Mit einem gewaltigen Satz katapultierte sie sich durch die Luft, gerade als Vespera sie am Gürtel packte und auf den Waggon riss. In diesem Moment explodierte das Dock hinter ihnen. Eine Säule aus reinem, magischem Feuer schoss in den Nachthimmel von Sektor 4, ein viszerales Feuerwerk, das die theokratische Ordnung in Stücke riss und brennende Formulare wie glühende Asche regnen ließ."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Der Zug raste in die endlose Nacht von Osmieen, weg von den brennenden Ruinen des Sektors. Kaelen und Aris saßen erschöpft auf den geraubten Blutzellen, deren sanftes Pulsieren nun ihnen gehörte. Hinter ihnen schrumpfte das Feuer zu einem glimmenden Punkt in der Dunkelheit. Sie hatten den Göttern Blut gestohlen und der Inquisition den Gehorsam verweigert. Während die kalte Luft des Kontinents ihre Gesichter peitschte, wussten sie, dass dies erst der Anfang war. Die Venen von Osmieen waren angezapft, und das Herz der Theokratie begann zu flackern."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Stunden später entgleiste der Zug planmäßig am Rande der Knochensteppe. Die Gruppe schleppte sich durch das graue Unterholz, verfolgt von den fernen Schatten der vampirischen Sucher-Falken. Vespera stützte Aris, deren Wunden das weiße Tuch ihrer Tracht in ein tiefes Scharlachrot getaucht hatten. Die Wildnis von Osmieen war kein Ort der Zuflucht, sondern ein anderes Schlachtfeld, auf dem Hunger und Kälte die Herrscher waren. Doch in der Ferne, zwischen den knorrigen Bäumen, leuchtete ein unnatürliches, sanftes Grün auf – ein krasser Kontrast zur industriellen Hölle, die sie hinter sich gelassen hatten."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Aus dem dichten Farn schälte sich eine Gestalt in den Farben des Frühlings und der Reinheit. Es war Beryl, ein Priester des grün-weißen Kults. Hinter ihm bewegte sich ein gewaltiger Schatten – ein Galapa, eine riesige Landschildkröte, deren Panzer mit Moos und heiligen Runen bedeckt war. Das Wesen atmete mit einem tiefen Grollen, das den Boden erzittern ließ. Beryl hob die Hand zum Gruß, seine Augen strahlten eine Ruhe aus, die in dieser blutgetränkten Welt fast wie eine Beleidigung wirkte. „Die Götter des Blutes haben hier keine Macht“, flüsterte er."
+    },
+    {
+        title: "",
+        img: "",
+        text: "Der Galapa schritt langsam über die Fluchtspur der Gruppe hinweg. Wo seine gewaltigen Füße den Boden berührten, spross augenblicklich dickes Moos und weißer Klee hervor, der den Geruch von Schweiß und vergossenem Blut unter einer Schicht aus Natur begrub. Vespera beobachtete fasziniert, wie Beryl die magischen Rückstände ihrer Flucht mit einer Geste in das grüne Herz des Waldes zog. Ihre Spuren waren ausgelöscht, verloren im ewigen Kreislauf des Wachstums. Für heute waren sie Geister in einer Welt, die nur an Fleisch und Eisen glaubte."
+    }
+];
+
+let currentStoryIndex = 0;
+let isReading = false;
+let synth = window.speechSynthesis;
+let currentUtterance = null;
+
+function renderStoryPage() {
+    const page = storyPages[currentStoryIndex];
+    document.getElementById('story-chapter-title').innerText = page.title;
+    document.getElementById('story-content').innerText = page.text;
+    
+    const imgContainer = document.getElementById('story-image-container');
+    const imgElement = document.getElementById('story-image');
+    
+    if (page.img && page.img.trim() !== "") {
+        imgElement.src = page.img;
+        imgContainer.classList.remove('hidden');
+    } else {
+        imgContainer.classList.add('hidden');
+        imgElement.src = "";
+    }
+    
+    document.getElementById('current-page-num').innerText = currentStoryIndex + 1;
+    document.getElementById('total-page-num').innerText = storyPages.length;
+    
+    document.getElementById('btn-prev-page').disabled = currentStoryIndex === 0;
+    document.getElementById('btn-next-page').disabled = currentStoryIndex === storyPages.length - 1;
+}
+
+function nextStoryPage() {
+    if (currentStoryIndex < storyPages.length - 1) {
+        currentStoryIndex++;
+        renderStoryPage();
+        if (isReading) speakCurrentPage();
+    } else {
+        stopStoryPlayback();
+    }
+}
+
+function prevStoryPage() {
+    if (currentStoryIndex > 0) {
+        currentStoryIndex--;
+        renderStoryPage();
+        if (isReading) speakCurrentPage();
+    }
+}
+
+function toggleStoryPlayback() {
+    if (isReading) {
+        stopStoryPlayback();
+    } else {
+        isReading = true;
+        document.getElementById('play-icon').innerText = '⏸️';
+        document.getElementById('play-text').innerText = 'Pausieren';
+        document.getElementById('reading-indicator').classList.remove('hidden');
+        speakCurrentPage();
+    }
+}
+
+function stopStoryPlayback() {
+    isReading = false;
+    synth.cancel();
+    document.getElementById('play-icon').innerText = '▶️';
+    document.getElementById('play-text').innerText = 'Vorlesen starten';
+    
+    const indicator = document.getElementById('reading-indicator');
+    if(indicator) indicator.classList.add('hidden');
+}
+
+function speakCurrentPage() {
+    synth.cancel();
+    
+    if (!isReading) return;
+
+    let fullText = storyPages[currentStoryIndex].title + ". " + storyPages[currentStoryIndex].text;
+    
+    // BUGFIX: Zerteilt den langen Text in kleine Sätze, damit der Browser nicht mehr abstürzt
+    let sentences = fullText.match(/[^.!?]+[.!?]+/g) || [fullText];
+    let sentenceIndex = 0;
+
+    function speakNextSentence() {
+        if (!isReading) return;
+        
+        if (sentenceIndex >= sentences.length) {
+            nextStoryPage();
+            return;
+        }
+        
+        currentUtterance = new SpeechSynthesisUtterance(sentences[sentenceIndex].trim());
+        
+        const voices = synth.getVoices();
+        
+        // Versuche zuerst eine hochwertige Online/Premium-Stimme zu finden
+        let bestVoice = voices.find(v => v.lang.includes('de') && (v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Natural')));
+        
+        // Fallback: Wenn keine Premium-Stimme da ist, nimm die normale deutsche
+        if (!bestVoice) {
+            bestVoice = voices.find(v => v.lang.includes('de'));
+        }
+        
+        if (bestVoice) currentUtterance.voice = bestVoice;
+        
+        currentUtterance.rate = 0.95; 
+        currentUtterance.pitch = 1.0;
+
+        currentUtterance.onend = function() {
+            sentenceIndex++;
+            speakNextSentence();
+        };
+
+        currentUtterance.onerror = function(event) {
+            console.error("Sprachausgabe Fehler: ", event);
+            stopStoryPlayback();
+        };
+
+        synth.speak(currentUtterance);
+    }
+
+    speakNextSentence();
+}
+
+const originalStorySwitchTab = window.switchTab;
+window.switchTab = function(tabId) {
+    if (tabId !== 'tab-storybook') stopStoryPlayback();
+    originalStorySwitchTab(tabId);
+    if (tabId === 'tab-storybook') renderStoryPage();
+};
+
+window.addEventListener('load', () => {
+    setTimeout(() => { synth.getVoices(); }, 50);
+    renderStoryPage();
+});
     </script>
 </body>
 </html>
