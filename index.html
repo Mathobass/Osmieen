@@ -360,12 +360,13 @@
 
                     </button></li>
 
-                    <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
-
-                        <span>Mobiles Dashboard</span>
-
+<li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Kompaktes Dashboard</span>
                         <span>📱</span>
-
+                    </button></li>
+                    <li><button onclick="switchTab('tab-map-focus')" id="btn-map-focus" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+                        <span>Große Karten-Ansicht</span>
+                        <span>🗺️</span>
                     </button></li>
 		<li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
    		 <span>Storybook: Geschichte (Test)</span>
@@ -3917,6 +3918,103 @@
                     </main>
                 </div>
             </section>
+			<!-- === NEUER TAB: KARTEN FOKUS === -->
+<section id="tab-map-focus" class="content-tab w-full h-full hidden bg-slate-950 flex-col overflow-hidden">
+    <!-- Kopfzeile -->
+    <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center z-10 shadow-lg shrink-0">
+        <h2 class="text-xl font-black text-amber-600 uppercase italic tracking-tighter m-0">Kommandozentrale</h2>
+        <div class="text-[10px] text-slate-500 font-mono">HD-Rendering: Erhöhte Siedlungsdichte</div>
+    </div>
+
+    <!-- Arbeitsbereich -->
+    <div class="flex-1 flex overflow-hidden relative">
+        
+        <!-- LINKE SPALTE: REGLER -->
+        <aside class="w-72 bg-slate-900/80 border-r border-slate-800 p-5 flex flex-col gap-6 overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0">Parameter</h3>
+            
+            <!-- Synchronisierte Regler -->
+            <div class="space-y-1">
+                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Population (Mio.)</label><span id="f-disp-pop" class="font-mono text-white text-xs">19</span></div>
+                <input type="range" id="f-range-pop" min="1" max="50" step="0.5" class="w-full accent-red-600">
+            </div>
+            <div class="space-y-1">
+                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Urbanisierung (%)</label><span id="f-disp-urban" class="font-mono text-blue-400 text-xs">13</span></div>
+                <input type="range" id="f-range-urban" min="1" max="100" class="w-full accent-blue-600">
+            </div>
+            <div class="space-y-1">
+                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Metropolen-Fokus (%)</label><span id="f-disp-big5" class="font-mono text-slate-300 text-xs">63</span></div>
+                <input type="range" id="f-range-big5" min="0" max="100" class="w-full accent-slate-500">
+            </div>
+            <div class="space-y-1">
+                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Marktflecken (%)</label><span id="f-disp-markt" class="font-mono text-teal-400 text-xs">15</span></div>
+                <input type="range" id="f-range-markt" min="0" max="100" class="w-full accent-teal-600">
+            </div>
+            
+            <!-- Würfel Button -->
+            <button onclick="rerollMap()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 py-2 rounded shadow transition text-sm flex items-center justify-center gap-2 mt-4">
+                <span>🎲</span> Neue Verteilung würfeln
+            </button>
+        </aside>
+
+        <!-- MITTE: DIE RIESIGE KARTE (Scrollbar) -->
+        <main class="flex-1 bg-black overflow-auto custom-scrollbar relative flex items-center justify-center">
+            <!-- Die Karte wird hier künstlich riesig gemacht (min-width: 1800px) -->
+            <div class="relative aspect-[2760/1504] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] m-10" 
+                 style="min-width: 1800px; background-image: url('karte_bunt.jpg');">
+                
+                <div id="map-markers-focus" class="absolute inset-0"></div>
+                
+                <!-- Maßstab -->
+                <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]">
+                    <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
+                    <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
+                        <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div>
+                    </div>
+                    <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
+                        <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
+                    </div>
+                    <div class="mt-2 text-[8px] text-white/30 italic">1 Pixel = 2,5 Kilometer</div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- RECHTE SPALTE: ZAHLEN & LEGENDE -->
+        <aside class="w-64 bg-slate-900/80 border-l border-slate-800 p-5 flex flex-col justify-between overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
+            <div>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-6">Bestand</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                        <div class="text-[9px] text-slate-500 uppercase">Provinzen</div>
+                        <div class="text-lg font-bold text-slate-300" id="f-val-provinz">0</div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                        <div class="text-[9px] text-teal-600 uppercase">Märkte</div>
+                        <div class="text-lg font-bold text-teal-500" id="f-val-markt">0</div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                        <div class="text-[9px] text-green-600 uppercase">Dörfer & Weiler</div>
+                        <div class="text-lg font-bold text-green-500" id="f-val-weiler">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-4">Legende</h3>
+                <div class="flex flex-col gap-3 text-xs text-slate-400 uppercase font-bold tracking-widest">
+                    <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</span>
+                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Provinzen</span>
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Märkte</span>
+                    <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Dörfer</span>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+</section>
+<!-- === ENDE NEUER TAB === -->
 
 <section id="tab-storybook" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
     <h1>Osmieen Storybook</h1>
@@ -5049,6 +5147,102 @@ function updateDynamicMap(vals) {
 }
 // --- DYNAMISCHE KARTEN LOGIK ENDE ---
 
+		// --- NEUE FUNKTION: Die HD Fokus-Karte ---
+function updateFocusMap(vals) {
+    const markerContainer = document.getElementById('map-markers-focus');
+    if (!markerContainer) return;
+    markerContainer.innerHTML = '';
+
+    // ACHTUNG: Hier generieren wir deutlich MEHR Punkte für die große Ansicht!
+    const visualProvinz = Math.min(80, Math.floor(vals.provinzCount / 2)); 
+    const visualMarkt = Math.min(150, Math.floor(vals.marktCount / 8)); 
+    const visualDorf = Math.min(600, Math.floor(vals.weilerCount / 200)); 
+
+    function createFocusMarker(colorClass, sizeClass, isMetropole = false, forceX = null, forceY = null) {
+        const dot = document.createElement('div');
+        let x = 0; let y = 0;
+
+        if (isMetropole && forceX !== null && forceY !== null) {
+            x = forceX; y = forceY;
+        } else {
+            let valid = false; let attempts = 0;
+            while (!valid && attempts < 150) {
+                x = 5 + seededRandom() * 90;
+                y = 5 + seededRandom() * 90;
+                attempts++;
+                if (mapMaskData && maskWidth > 0) {
+                    const pixelX = Math.floor((x / 100) * maskWidth);
+                    const pixelY = Math.floor((y / 100) * maskHeight);
+                    const pixelIndex = (pixelY * maskWidth + pixelX) * 4;
+                    if (mapMaskData[pixelIndex] < 50) continue; 
+                    if (seededRandom() > (mapMaskData[pixelIndex] / 255)) continue; 
+                }
+                valid = true;
+            }
+        }
+        
+        dot.className = `absolute rounded-full ${colorClass} ${sizeClass} transform -translate-x-1/2 -translate-y-1/2 shadow-sm`;
+        dot.style.left = `${x}%`; dot.style.top = `${y}%`;
+        return dot;
+    }
+
+    // Provinzen (Abstands-Logik für die große Karte)
+    prngState = currentMapSeed + 100;
+    const minDistance = 4; // Etwas kleinerer Abstand, da die Karte größer ist
+    const placedProvinces = []; 
+    function getDistance(x1, y1, x2, y2) {
+        const aspect = 2760 / 1504; 
+        return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
+    }
+
+    for(let i = 0; i < visualProvinz; i++) {
+        let dotX = 0; let dotY = 0; let valid = false; let attempts = 0;
+        while (!valid && attempts < 200) {
+            dotX = 5 + seededRandom() * 90; dotY = 5 + seededRandom() * 90;
+            attempts++;
+            if (mapMaskData && maskWidth > 0) {
+                const pixelX = Math.floor((dotX / 100) * maskWidth);
+                const pixelY = Math.floor((dotY / 100) * maskHeight);
+                if (mapMaskData[(pixelY * maskWidth + pixelX) * 4] < 50) continue; 
+                if (seededRandom() > (mapMaskData[(pixelY * maskWidth + pixelX) * 4] / 255)) continue; 
+            }
+            if (dashboardState.cities.some(c => c.pct > 0 && getDistance(dotX, dotY, c.x, c.y) < minDistance)) continue; 
+            if (placedProvinces.some(p => getDistance(dotX, dotY, p.x, p.y) < minDistance)) continue; 
+            valid = true;
+        }
+        if (valid) {
+            placedProvinces.push({x: dotX, y: dotY});
+            markerContainer.appendChild(createFocusMarker('bg-slate-400', 'w-2.5 h-2.5', false, dotX, dotY));
+        }
+    }
+
+    // Märkte & Dörfer
+    prngState = currentMapSeed + 200;
+    for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createFocusMarker('bg-teal-500/80', 'w-2 h-2'));
+    
+    prngState = currentMapSeed + 300;
+    for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createFocusMarker('bg-green-400/80', 'w-1.5 h-1.5'));
+
+    // Metropolen
+    dashboardState.cities.forEach(city => {
+        if (city.pct > 0) {
+            // Metropolen sind in der großen Karte nochmal etwas präsenter (w-4 h-4)
+            const bigDot = createFocusMarker('', 'w-4 h-4', true, city.x, city.y);
+            if (city.name === 'Schwarze Stadt') {
+                bigDot.style.backgroundColor = '#000000'; 
+                bigDot.style.border = '3px solid #94a3b8'; 
+                bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
+            } else {
+                bigDot.style.backgroundColor = city.color; 
+                bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
+                bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
+            }
+            bigDot.style.zIndex = "10";
+            markerContainer.appendChild(bigDot);
+        }
+    });
+}
+
 // --- SNAPSHOT SPEICHER LOGIK START ---
 let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
 
@@ -5334,11 +5528,30 @@ setTimeout(updateSnapshotSelect, 500);
 
             });
 
+// Die neuen Fokus-Regler und Zahlen auch updaten!
+            const fPop = document.getElementById('f-range-pop');
+            if(fPop) {
+                fPop.value = dashboardState.totalPopMio;
+                document.getElementById('f-disp-pop').innerText = dashboardState.totalPopMio;
+                
+                document.getElementById('f-range-urban').value = dashboardState.urbanRate;
+                document.getElementById('f-disp-urban').innerText = dashboardState.urbanRate;
+                
+                document.getElementById('f-range-big5').value = dashboardState.big5Rate;
+                document.getElementById('f-disp-big5').innerText = dashboardState.big5Rate;
+                
+                document.getElementById('f-range-markt').value = dashboardState.marktRate;
+                document.getElementById('f-disp-markt').innerText = dashboardState.marktRate;
 
+                document.getElementById('f-val-provinz').innerText = formatNum(vals.provinzCount);
+                document.getElementById('f-val-markt').innerText = formatNum(vals.marktCount);
+                document.getElementById('f-val-weiler').innerText = formatNum(vals.weilerCount);
+            }
+            // ==========================================
 
             refreshDashboardCharts();
-
         }
+
 
 
 
@@ -5374,6 +5587,12 @@ setTimeout(updateSnapshotSelect, 500);
 
         document.getElementById('input-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value) || 1; updateDashboardUI(); });
 
+		// Listener für die Fokus-Regler
+document.getElementById('f-range-pop').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value); updateDashboardUI(); });
+document.getElementById('f-range-urban').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value); updateDashboardUI(); });
+document.getElementById('f-range-big5').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value); updateDashboardUI(); });
+document.getElementById('f-range-markt').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value); updateDashboardUI(); });
+		
         document.getElementById('range-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value); updateDashboardUI(); });
 
         document.getElementById('input-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value) || 1; updateDashboardUI(); });
@@ -5447,12 +5666,13 @@ function refreshDashboardCharts() {
             dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
             dashboardCharts.big5.update('none');
             
-            /// HIER IST DER NEUE AUFRUF FÜR DIE KARTE:
-            if (autoRerollMap) {
-                currentMapSeed = Math.floor(Math.random() * 1000000); // Nur neu würfeln, wenn Schalter an ist!
-            }
-            updateDynamicMap(vals);
-        }
+          /// HIER IST DER NEUE AUFRUF FÜR DIE KARTE:
+            if (autoRerollMap) {
+                currentMapSeed = Math.floor(Math.random() * 1000000); // Nur neu würfeln, wenn Schalter an ist!
+            }
+            updateDynamicMap(vals);
+            updateFocusMap(vals); // <-- Diese Zeile feuert die neue Riesen-Karte ab!
+        }
 
         // --- 5. KOMMENTAR-FUNKTION LOGIK ---
         
