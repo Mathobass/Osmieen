@@ -3840,7 +3840,7 @@
     <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest mb-4">Aktivitäts-Karte</h3>
     
     <!-- HIER KOMMT SPÄTER DEIN BUNTER KARTEN-HINTERGRUND REIN -->
-    <div id="dynamic-map" class="relative w-full h-64 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner" style="background-image: url('karte_bunt.png'); background-color: #1e293b; background-size: cover; background-position: center;">        
+    <div id="dynamic-map" class="relative w-full min-h-[400px] md:min-h-[600px] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner" style="background-image: url('karte_bunt.jpg'); background-color: #1e293b; background-size: contain; background-repeat: no-repeat; background-position: center;">        
         <!-- Das unsichtbare Canvas für die Maske (wird per JS versteckt) -->
         <canvas id="map-mask-canvas" style="display: none;"></canvas>
         
@@ -4905,9 +4905,9 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
 
-            const visualProvinz = Math.min(100, vals.provinzCount); 
-            const visualMarkt = Math.min(150, Math.floor(vals.marktCount / 5)); 
-            const visualDorf = Math.min(300, Math.floor(vals.weilerCount / 200)); 
+            const visualProvinz = Math.min(40, Math.floor(vals.provinzCount / 4)); // Max. 40 Provinzen
+            const visualMarkt = Math.min(60, Math.floor(vals.marktCount / 20)); // 1 Punkt = 20 Märkte (Max 60 Punkte)
+            const visualDorf = Math.min(120, Math.floor(vals.weilerCount / 800)); // 1 Punkt = 800 Dörfer (Max 120 Punkte)
 
             function createMarker(colorClass, sizeClass, isMetropole = false, forceX = null, forceY = null) {
                 const dot = document.createElement('div');
