@@ -3857,9 +3857,18 @@
 
                         </div> <!-- ENDE DES 12-SPALTEN-GRIDS -->
 
-                        <!-- === DYNAMISCHE KARTE START === -->
+                     <!-- === DYNAMISCHE KARTE START === -->
 <section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner mt-4">
-    <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest mb-4">Aktivitäts-Karte</h3>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+        <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest m-0">Aktivitäts-Karte</h3>
+        
+        <!-- Der neue Chaos-Kippschalter -->
+        <label class="relative inline-flex items-center cursor-pointer" title="Wenn an: Jeder Regler-Schub würfelt die Dörfer neu. Wenn aus: Dörfer bleiben an festen Orten.">
+            <input type="checkbox" id="auto-reroll-toggle" class="sr-only peer" onchange="toggleAutoReroll(this.checked)" checked>
+            <div class="w-7 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:border-slate-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600 peer-checked:after:bg-white"></div>
+            <span class="ml-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Chaos-Modus (Ständig neu würfeln)</span>
+        </label>
+    </div>
     
     <!-- HIER KOMMT SPÄTER DEIN BUNTER KARTEN-HINTERGRUND REIN -->
     <div id="dynamic-map" class="relative w-full aspect-[2760/1504] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.png');">
@@ -4865,6 +4874,10 @@ let maskHeight = 0;
 // Unser Seed-Generator (Ersetzt den normalen Zufall, um Karten speicherbar zu machen)
 let currentMapSeed = Math.floor(Math.random() * 1000000);
 let prngState = currentMapSeed;
+		let autoRerollMap = true; // Startet im Chaos-Modus (wie du es gewohnt warst)
+window.toggleAutoReroll = function(isChecked) {
+    autoRerollMap = isChecked;
+};
 
 function seededRandom() {
     let t = prngState += 0x6D2B79F5;
@@ -5047,6 +5060,10 @@ window.loadSnapshot = function() {
     if(idx === "") return;
 
     const snap = snapshots[idx];
+	// Schalter automatisch auf "Fixiert" stellen, damit der geladene Seed sicher bleibt!
+    const toggle = document.getElementById('auto-reroll-toggle');
+    if (toggle) toggle.checked = false;
+    autoRerollMap = false;
     currentMapSeed = snap.seed; // Lade exakt selbe Map-Verteilung
     
     // Lade Regler-Einstellungen
@@ -5408,7 +5425,10 @@ function refreshDashboardCharts() {
             dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
             dashboardCharts.big5.update('none');
             
-            // HIER IST DER NEUE AUFRUF FÜR DIE KARTE:
+            /// HIER IST DER NEUE AUFRUF FÜR DIE KARTE:
+            if (autoRerollMap) {
+                currentMapSeed = Math.floor(Math.random() * 1000000); // Nur neu würfeln, wenn Schalter an ist!
+            }
             updateDynamicMap(vals);
         }
 
