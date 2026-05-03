@@ -5128,19 +5128,26 @@ function updateDynamicMap(vals) {
     prngState = currentMapSeed + 300;
     for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-400/90', 'w-1 h-1'));
 
-    // Metropolen zeichnen
+// Metropolen zeichnen
     dashboardState.cities.forEach(city => {
         if (city.pct > 0) {
             const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
+            
             if (city.name === 'Schwarze Stadt') {
                 bigDot.style.backgroundColor = '#000000'; 
                 bigDot.style.border = '2.5px solid #94a3b8'; 
                 bigDot.style.boxShadow = '0 0 12px rgba(148, 163, 184, 0.6)'; 
+            } else if (city.name === 'Weiße Hauptstadt') {
+                // === NEU: Goldener Prunk für die Hochkönigin ===
+                bigDot.style.backgroundColor = '#ffffff'; 
+                bigDot.style.border = '2px solid #fbbf24'; // Goldgelber Rahmen
+                bigDot.style.boxShadow = '0 0 16px rgba(251, 191, 36, 0.8)'; // Goldener Heiligenschein
             } else {
                 bigDot.style.backgroundColor = city.color; 
                 bigDot.style.border = '1px solid rgba(255, 255, 255, 0.4)'; 
                 bigDot.style.boxShadow = `0 0 12px ${city.color}`; 
             }
+            
             bigDot.style.zIndex = "10";
             markerContainer.appendChild(bigDot);
         }
@@ -5224,20 +5231,27 @@ function updateFocusMap(vals) {
     prngState = currentMapSeed + 300;
     for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createFocusMarker('bg-green-400/80', 'w-1.5 h-1.5'));
 
-    // Metropolen
+   // Metropolen
     dashboardState.cities.forEach(city => {
         if (city.pct > 0) {
             // Metropolen sind in der großen Karte nochmal etwas präsenter (w-4 h-4)
             const bigDot = createFocusMarker('', 'w-4 h-4', true, city.x, city.y);
+            
             if (city.name === 'Schwarze Stadt') {
                 bigDot.style.backgroundColor = '#000000'; 
                 bigDot.style.border = '3px solid #94a3b8'; 
                 bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
+            } else if (city.name === 'Weiße Hauptstadt') {
+                // === NEU: Massives Gold für die große Fokus-Karte ===
+                bigDot.style.backgroundColor = '#ffffff'; 
+                bigDot.style.border = '2.5px solid #f59e0b'; // Kräftiges Gold
+                bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; // Strahlende Aura
             } else {
                 bigDot.style.backgroundColor = city.color; 
                 bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
                 bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
             }
+            
             bigDot.style.zIndex = "10";
             markerContainer.appendChild(bigDot);
         }
