@@ -4960,7 +4960,7 @@ function initApp() {
 
         const dashboardState = {
 
-            totalPopMio: 19,
+            totalPopMio: 1,
 
             urbanRate: 13,
 
@@ -5161,10 +5161,11 @@ function updateFocusMap(vals) {
     if (!markerContainer) return;
     markerContainer.innerHTML = '';
 
-  // ACHTUNG: MASSIV ERHÖHTE ANZAHL FÜR DIE GROßE KARTE!
-    const visualProvinz = Math.min(150, Math.floor(vals.provinzCount / 1)); // Bis zu 150 Provinzen
-    const visualMarkt = Math.min(400, Math.floor(vals.marktCount / 3));     // Bis zu 400 Märkte
-    const visualDorf = Math.min(1500, Math.floor(vals.weilerCount / 80));   // Bis zu 1.500 Dörfer!
+ // 1:1 TEST-MODUS - 1 Punkt entspricht exakt 1 Ort in der Welt!
+    // VORSICHT: Population im Menü vorher auf 1-2 Mio. runterschrauben!
+    const visualProvinz = vals.provinzCount; 
+    const visualMarkt = vals.marktCount; 
+    const visualDorf = vals.weilerCount;
 
     function createFocusMarker(colorClass, sizeClass, isMetropole = false, forceX = null, forceY = null) {
         const dot = document.createElement('div');
