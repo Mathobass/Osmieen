@@ -4950,8 +4950,8 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             }
 
             // Rendern der Elemente
-            for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-500/50', 'w-1 h-1'));
-            for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.5 h-1.5'));
+            for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-400/90', 'w-1.1 h-1.1'));
+            for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.9 h-1.9'));
 // --- NEUE ABSTANDS-LOGIK FÜR PROVINZEN ---
             const minDistance = 6; // Mindestabstand in % (kannst du anpassen, z.B. 5 bis 10)
             const placedProvinces = []; // Hier merken wir uns, wo schon Provinzen stehen
@@ -5018,10 +5018,10 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             dashboardState.cities.forEach(city => {
                 if(city.pct > 0) {
                     const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
-                    bigDot.style.backgroundColor = 'transparent';
-                    bigDot.style.border = `2px solid ${city.color}`;
-                    bigDot.style.boxShadow = `0 0 8px ${city.color}`;
-                    bigDot.style.zIndex = "10";
+bigDot.style.backgroundColor = city.color; // Jetzt ist der Kreis komplett mit der Stadtfarbe gefüllt!
+bigDot.style.border = '1px solid rgba(255, 255, 255, 0.4)'; // Ein ganz leichter, heller Rand für einen schönen Kontrast
+bigDot.style.boxShadow = `0 0 12px ${city.color}`; // Das Leuchten bleibt und wird minimal verstärkt
+bigDot.style.zIndex = "10";
                     markerContainer.appendChild(bigDot);
                 }
             });
