@@ -3826,28 +3826,22 @@
 
                                         </div>
 
-                                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center col-span-2">
-
+<div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center col-span-2">
                                             <div class="text-[8px] text-green-600 uppercase">Dörfer & Weiler (~150)</div>
-
-             <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
+                                            <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </section>
+                                </section>
+                            </div> <!-- ENDE LINKE SPALTE -->
 
-
-
-                        </div>
-
-
-
-                           <div class="lg:col-span-7 space-y-4" id="city-cards-container">
+                            <!-- RECHTE SPALTE (STÄDTE) -->
+                            <div class="lg:col-span-7 space-y-4" id="city-cards-container">
                                 <!-- Wird per JS befüllt -->
                             </div>
 
-                        </div> <!-- Dieses </div> schließt dein Spalten-Layout -->
+                        </div> <!-- ENDE DES 12-SPALTEN-GRIDS -->
 
-<!-- === DYNAMISCHE KARTE START === -->
+                        <!-- === DYNAMISCHE KARTE START === -->
 <section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner mt-4">
     <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest mb-4">Aktivitäts-Karte</h3>
     
@@ -5015,13 +5009,16 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             }
             // --- ENDE ABSTANDS-LOGIK ---
 
-           const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
+            // Metropolen zeichnen
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
                     
                     // Sonderregel: Nur für die Schwarze Stadt
                     if (city.name === 'Schwarze Stadt') {
                         bigDot.style.backgroundColor = '#000000'; // Tiefschwarzer Kern
                         bigDot.style.border = '2.5px solid #94a3b8'; // Dickerer, grauer Ring (slate-400)
-                        bigDot.style.boxShadow = '0 0 12px rgba(148, 163, 184, 0.6)'; // Ein leicht graues Leuchten, damit sie sich abhebt
+                        bigDot.style.boxShadow = '0 0 12px rgba(148, 163, 184, 0.6)'; // Ein leicht graues Leuchten
                     } 
                     // Für alle anderen 4 Metropolen:
                     else {
