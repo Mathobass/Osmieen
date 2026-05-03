@@ -4826,11 +4826,11 @@ function initApp() {
             marktRate: 15,
 
 cities: [
-                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 50, y: 50 },
-                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 70, y: 40 },
-                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 30, y: 60 },
-                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 20, y: 30 },
-                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 80, y: 70 }
+                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 48, y: 50 },
+                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 58, y: 77 },
+                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 67, y: 52 },
+                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 30, y: 40 },
+                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 36, y: 45 }
             ]
 
         };
@@ -4952,7 +4952,68 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             // Rendern der Elemente
             for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-500/50', 'w-1 h-1'));
             for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.5 h-1.5'));
-            for(let i = 0; i < visualProvinz; i++) markerContainer.appendChild(createMarker('bg-slate-400', 'w-2 h-2'));
+// --- NEUE ABSTANDS-LOGIK FÜR PROVINZEN ---
+            const minDistance = 6; // Mindestabstand in % (kannst du anpassen, z.B. 5 bis 10)
+            const placedProvinces = []; // Hier merken wir uns, wo schon Provinzen stehen
+
+            // Hilfsfunktion: Berechnet die Entfernung zwischen zwei Punkten (Satz des Pythagoras)
+            function getDistance(x1, y1, x2, y2) {
+                const aspect = 2760 / 1504; // Streckt das X, damit der Abstand kein plattes Oval wird
+                const dx = (x1 - x2) * aspect;
+                const dy = y1 - y2;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            for(let i = 0; i < visualProvinz; i++) {
+                let dotX = 0; let dotY = 0;
+                let valid = false;
+                let attempts = 0;
+
+                // Versuche bis zu 200 Mal, einen freien Platz zu finden
+                while (!valid && attempts < 200) {
+                    dotX = 5 + Math.random() * 90;
+                    dotY = 5 + Math.random() * 90;
+                    attempts++;
+
+                    // 1. Masken-Check (Ist es an Land?)
+                    if (mapMaskData && maskWidth > 0) {
+                        const pixelX = Math.floor((dotX / 100) * maskWidth);
+                        const pixelY = Math.floor((dotY / 100) * maskHeight);
+                        const pixelIndex = (pixelY * maskWidth + pixelX) * 4;
+                        if (mapMaskData[pixelIndex] < 50) continue; 
+                        if (Math.random() > (mapMaskData[pixelIndex] / 255)) continue; 
+                    }
+
+                    // 2. Abstands-Check zu den 5 Metropolen
+                    let tooCloseToCity = false;
+                    dashboardState.cities.forEach(city => {
+                        if(city.pct > 0 && getDistance(dotX, dotY, city.x, city.y) < minDistance) {
+                            tooCloseToCity = true;
+                        }
+                    });
+                    if (tooCloseToCity) continue; // Zu nah an Metropole -> neuer Versuch
+
+                    // 3. Abstands-Check zu anderen Provinzen
+                    let tooCloseToOther = false;
+                    placedProvinces.forEach(p => {
+                        if (getDistance(dotX, dotY, p.x, p.y) < minDistance) {
+                            tooCloseToOther = true;
+                        }
+                    });
+                    if (tooCloseToOther) continue; // Zu nah an anderer Provinz -> neuer Versuch
+
+                    // Wenn wir hier ankommen, hat der Punkt alle Tests bestanden!
+                    valid = true;
+                }
+
+                // Provinz endgültig zeichnen und Position merken
+                if (valid) {
+                    placedProvinces.push({x: dotX, y: dotY});
+                    // Wir zwingen createMarker, exakt unsere berechneten X/Y-Werte zu nutzen:
+                    markerContainer.appendChild(createMarker('bg-slate-400', 'w-2 h-2', false, dotX, dotY));
+                }
+            }
+            // --- ENDE ABSTANDS-LOGIK ---
 
             dashboardState.cities.forEach(city => {
                 if(city.pct > 0) {
