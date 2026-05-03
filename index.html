@@ -3872,7 +3872,7 @@
     </div>
     
     <!-- HIER KOMMT SPÄTER DEIN BUNTER KARTEN-HINTERGRUND REIN -->
-    <div id="dynamic-map" class="relative w-full aspect-[2760/1504] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.png');">
+    <div id="dynamic-map" class="relative w-full aspect-[1778/1334] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.jpg');">
         <!-- Das unsichtbare Canvas für die Maske (wird per JS versteckt) -->
         <canvas id="map-mask-canvas" style="display: none;"></canvas>
         
@@ -3961,8 +3961,8 @@
         <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
             
             <!-- Der Container, der gezoomt und verschoben wird -->
-            <div id="map-transform-container" class="relative aspect-[2760/1504] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
-                 style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.png'); transform: translate(0px, 0px) scale(1);">
+            <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
+                 style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
                 
                 <div id="map-markers-focus" class="absolute inset-0"></div>
                 
@@ -4987,7 +4987,7 @@ let dashboardCharts = {};
         }
 
 // --- DYNAMISCHE KARTEN LOGIK START ---
-const MASK_IMAGE_URL = 'karte_maske.png'; 
+const MASK_IMAGE_URL = 'karte_maske.jpg'; 
 let mapMaskData = null;
 let maskWidth = 0;
 let maskHeight = 0;
@@ -5084,7 +5084,7 @@ function updateDynamicMap(vals) {
     const minDistance = 6; 
     const placedProvinces = []; 
     function getDistance(x1, y1, x2, y2) {
-        const aspect = 2760 / 1504; 
+        const aspect = 1778 / 1334; 
         const dx = (x1 - x2) * aspect;
         const dy = y1 - y2;
         return Math.sqrt(dx * dx + dy * dy);
@@ -5199,7 +5199,7 @@ function updateFocusMap(vals) {
     const minDistance = 4; // Etwas kleinerer Abstand, da die Karte größer ist
     const placedProvinces = []; 
     function getDistance(x1, y1, x2, y2) {
-        const aspect = 2760 / 1504; 
+        const aspect = 1778 / 1334; 
         return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
     }
 
