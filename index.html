@@ -3957,16 +3957,17 @@
             </button>
         </aside>
 
-        <!-- MITTE: DIE RIESIGE KARTE (Scrollbar) -->
-        <main class="flex-1 bg-black overflow-auto custom-scrollbar relative flex items-center justify-center">
-            <!-- Die Karte wird hier künstlich riesig gemacht (min-width: 1800px) -->
-            <div class="relative aspect-[2760/1504] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] m-10" 
-                 style="min-width: 1800px; background-image: url('karte_bunt.png');">
+<!-- MITTE: DIE RIESIGE KARTE (Mit Zoom & Pan) -->
+        <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
+            
+            <!-- Der Container, der gezoomt und verschoben wird -->
+            <div id="map-transform-container" class="relative aspect-[2760/1504] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
+                 style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
                 
                 <div id="map-markers-focus" class="absolute inset-0"></div>
                 
                 <!-- Maßstab -->
-                <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]">
+                <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
                     <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
                     <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
                         <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div>
@@ -3974,9 +3975,16 @@
                     <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
                         <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
                     </div>
-                    <div class="mt-2 text-[8px] text-white/30 italic">1 Pixel = 2,5 Kilometer</div>
+                    <div class="mt-2 text-[8px] text-white/30 italic" id="scale-hint">1 Pixel = 2,5 Kilometer</div>
                 </div>
 
+            </div>
+            
+            <!-- Zoom Controls (Unten Mitte) -->
+            <div class="absolute bottom-8 flex gap-2 bg-slate-900/80 p-2 rounded-full border border-slate-700 backdrop-blur-md z-30">
+                <button onclick="zoomMap(-0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">-</button>
+                <button onclick="resetMapZoom()" class="px-4 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-widest transition flex items-center justify-center border border-slate-600 shadow">Reset</button>
+                <button onclick="zoomMap(0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-amber-600 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">+</button>
             </div>
         </main>
 
@@ -5735,9 +5743,87 @@ function refreshDashboardCharts() {
             });
         };
 
-        // Init Cults App by default & Comments
+		// --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
+let currentZoom = 1;
+let panX = 0;
+let panY = 0;
+let isPanning = false;
+let startX = 0;
+let startY = 0;
+
+const viewport = document.getElementById('map-viewport');
+const mapContainer = document.getElementById('map-transform-container');
+
+function applyTransform() {
+    if (!mapContainer) return;
+    mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;
+    
+    // Hinweis anpassen, falls extrem gezoomt wird
+    const scaleHint = document.getElementById('scale-hint');
+    if(scaleHint) {
+        if(currentZoom !== 1) {
+            scaleHint.innerText = `1 px = ${(2.5 / currentZoom).toFixed(2)} km (Zoom x${currentZoom.toFixed(1)})`;
+            scaleHint.classList.add('text-amber-500');
+        } else {
+            scaleHint.innerText = `1 Pixel = 2,5 Kilometer`;
+            scaleHint.classList.remove('text-amber-500');
+        }
+    }
+}
+
+window.zoomMap = function(delta) {
+    currentZoom += delta;
+    if (currentZoom < 0.5) currentZoom = 0.5; // Maximal rauszoomen
+    if (currentZoom > 5.0) currentZoom = 5.0; // Maximal reinzoomen
+    applyTransform();
+}
+
+window.resetMapZoom = function() {
+    currentZoom = 1;
+    panX = 0;
+    panY = 0;
+    applyTransform();
+}
+
+if (viewport && mapContainer) {
+    // Mausrad Zoom
+    viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        window.zoomMap(delta);
+    }, { passive: false });
+
+    // Drag & Drop (Pan)
+    mapContainer.addEventListener('mousedown', (e) => {
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        mapContainer.style.transition = 'none'; // Keine Animation beim Ziehen
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isPanning) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        applyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (isPanning) {
+            isPanning = false;
+            mapContainer.style.transition = 'transform 0.1s ease-out'; // Wieder weich animieren
+        }
+    });
+}
+// --- ZOOM & PAN ENDE ---
+		
+       // Init Cults App by default & Comments
         window.onload = () => {
             renderComments();
+            // INIT: Beide Dashboards & Karten berechnen, egal welcher Tab aktiv ist
+            initDashboard(); 
+            const initialVals = getCalculatedValues();
+            updateFocusMap(initialVals); 
         };
 // --- ZWEISTUFIGE FEEDBACK LOGIK ---
 
