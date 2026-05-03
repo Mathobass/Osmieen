@@ -4950,8 +4950,8 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             }
 
             // Rendern der Elemente
-            for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-400/90', 'w-1.1 h-1.1'));
-            for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.9 h-1.9'));
+            for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-400/90', 'w-1 h-1'));
+            for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.5 h-1.5'));
 // --- NEUE ABSTANDS-LOGIK FÜR PROVINZEN ---
             const minDistance = 6; // Mindestabstand in % (kannst du anpassen, z.B. 5 bis 10)
             const placedProvinces = []; // Hier merken wir uns, wo schon Provinzen stehen
@@ -5015,13 +5015,22 @@ const MASK_IMAGE_URL = 'karte_maske.png';
             }
             // --- ENDE ABSTANDS-LOGIK ---
 
-            dashboardState.cities.forEach(city => {
-                if(city.pct > 0) {
-                    const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
-bigDot.style.backgroundColor = city.color; // Jetzt ist der Kreis komplett mit der Stadtfarbe gefüllt!
-bigDot.style.border = '1px solid rgba(255, 255, 255, 0.4)'; // Ein ganz leichter, heller Rand für einen schönen Kontrast
-bigDot.style.boxShadow = `0 0 12px ${city.color}`; // Das Leuchten bleibt und wird minimal verstärkt
-bigDot.style.zIndex = "10";
+           const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
+                    
+                    // Sonderregel: Nur für die Schwarze Stadt
+                    if (city.name === 'Schwarze Stadt') {
+                        bigDot.style.backgroundColor = '#000000'; // Tiefschwarzer Kern
+                        bigDot.style.border = '2.5px solid #94a3b8'; // Dickerer, grauer Ring (slate-400)
+                        bigDot.style.boxShadow = '0 0 12px rgba(148, 163, 184, 0.6)'; // Ein leicht graues Leuchten, damit sie sich abhebt
+                    } 
+                    // Für alle anderen 4 Metropolen:
+                    else {
+                        bigDot.style.backgroundColor = city.color; 
+                        bigDot.style.border = '1px solid rgba(255, 255, 255, 0.4)'; 
+                        bigDot.style.boxShadow = `0 0 12px ${city.color}`; 
+                    }
+                    
+                    bigDot.style.zIndex = "10";
                     markerContainer.appendChild(bigDot);
                 }
             });
