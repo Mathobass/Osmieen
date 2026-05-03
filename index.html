@@ -3830,15 +3830,35 @@
 
                                             <div class="text-[8px] text-green-600 uppercase">Dörfer & Weiler (~150)</div>
 
-                                            <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
-
-                                        </div>
-
+             <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
                                     </div>
+                                </div>
+                            </section>
 
-                                </section>
+<!-- === DYNAMISCHE KARTE START === -->
+<section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner mt-4">
+    <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest mb-4">Aktivitäts-Karte</h3>
+    
+    <!-- HIER KOMMT SPÄTER DEIN BUNTER KARTEN-HINTERGRUND REIN -->
+    <div id="dynamic-map" class="relative w-full h-64 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner" style="background-image: url('karte_bunt.png'); background-color: #1e293b; background-size: cover; background-position: center;">        
+        <!-- Das unsichtbare Canvas für die Maske (wird per JS versteckt) -->
+        <canvas id="map-mask-canvas" style="display: none;"></canvas>
+        
+        <!-- Container für die dynamischen Punkte -->
+        <div id="map-markers" class="absolute inset-0"></div>
+    </div>
+    
+    <!-- Legende -->
+    <div class="flex flex-wrap gap-x-4 gap-y-2 mt-4 justify-center text-[9px] text-slate-400 uppercase font-bold tracking-widest">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Provinzen</span>
+        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Märkte</span>
+        <span class="flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-green-500"></span> Dörfer</span>
+    </div>
+</section>
+<!-- === DYNAMISCHE KARTE ENDE === -->
 
-                            </div>
+                        </div>
 
 
 
@@ -4809,35 +4829,147 @@ function initApp() {
 
             marktRate: 15,
 
-            cities: [
-
-                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865' },
-
-                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193' },
-
-                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158' },
-
-                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747' },
-
-                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780' }
-
+cities: [
+                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 50, y: 50 },
+                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 70, y: 40 },
+                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 30, y: 60 },
+                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 20, y: 30 },
+                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 80, y: 70 }
             ]
 
         };
 
 
 
-        let dashboardCharts = {};
-
-
+let dashboardCharts = {};
 
         function formatNum(n) { 
-
             return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
-
         }
 
+// --- DYNAMISCHE KARTEN LOGIK START ---
+        
+        // HIER SPÄTER DEN LINK ZUR MASKE EINTRAGEN (z.B. 'osmieen_maske.png')
+const MASK_IMAGE_URL = 'karte_maske.png'; 
+        
+        let mapMaskData = null;
+        let maskWidth = 0;
+        let maskHeight = 0;
 
+       function loadMapMask(callback) {
+            if (!MASK_IMAGE_URL) {
+                if(callback) callback();
+                return;
+            }
+            
+            const img = new Image();
+            img.crossOrigin = "Anonymous"; 
+            
+            img.onload = function() {
+                const canvas = document.getElementById('map-mask-canvas');
+                if(!canvas) {
+                    if(callback) callback();
+                    return;
+                }
+                
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                canvas.width = img.width;
+                canvas.height = img.height;
+                maskWidth = img.width;
+                maskHeight = img.height;
+                
+                ctx.drawImage(img, 0, 0);
+                mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
+                
+                // GANZ WICHTIG: Erst wenn das Bild fertig im Canvas ist,
+                // sagen wir dem System, es soll die Diagramme/Dörfer aktualisieren!
+                if(callback) callback();
+            };
+            
+            img.onerror = function() {
+                console.error("Fehler: Das Masken-Bild konnte nicht geladen werden. Pfad prüfen!");
+                if(callback) callback();
+            };
+            
+            img.src = MASK_IMAGE_URL;
+        }
+
+        // Wir rufen die Funktion auf und geben ihr den Befehl mit, 
+        // was sie tun soll, wenn sie fertig ist:
+        loadMapMask(() => {
+            // Wenn alles geladen ist (oder schief ging), aktualisiere das Dashboard
+            refreshDashboardCharts();
+        });
+        function updateDynamicMap(vals) {
+            const markerContainer = document.getElementById('map-markers');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+
+            const visualProvinz = Math.min(100, vals.provinzCount); 
+            const visualMarkt = Math.min(150, Math.floor(vals.marktCount / 5)); 
+            const visualDorf = Math.min(300, Math.floor(vals.weilerCount / 200)); 
+
+            function createMarker(colorClass, sizeClass, isMetropole = false, forceX = null, forceY = null) {
+                const dot = document.createElement('div');
+                let x = 0; let y = 0;
+
+                if (isMetropole && forceX !== null && forceY !== null) {
+                    x = forceX; y = forceY;
+                } else {
+                    let validPosition = false;
+                    let attempts = 0;
+                    
+                    while (!validPosition && attempts < 150) {
+                        x = 5 + Math.random() * 90;
+                        y = 5 + Math.random() * 90;
+                        attempts++;
+
+                        if (mapMaskData && maskWidth > 0) {
+                            const pixelX = Math.floor((x / 100) * maskWidth);
+                            const pixelY = Math.floor((y / 100) * maskHeight);
+                            const pixelIndex = (pixelY * maskWidth + pixelX) * 4;
+                            const brightness = mapMaskData[pixelIndex]; // R-Kanal
+
+                            // Wenn der Pixel fast schwarz ist (< 50 Helligkeit), verwerfen!
+                            if (brightness < 50) continue; 
+                            
+                            // Wahrscheinlichkeits-Wurf für Graustufen
+                            const spawnChance = brightness / 255;
+                            if (Math.random() > spawnChance) continue; 
+                        }
+                        validPosition = true;
+                    }
+                }
+                
+                dot.className = `absolute rounded-full ${colorClass} ${sizeClass} transform -translate-x-1/2 -translate-y-1/2`;
+                dot.style.left = `${x}%`;
+                dot.style.top = `${y}%`;
+                
+                if (!isMetropole) {
+                    dot.classList.add('animate-pulse');
+                    dot.style.animationDelay = `${Math.random() * 2}s`;
+                    dot.style.animationDuration = `${2 + Math.random() * 2}s`;
+                }
+                return dot;
+            }
+
+            // Rendern der Elemente
+            for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-500/50', 'w-1 h-1'));
+            for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.5 h-1.5'));
+            for(let i = 0; i < visualProvinz; i++) markerContainer.appendChild(createMarker('bg-slate-400', 'w-2 h-2'));
+
+            dashboardState.cities.forEach(city => {
+                if(city.pct > 0) {
+                    const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
+                    bigDot.style.backgroundColor = 'transparent';
+                    bigDot.style.border = `2px solid ${city.color}`;
+                    bigDot.style.boxShadow = `0 0 8px ${city.color}`;
+                    bigDot.style.zIndex = "10";
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
+        // --- DYNAMISCHE KARTEN LOGIK ENDE ---
 
         function getCalculatedValues() {
 
@@ -5157,7 +5289,7 @@ function initApp() {
             dashboardInitialized = true;
         }
 
-        function refreshDashboardCharts() {
+function refreshDashboardCharts() {
             if(!dashboardCharts.urban) return;
             const vals = getCalculatedValues();
             
@@ -5169,6 +5301,9 @@ function initApp() {
 
             dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
             dashboardCharts.big5.update('none');
+            
+            // HIER IST DER NEUE AUFRUF FÜR DIE KARTE:
+            updateDynamicMap(vals);
         }
 
         // --- 5. KOMMENTAR-FUNKTION LOGIK ---
