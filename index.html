@@ -3666,188 +3666,112 @@
 
 
 
+<!-- === KOMPAKTES DASHBOARD START === -->
             <section id="tab-dashboard" class="content-tab w-full h-full hidden overflow-y-auto custom-scrollbar relative">
-
                 <div id="dashboard-root" class="pb-10 min-h-full">
-
                     <header class="sticky-header mb-4 shadow-xl">
-
                         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-
                             <div class="flex items-center gap-3">
                                 <h1 class="text-lg md:text-2xl font-black text-red-600 uppercase italic tracking-tighter m-0">Osmieen</h1>
                                 <button onclick="openFeedbackModal('Mobiles Dashboard')" type="button" class="px-2 py-1 rounded bg-slate-800 border border-slate-600 hover:border-slate-400 hover:bg-slate-700 transition-all flex items-center shadow-sm cursor-pointer">
                                     💬 <span class="text-[10px] uppercase tracking-widest font-normal text-slate-300 ml-1 hidden md:inline">Notiz</span>
                                 </button>
                             </div>
-
                             <div class="bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-[10px] font-mono">
-
                                 Pop: <span id="display-total-pop">0</span>
-
                             </div>
-
                         </div>
-
                     </header>
 
-
-
                     <main class="max-w-7xl mx-auto px-4 space-y-6">
-
                         
-
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
                             <div class="bg-slate-800 p-3 rounded-xl shadow border border-slate-700">
-
                                 <h3 class="text-center text-[9px] font-bold text-slate-400 uppercase mb-2">Stadt vs. Land</h3>
-
                                 <div class="h-32 md:h-40"><canvas id="chartUrbanRural"></canvas></div>
-
                             </div>
-
                             <div class="bg-slate-800 p-3 rounded-xl shadow border border-slate-700">
-
                                 <h3 class="text-center text-[9px] font-bold text-slate-400 uppercase mb-2">Siedlungsstrukturen</h3>
-
                                 <div class="h-32 md:h-40"><canvas id="chartSiedlung"></canvas></div>
-
                             </div>
-
                             <div class="bg-slate-800 p-3 rounded-xl shadow border border-slate-700">
-
                                 <h3 class="text-center text-[9px] font-bold text-slate-400 uppercase mb-2">Metropolen-Gewichtung</h3>
-
                                 <div class="h-32 md:h-40"><canvas id="chartBig5"></canvas></div>
-
                             </div>
-
                         </div>
 
-
-
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
                             
-
                             <div class="lg:col-span-5 space-y-4">
-
                                 <section class="bg-slate-800 rounded-2xl p-5 shadow-xl border border-slate-700 space-y-6">
-
                                     <h2 class="text-lg font-bold border-b border-slate-700 pb-2">Globale Einstellungen</h2>
-
                                     
-
                                     <div class="space-y-2">
-
                                         <div class="flex justify-between items-center">
-
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Population (Mio.)</label>
-
-                                            <input type="number" id="input-pop-mio" step="0.5" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-white text-sm">
-
+                                            <input type="number" id="input-pop-mio" step="0.5" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-white text-sm focus:outline-none focus:border-amber-500">
                                         </div>
-
                                         <input type="range" id="range-pop-mio" min="1" max="50" step="0.5" class="w-full accent-red-600">
-
                                     </div>
 
-
-
                                     <div class="space-y-2">
-
                                         <div class="flex justify-between items-center">
-
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Urbanisierung (%)</label>
-
-                                            <input type="number" id="input-urban-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-blue-400 text-sm">
-
+                                            <input type="number" id="input-urban-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-blue-400 text-sm focus:outline-none focus:border-amber-500">
                                         </div>
-
                                         <input type="range" id="range-urban-rate" min="1" max="100" class="w-full accent-blue-600">
-
                                     </div>
 
-
-
                                     <div class="space-y-2">
-
                                         <div class="flex justify-between items-center">
-
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Metropolen-Fokus (%)</label>
-
-                                            <input type="number" id="input-big5-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-slate-300 text-sm">
-
+                                            <input type="number" id="input-big5-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-slate-300 text-sm focus:outline-none focus:border-amber-500">
                                         </div>
-
                                         <input type="range" id="range-big5-rate" min="0" max="100" class="w-full accent-slate-500">
-
                                     </div>
-
-
 
                                     <div class="space-y-2">
-
                                         <div class="flex justify-between items-center">
-
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Marktflecken-Anteil (%)</label>
-
-                                            <input type="number" id="input-markt-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-teal-400 text-sm">
-
+                                            <input type="number" id="input-markt-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-teal-400 text-sm focus:outline-none focus:border-amber-500">
                                         </div>
-
                                         <input type="range" id="range-markt-rate" min="0" max="100" class="w-full accent-teal-600">
-
                                     </div>
-
                                 </section>
 
-
-
                                 <section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner">
-
                                     <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest mb-4">Siedlungs-Bestand</h3>
-
                                     <div class="grid grid-cols-2 gap-2">
-
                                         <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
-
                                             <div class="text-[8px] text-slate-500 uppercase">Provinz (~8k)</div>
-
                                             <div class="text-sm font-bold" id="display-provinz-count">0</div>
-
                                         </div>
-
                                         <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center">
-
                                             <div class="text-[8px] text-teal-600 uppercase">Märkte (~1.2k)</div>
-
                                             <div class="text-sm font-bold text-teal-500" id="display-markt-count">0</div>
-
                                         </div>
-
-<div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center col-span-2">
+                                        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700 text-center col-span-2">
                                             <div class="text-[8px] text-green-600 uppercase">Dörfer & Weiler (~150)</div>
                                             <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
                                         </div>
                                     </div>
-									<!-- === SNAPSHOT MENÜ START === -->
-                                <section class="bg-slate-800 rounded-2xl p-5 shadow-xl border border-slate-700 mt-4">
-                                    <h2 class="text-lg font-bold border-b border-slate-700 pb-2 mb-4">Speicherstände</h2>
-                                    <div class="flex gap-2 mb-4">
-                                        <input type="text" id="snapshot-name" placeholder="Name (z.B. Jahr 12)" class="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
-                                        <button onclick="saveSnapshot()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded text-sm transition shadow">Speichern</button>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <select id="snapshot-select" class="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm text-white focus:outline-none">
-                                            <option value="">-- Zustand laden --</option>
-                                        </select>
-                                        <button onclick="loadSnapshot()" class="bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded text-sm transition shadow">Laden</button>
-                                        <button onclick="deleteSnapshot()" class="bg-red-900 hover:bg-red-800 text-red-200 font-bold py-2 px-3 rounded text-sm transition shadow" title="Löschen">🗑️</button>
-                                    </div>
-                                </section>
-                                <!-- === SNAPSHOT MENÜ ENDE === -->
+
+                                    <!-- === SNAPSHOT MENÜ START === -->
+                                    <section class="bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700 mt-4">
+                                        <h2 class="text-sm font-bold border-b border-slate-700 pb-2 mb-3">Speicherstände</h2>
+                                        <div class="flex gap-2 mb-3">
+                                            <input type="text" id="snapshot-name" placeholder="Name (z.B. Jahr 12)" class="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                                            <button onclick="saveSnapshot()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded text-xs transition shadow">Speichern</button>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <select id="snapshot-select" class="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none">
+                                                <option value="">-- Zustand laden --</option>
+                                            </select>
+                                            <button onclick="loadSnapshot()" class="bg-stone-600 hover:bg-stone-500 text-white font-bold py-1.5 px-3 rounded text-xs transition shadow">Laden</button>
+                                            <button onclick="deleteSnapshot()" class="bg-red-900 hover:bg-red-800 text-red-200 font-bold py-1.5 px-2.5 rounded text-xs transition shadow" title="Löschen">🗑️</button>
+                                        </div>
+                                    </section>
+                                    <!-- === SNAPSHOT MENÜ ENDE === -->
                                 </section>
                             </div> <!-- ENDE LINKE SPALTE -->
 
@@ -3858,171 +3782,158 @@
 
                         </div> <!-- ENDE DES 12-SPALTEN-GRIDS -->
 
-                     <!-- === DYNAMISCHE KARTE START === -->
-<section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner mt-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
-        <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest m-0">Aktivitäts-Karte</h3>
-        
-        <!-- Der neue Chaos-Kippschalter -->
-        <label class="relative inline-flex items-center cursor-pointer" title="Wenn an: Jeder Regler-Schub würfelt die Dörfer neu. Wenn aus: Dörfer bleiben an festen Orten.">
-            <input type="checkbox" id="auto-reroll-toggle" class="sr-only peer" onchange="toggleAutoReroll(this.checked)" checked>
-            <div class="w-7 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:border-slate-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600 peer-checked:after:bg-white"></div>
-            <span class="ml-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Chaos-Modus (Ständig neu würfeln)</span>
-        </label>
-    </div>
-    
-    <!-- HIER KOMMT SPÄTER DEIN BUNTER KARTEN-HINTERGRUND REIN -->
-    <div id="dynamic-map" class="relative w-full aspect-[1778/1334] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.jpg');">
-        <!-- Das unsichtbare Canvas für die Maske (wird per JS versteckt) -->
-        <canvas id="map-mask-canvas" style="display: none;"></canvas>
-        
-   <!-- Container für die dynamischen Punkte -->
-        <div id="map-markers" class="absolute inset-0"></div>
+                        <!-- === DYNAMISCHE KARTE START === -->
+                        <section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner mt-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                                <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest m-0">Aktivitäts-Karte</h3>
+                                
+                                <!-- Chaos-Kippschalter -->
+                                <label class="relative inline-flex items-center cursor-pointer" title="Wenn an: Jeder Regler-Schub würfelt die Dörfer neu. Wenn aus: Dörfer bleiben an festen Orten.">
+                                    <input type="checkbox" id="auto-reroll-toggle" class="sr-only peer" onchange="toggleAutoReroll(this.checked)" checked>
+                                    <div class="w-7 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:border-slate-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600 peer-checked:after:bg-white"></div>
+                                    <span class="ml-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Chaos-Modus</span>
+                                </label>
+                            </div>
+                            
+                            <div id="dynamic-map" class="relative w-full aspect-[1778/1334] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.jpg');">
+                                <canvas id="map-mask-canvas" style="display: none;"></canvas>
+                                <div id="map-markers" class="absolute inset-0"></div>
 
-<!-- === OPTIMIERTER MAßSTAB (10% kleiner & halb-transparent) === -->
-        <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]">
-            <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
-            
-            <!-- Die Skala-Linie: 10% schmaler (180px) -->
-            <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
-                <!-- 180 Pixel entsprechen bei 2.5km/px genau 450 Kilometern -->
-                <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div> <!-- Mittellinie -->
-            </div>
-            
-            <!-- Beschriftung -->
-            <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
-                <span class="font-bold">0</span>
-                <span class="text-white/40 text-[8px] translate-y-0.5">225 km</span>
-                <span class="font-bold">450 km</span>
-            </div>
-            
-            <div class="mt-2 text-[8px] text-white/30 italic">1 Pixel = 2,5 Kilometer</div>
-        </div>
-        <!-- === ENDE MAßSTAB === -->
-
-    </div>
-    
-    <!-- Legende -->
-    <div class="flex flex-wrap gap-x-4 gap-y-2 mt-4 justify-center text-[9px] text-slate-400 uppercase font-bold tracking-widest relative">
-        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</span>
-        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Provinzen</span>
-        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Märkte</span>
-        <span class="flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-green-500"></span> Dörfer</span>
-        
-        <!-- Der Würfel-Button -->
-        <button onclick="rerollMap()" class="absolute right-0 text-slate-500 hover:text-white transition text-lg leading-none" title="Neue Dorfverteilung würfeln">🎲</button>
-    </div>
-</section>
-<!-- === DYNAMISCHE KARTE ENDE === -->
+                                <!-- MAßSTAB -->
+                                <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]">
+                                    <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
+                                    <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
+                                        <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div> 
+                                    </div>
+                                    <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
+                                        <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
+                                    </div>
+                                    <div class="mt-2 text-[8px] text-white/30 italic">1 Pixel = 2,5 Kilometer</div>
+                                </div>
+                            </div>
+                            
+                            <!-- NEUE LEGENDE MIT CHECKBOXEN -->
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 mt-4 justify-center text-[10px] text-slate-400 uppercase font-bold tracking-widest relative">
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('metropole', this.checked)" class="chk-metropole accent-red-500"><span class="w-2.5 h-2.5 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-slate-400"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Provinzen</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('markt', this.checked)" class="chk-markt accent-teal-500"><span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Märkte</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('dorf', this.checked)" class="chk-dorf accent-green-500"><span class="w-1 h-1 rounded-full bg-green-500"></span> Dörfer</label>
+                                <button onclick="rerollMap()" class="absolute right-0 text-slate-500 hover:text-white transition text-lg leading-none" title="Neue Dorfverteilung würfeln">🎲</button>
+                            </div>
+                        </section>
+                        <!-- === DYNAMISCHE KARTE ENDE === -->
 
                     </main>
                 </div>
             </section>
-			<!-- === NEUER TAB: KARTEN FOKUS === -->
-<section id="tab-map-focus" class="content-tab w-full h-full hidden bg-slate-950 flex-col overflow-hidden">
-    <!-- Kopfzeile -->
-    <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center z-10 shadow-lg shrink-0">
-        <h2 class="text-xl font-black text-amber-600 uppercase italic tracking-tighter m-0">Kommandozentrale</h2>
-        <div class="text-[10px] text-slate-500 font-mono">HD-Rendering: Erhöhte Siedlungsdichte</div>
-    </div>
 
-    <!-- Arbeitsbereich -->
-    <div class="flex-1 flex overflow-hidden relative">
-        
-        <!-- LINKE SPALTE: REGLER -->
-        <aside class="w-72 bg-slate-900/80 border-r border-slate-800 p-5 flex flex-col gap-6 overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0">Parameter</h3>
-            
-            <!-- Synchronisierte Regler -->
-            <div class="space-y-1">
-                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Population (Mio.)</label><span id="f-disp-pop" class="font-mono text-white text-xs">19</span></div>
-                <input type="range" id="f-range-pop" min="1" max="50" step="0.5" class="w-full accent-red-600">
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Urbanisierung (%)</label><span id="f-disp-urban" class="font-mono text-blue-400 text-xs">13</span></div>
-                <input type="range" id="f-range-urban" min="1" max="100" class="w-full accent-blue-600">
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Metropolen-Fokus (%)</label><span id="f-disp-big5" class="font-mono text-slate-300 text-xs">63</span></div>
-                <input type="range" id="f-range-big5" min="0" max="100" class="w-full accent-slate-500">
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-slate-400 uppercase">Marktflecken (%)</label><span id="f-disp-markt" class="font-mono text-teal-400 text-xs">15</span></div>
-                <input type="range" id="f-range-markt" min="0" max="100" class="w-full accent-teal-600">
-            </div>
-            
-            <!-- Würfel Button -->
-            <button onclick="rerollMap()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 py-2 rounded shadow transition text-sm flex items-center justify-center gap-2 mt-4">
-                <span>🎲</span> Neue Verteilung würfeln
-            </button>
-        </aside>
-
-<!-- MITTE: DIE RIESIGE KARTE (Mit Zoom & Pan) -->
-        <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
-            
-            <!-- Der Container, der gezoomt und verschoben wird -->
-            <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
-                 style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
-                
-                <div id="map-markers-focus" class="absolute inset-0"></div>
-                
-                <!-- Maßstab -->
-                <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
-                    <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
-                    <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
-                        <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div>
-                    </div>
-                    <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
-                        <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
-                    </div>
-                    <div class="mt-2 text-[8px] text-white/30 italic" id="scale-hint">1 Pixel = 2,5 Kilometer</div>
+            <!-- === KARTEN FOKUS TAB START === -->
+            <section id="tab-map-focus" class="content-tab w-full h-full hidden bg-slate-950 flex-col overflow-hidden">
+                <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center z-10 shadow-lg shrink-0">
+                    <h2 class="text-xl font-black text-amber-600 uppercase italic tracking-tighter m-0">Kommandozentrale</h2>
+                    <div class="text-[10px] text-slate-500 font-mono">HD-Rendering: Erhöhte Siedlungsdichte</div>
                 </div>
 
-            </div>
-            
-            <!-- Zoom Controls (Unten Mitte) -->
-            <div class="absolute bottom-8 flex gap-2 bg-slate-900/80 p-2 rounded-full border border-slate-700 backdrop-blur-md z-30">
-                <button onclick="zoomMap(-0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">-</button>
-                <button onclick="resetMapZoom()" class="px-4 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-widest transition flex items-center justify-center border border-slate-600 shadow">Reset</button>
-                <button onclick="zoomMap(0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-amber-600 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">+</button>
-            </div>
-        </main>
+                <div class="flex-1 flex overflow-hidden relative">
+                    <!-- LINKE SPALTE: REGLER -->
+                    <aside class="w-72 bg-slate-900/80 border-r border-slate-800 p-5 flex flex-col gap-6 overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0">Parameter</h3>
+                        
+                        <!-- Synchronisierte Regler & EINGABEFELDER -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Population (Mio.)</label>
+                                <input type="number" id="f-input-pop" step="0.5" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-white text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-pop" min="1" max="50" step="0.5" class="w-full accent-red-600">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Urbanisierung (%)</label>
+                                <input type="number" id="f-input-urban" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-blue-400 text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-urban" min="1" max="100" class="w-full accent-blue-600">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Metropolen-Fokus (%)</label>
+                                <input type="number" id="f-input-big5" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-slate-300 text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-big5" min="0" max="100" class="w-full accent-slate-500">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Marktflecken (%)</label>
+                                <input type="number" id="f-input-markt" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-teal-400 text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-markt" min="0" max="100" class="w-full accent-teal-600">
+                        </div>
+                        
+                        <button onclick="rerollMap()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 py-2 rounded shadow transition text-sm flex items-center justify-center gap-2 mt-4">
+                            <span>🎲</span> Neue Verteilung würfeln
+                        </button>
+                    </aside>
 
-        <!-- RECHTE SPALTE: ZAHLEN & LEGENDE -->
-        <aside class="w-64 bg-slate-900/80 border-l border-slate-800 p-5 flex flex-col justify-between overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
-            <div>
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-6">Bestand</h3>
-                
-                <div class="space-y-4">
-                    <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
-                        <div class="text-[9px] text-slate-500 uppercase">Provinzen</div>
-                        <div class="text-lg font-bold text-slate-300" id="f-val-provinz">0</div>
-                    </div>
-                    <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
-                        <div class="text-[9px] text-teal-600 uppercase">Märkte</div>
-                        <div class="text-lg font-bold text-teal-500" id="f-val-markt">0</div>
-                    </div>
-                    <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
-                        <div class="text-[9px] text-green-600 uppercase">Dörfer & Weiler</div>
-                        <div class="text-lg font-bold text-green-500" id="f-val-weiler">0</div>
-                    </div>
+                    <!-- MITTE: DIE RIESIGE KARTE -->
+                    <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
+                        <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
+                             style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
+                            
+                            <div id="map-markers-focus" class="absolute inset-0"></div>
+                            
+                            <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
+                                <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
+                                <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
+                                    <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div>
+                                </div>
+                                <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
+                                    <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
+                                </div>
+                                <div class="mt-2 text-[8px] text-white/30 italic" id="scale-hint">1 Pixel = 2,5 Kilometer</div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-8 flex gap-2 bg-slate-900/80 p-2 rounded-full border border-slate-700 backdrop-blur-md z-30">
+                            <button onclick="zoomMap(-0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">-</button>
+                            <button onclick="resetMapZoom()" class="px-4 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-widest transition flex items-center justify-center border border-slate-600 shadow">Reset</button>
+                            <button onclick="zoomMap(0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-amber-600 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">+</button>
+                        </div>
+                    </main>
+
+                    <!-- RECHTE SPALTE: ZAHLEN & LEGENDE -->
+                    <aside class="w-64 bg-slate-900/80 border-l border-slate-800 p-5 flex flex-col justify-between overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-6">Bestand</h3>
+                            <div class="space-y-4">
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                                    <div class="text-[9px] text-slate-500 uppercase">Provinzen</div>
+                                    <div class="text-lg font-bold text-slate-300" id="f-val-provinz">0</div>
+                                </div>
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                                    <div class="text-[9px] text-teal-600 uppercase">Märkte</div>
+                                    <div class="text-lg font-bold text-teal-500" id="f-val-markt">0</div>
+                                </div>
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                                    <div class="text-[9px] text-green-600 uppercase">Dörfer & Weiler</div>
+                                    <div class="text-lg font-bold text-green-500" id="f-val-weiler">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-4">Ebenen Ein/Ausblenden</h3>
+                            <div class="flex flex-col gap-3 text-xs text-slate-400 uppercase font-bold tracking-widest">
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('metropole', this.checked)" class="chk-metropole accent-red-500"><span class="w-3 h-3 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Provinzen</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('markt', this.checked)" class="chk-markt accent-teal-500"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Märkte</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('dorf', this.checked)" class="chk-dorf accent-green-500"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Dörfer</label>
+                            </div>
+                        </div>
+                    </aside>
+
                 </div>
-            </div>
-
-            <div class="mt-8">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-4">Legende</h3>
-                <div class="flex flex-col gap-3 text-xs text-slate-400 uppercase font-bold tracking-widest">
-                    <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</span>
-                    <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Provinzen</span>
-                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Märkte</span>
-                    <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Dörfer</span>
-                </div>
-            </div>
-        </aside>
-
-    </div>
-</section>
-<!-- === ENDE NEUER TAB === -->
+            </section>
+            <!-- === KARTEN FOKUS TAB ENDE === -->
 
 <section id="tab-storybook" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
     <h1>Osmieen Storybook</h1>
@@ -4952,615 +4863,441 @@ function initApp() {
 
 
 
-        // --- 4. DASHBOARD LOGIK ---
-
+// --- 4. DASHBOARD & KARTEN LOGIK ---
         let dashboardInitialized = false;
-
         
-
         const dashboardState = {
-
-            totalPopMio: 1,
-
+            totalPopMio: 19, // START-POPULATION AUF 19 GESETZT
             urbanRate: 13,
-
-            big5Rate: 58,
-
+            big5Rate: 63,
             marktRate: 15,
-
-cities: [
+            cities: [
                 { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 49, y: 50 },
                 { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 58, y: 23 },
                 { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 69, y: 50 },
                 { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 27, y: 22 },
                 { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 37, y: 38 }
             ]
-
         };
 
-
-
-let dashboardCharts = {};
+        let dashboardCharts = {};
 
         function formatNum(n) { 
             return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
         }
 
-// --- DYNAMISCHE KARTEN LOGIK START (KORRIGIERT & VOLLSTÄNDIG) ---
-const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
-let mapMaskData = null;
-let maskWidth = 0;
-let maskHeight = 0;
-
-let currentMapSeed = Math.floor(Math.random() * 1000000);
-let prngState = currentMapSeed;
-let autoRerollMap = true; 
-
-window.toggleAutoReroll = function(isChecked) {
-    autoRerollMap = isChecked;
-};
-
-function seededRandom() {
-    let t = prngState += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-}
-
-window.rerollMap = function() {
-    currentMapSeed = Math.floor(Math.random() * 1000000);
-    refreshDashboardCharts();
-};
-
-function loadMapMask(callback) {
-    if (!MASK_IMAGE_URL) { if(callback) callback(); return; }
-    const img = new Image();
-    img.crossOrigin = "Anonymous"; 
-    img.onload = function() {
-        const canvas = document.getElementById('map-mask-canvas');
-        if(!canvas) { if(callback) callback(); return; }
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        canvas.width = img.width; canvas.height = img.height;
-        maskWidth = img.width; maskHeight = img.height;
-        ctx.drawImage(img, 0, 0);
-        mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
-        if(callback) callback();
-    };
-    img.src = MASK_IMAGE_URL;
-}
-
-loadMapMask(() => { refreshDashboardCharts(); });
-
-// Die Distanz wird hier in PROZENT berechnet
-function getDistance(x1, y1, x2, y2) {
-    const aspect = 1778 / 1334;
-    return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
-}
-
-// Versuche auf 500 erhöht, damit in den schwarzen Bereichen nicht aufgegeben wird!
-function findValidPos(seedBase, attemptsLimit = 500) {
-    let x, y, attempts = 0;
-    prngState = seedBase; 
-    while (attempts < attemptsLimit) {
-        x = 5 + seededRandom() * 90;
-        y = 5 + seededRandom() * 90;
-        attempts++;
-        if (mapMaskData && maskWidth > 0) {
-            const pixelX = Math.floor((x / 100) * maskWidth);
-            const pixelY = Math.floor((y / 100) * maskHeight);
-            const val = mapMaskData[(pixelY * maskWidth + pixelX) * 4];
-            // Wenn der Punkt zu dunkel ist, weitersuchen
-            if (val < 50 || seededRandom() > (val / 255)) continue;
+        // --- LAYER-TOGGLE FUNKTION ---
+        window.toggleLayer = function(layer, isVisible) {
+            // Klasse am Body umschalten (versteckt die Punkte sofort per CSS)
+            if (isVisible) { document.body.classList.remove('hide-' + layer); } 
+            else { document.body.classList.add('hide-' + layer); }
+            
+            // Sync der Checkboxen zwischen kleiner und großer Karte
+            document.querySelectorAll('.chk-' + layer).forEach(cb => { cb.checked = isVisible; });
         }
-        return {x, y};
-    }
-    return null;
-}
 
-// 1. DIE KLEINE KARTE (DASHBOARD) - Verhältnis 1:20
-function updateDynamicMap(vals) {
-    const markerContainer = document.getElementById('map-markers');
-    if (!markerContainer) return;
-    markerContainer.innerHTML = '';
+        // --- DYNAMISCHE KARTEN LOGIK START ---
+        const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
+        let mapMaskData = null;
+        let maskWidth = 0;
+        let maskHeight = 0;
 
-    const visualProvinz = Math.floor(vals.provinzCount / 20); 
-    const visualMarkt = Math.floor(vals.marktCount / 20); 
-    const visualDorf = Math.floor(vals.weilerCount / 20); 
+        let currentMapSeed = Math.floor(Math.random() * 1000000);
+        let prngState = currentMapSeed;
+        let autoRerollMap = true; 
 
-    const placed = [];
-    
-    // Provinzen (Abstand 1.5% der Karte)
-    for(let i=0; i<visualProvinz; i++) {
-        let pos = findValidPos(currentMapSeed + i + 10000); 
-        if(pos && !placed.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5)) {
-            const dot = document.createElement('div');
-            dot.className = "absolute rounded-full bg-slate-400 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2";
-            dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
-            markerContainer.appendChild(dot);
-            placed.push(pos);
+        window.toggleAutoReroll = function(isChecked) { autoRerollMap = isChecked; };
+
+        function seededRandom() {
+            let t = prngState += 0x6D2B79F5;
+            t = Math.imul(t ^ t >>> 15, t | 1);
+            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
         }
-    }
-    // Märkte
-    for(let i=0; i<visualMarkt; i++) {
-        let pos = findValidPos(currentMapSeed + i + 20000); 
-        if(pos) {
-            const dot = document.createElement('div');
-            dot.className = "absolute rounded-full bg-teal-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
-            dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
-            markerContainer.appendChild(dot);
+
+        window.rerollMap = function() {
+            currentMapSeed = Math.floor(Math.random() * 1000000);
+            refreshDashboardCharts();
+        };
+
+        function loadMapMask(callback) {
+            if (!MASK_IMAGE_URL) { if(callback) callback(); return; }
+            const img = new Image();
+            img.crossOrigin = "Anonymous"; 
+            img.onload = function() {
+                const canvas = document.getElementById('map-mask-canvas');
+                if(!canvas) { if(callback) callback(); return; }
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                canvas.width = img.width; canvas.height = img.height;
+                maskWidth = img.width; maskHeight = img.height;
+                ctx.drawImage(img, 0, 0);
+                mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
+                if(callback) callback();
+            };
+            img.src = MASK_IMAGE_URL;
         }
-    }
-    // Dörfer
-    for(let i=0; i<visualDorf; i++) {
-        let pos = findValidPos(currentMapSeed + i + 30000);
-        if(pos) {
-            const dot = document.createElement('div');
-            dot.className = "absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
-            dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
-            markerContainer.appendChild(dot);
+
+        loadMapMask(() => { refreshDashboardCharts(); });
+
+        function getDistance(x1, y1, x2, y2) {
+            const aspect = 1778 / 1334;
+            return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
         }
-    }
 
-    // Metropolen
-    dashboardState.cities.forEach(city => {
-        if (city.pct > 0) {
-            const bigDot = document.createElement('div');
-            bigDot.className = "absolute rounded-full w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
-            bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
-            bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
-            bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
-            markerContainer.appendChild(bigDot);
-        }
-    });
-}
-
-// 2. DIE GROSSE HD-KARTE (KOMMANDOZENTRALE) - Verhältnis 1:10
-function updateFocusMap(vals) {
-    const markerContainer = document.getElementById('map-markers-focus');
-    if (!markerContainer) return;
-    markerContainer.innerHTML = '';
-
-    const visualProvinz = Math.floor(vals.provinzCount / 10); 
-    const visualMarkt = Math.floor(vals.marktCount / 10); 
-    const visualDorf = Math.floor(vals.weilerCount / 10); 
-    const allPlaced = [];
-
-    // ACHTUNG KORREKTUR: Abstände nun in Prozent!
-    // Provinzen = 2.0% | Märkte = 0.8% | Dörfer = 0.15% Abstand
-    const sets = [
-        {count: visualProvinz, dist: 2.0, color: 'bg-slate-400', size: 'w-2.5 h-2.5', offset: 100000},
-        {count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2 h-2', offset: 200000},
-        {count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000}
-    ];
-
-    sets.forEach(set => {
-        for(let i = 0; i < set.count; i++) {
-            let pos = findValidPos(currentMapSeed + i + set.offset); 
-            if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
-                const dot = document.createElement('div');
-                dot.className = `absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
-                dot.style.left = pos.x + '%'; 
-                dot.style.top = pos.y + '%';
-                markerContainer.appendChild(dot);
-                allPlaced.push(pos);
+        function findValidPos(seedBase, attemptsLimit = 500) {
+            let x, y, attempts = 0;
+            prngState = seedBase; 
+            while (attempts < attemptsLimit) {
+                x = 5 + seededRandom() * 90;
+                y = 5 + seededRandom() * 90;
+                attempts++;
+                if (mapMaskData && maskWidth > 0) {
+                    const pixelX = Math.floor((x / 100) * maskWidth);
+                    const pixelY = Math.floor((y / 100) * maskHeight);
+                    const val = mapMaskData[(pixelY * maskWidth + pixelX) * 4];
+                    if (val < 50 || seededRandom() > (val / 255)) continue;
+                }
+                return {x, y};
             }
+            return null;
         }
-    });
 
-    dashboardState.cities.forEach(city => {
-        if (city.pct > 0) {
-            const bigDot = document.createElement('div');
-            bigDot.className = `absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-20`;
-            bigDot.style.left = city.x + '%'; 
-            bigDot.style.top = city.y + '%';
-            if (city.name === 'Schwarze Stadt') {
-                bigDot.style.backgroundColor = '#000000'; 
-                bigDot.style.border = '3px solid #94a3b8'; 
-                bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
-            } else if (city.name === 'Weiße Hauptstadt') {
-                bigDot.style.backgroundColor = '#ffffff'; 
-                bigDot.style.border = '2.5px solid #f59e0b'; 
-                bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
-            } else {
-                bigDot.style.backgroundColor = city.color; 
-                bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
-                bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
+        function updateDynamicMap(vals) {
+            const markerContainer = document.getElementById('map-markers');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+
+            const visualProvinz = Math.floor(vals.provinzCount / 20); 
+            const visualMarkt = Math.floor(vals.marktCount / 20); 
+            const visualDorf = Math.floor(vals.weilerCount / 20); 
+            const placed = [];
+            
+            for(let i=0; i<visualProvinz; i++) {
+                let pos = findValidPos(currentMapSeed + i + 10000); 
+                if(pos && !placed.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5)) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-provinz absolute rounded-full bg-slate-400 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                    placed.push(pos);
+                }
             }
-            markerContainer.appendChild(bigDot);
+            for(let i=0; i<visualMarkt; i++) {
+                let pos = findValidPos(currentMapSeed + i + 20000); 
+                if(pos) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                }
+            }
+            for(let i=0; i<visualDorf; i++) {
+                let pos = findValidPos(currentMapSeed + i + 30000);
+                if(pos) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                }
+            }
+
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    bigDot.className = "marker-metropole absolute rounded-full w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
+                    bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
+                    bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
+                    bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
+                    markerContainer.appendChild(bigDot);
+                }
+            });
         }
-    });
-}
-// --- KORREKTUR ENDE ---
 
-// --- SNAPSHOT SPEICHER LOGIK START ---
-let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
+        function updateFocusMap(vals) {
+            const markerContainer = document.getElementById('map-markers-focus');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
 
-function updateSnapshotSelect() {
-    const sel = document.getElementById('snapshot-select');
-    if(!sel) return;
-    sel.innerHTML = '<option value="">-- Gespeicherten Zustand laden --</option>';
-    snapshots.forEach((snap, idx) => { sel.innerHTML += `<option value="${idx}">${snap.name}</option>`; });
-}
+            const visualProvinz = Math.floor(vals.provinzCount / 10); 
+            const visualMarkt = Math.floor(vals.marktCount / 10); 
+            const visualDorf = Math.floor(vals.weilerCount / 10); 
+            const allPlaced = [];
 
-window.saveSnapshot = function() {
-    const nameInput = document.getElementById('snapshot-name');
-    const name = nameInput.value.trim();
-    if(!name) { alert("Bitte gib dem Speicherstand einen Namen."); return; }
-    const snap = {
-        name: name,
-        seed: currentMapSeed,
-        state: JSON.parse(JSON.stringify(dashboardState))
-    };
-    snapshots.push(snap);
-    localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
-    nameInput.value = '';
-    updateSnapshotSelect();
-    alert(`Speicherstand "${name}" wurde gesichert!`);
-};
+            const sets = [
+                {count: visualProvinz, dist: 2.0, color: 'bg-slate-400', size: 'w-2.5 h-2.5', offset: 100000, markerClass: 'marker-provinz'},
+                {count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2 h-2', offset: 200000, markerClass: 'marker-markt'},
+                {count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf'}
+            ];
 
-window.loadSnapshot = function() {
-    const sel = document.getElementById('snapshot-select');
-    const idx = sel.value;
-    if(idx === "") return;
-    const snap = snapshots[idx];
-    const toggle = document.getElementById('auto-reroll-toggle');
-    if (toggle) toggle.checked = false;
-    autoRerollMap = false;
-    currentMapSeed = snap.seed;
-    dashboardState.totalPopMio = snap.state.totalPopMio;
-    dashboardState.urbanRate = snap.state.urbanRate;
-    dashboardState.big5Rate = snap.state.big5Rate;
-    dashboardState.marktRate = snap.state.marktRate;
-    snap.state.cities.forEach((c, i) => {
-        dashboardState.cities[i].pct = c.pct;
-        dashboardState.cities[i].locked = c.locked;
-    });
-    updateDashboardUI();
-};
+            sets.forEach(set => {
+                for(let i = 0; i < set.count; i++) {
+                    let pos = findValidPos(currentMapSeed + i + set.offset); 
+                    if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
+                        const dot = document.createElement('div');
+                        dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
+                        dot.style.left = pos.x + '%'; 
+                        dot.style.top = pos.y + '%';
+                        markerContainer.appendChild(dot);
+                        allPlaced.push(pos);
+                    }
+                }
+            });
 
-window.deleteSnapshot = function() {
-    const sel = document.getElementById('snapshot-select');
-    const idx = sel.value;
-    if(idx === "") return;
-    if(confirm(`Möchtest du den Speicherstand "${snapshots[idx].name}" wirklich löschen?`)) {
-        snapshots.splice(idx, 1);
-        localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
-        updateSnapshotSelect();
-    }
-};
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    bigDot.className = `marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-20`;
+                    bigDot.style.left = city.x + '%'; 
+                    bigDot.style.top = city.y + '%';
+                    if (city.name === 'Schwarze Stadt') {
+                        bigDot.style.backgroundColor = '#000000'; 
+                        bigDot.style.border = '3px solid #94a3b8'; 
+                        bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
+                    } else if (city.name === 'Weiße Hauptstadt') {
+                        bigDot.style.backgroundColor = '#ffffff'; 
+                        bigDot.style.border = '2.5px solid #f59e0b'; 
+                        bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
+                    } else {
+                        bigDot.style.backgroundColor = city.color; 
+                        bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
+                        bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
+                    }
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
 
-setTimeout(updateSnapshotSelect, 500);
-// --- SNAPSHOT SPEICHER LOGIK ENDE ---
+        // --- SNAPSHOT LOGIK START ---
+        let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
 
+        function updateSnapshotSelect() {
+            const sel = document.getElementById('snapshot-select');
+            if(!sel) return;
+            sel.innerHTML = '<option value="">-- Zustand laden --</option>';
+            snapshots.forEach((snap, idx) => { sel.innerHTML += `<option value="${idx}">${snap.name}</option>`; });
+        }
+
+        window.saveSnapshot = function() {
+            const nameInput = document.getElementById('snapshot-name');
+            const name = nameInput.value.trim();
+            if(!name) { alert("Bitte gib dem Speicherstand einen Namen."); return; }
+            const snap = { name: name, seed: currentMapSeed, state: JSON.parse(JSON.stringify(dashboardState)) };
+            snapshots.push(snap);
+            localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
+            nameInput.value = '';
+            updateSnapshotSelect();
+            alert(`Speicherstand "${name}" wurde gesichert!`);
+        };
+
+        window.loadSnapshot = function() {
+            const sel = document.getElementById('snapshot-select');
+            const idx = sel.value;
+            if(idx === "") return;
+            const snap = snapshots[idx];
+            const toggle = document.getElementById('auto-reroll-toggle');
+            if (toggle) toggle.checked = false;
+            autoRerollMap = false;
+            currentMapSeed = snap.seed;
+            dashboardState.totalPopMio = snap.state.totalPopMio;
+            dashboardState.urbanRate = snap.state.urbanRate;
+            dashboardState.big5Rate = snap.state.big5Rate;
+            dashboardState.marktRate = snap.state.marktRate;
+            snap.state.cities.forEach((c, i) => {
+                dashboardState.cities[i].pct = c.pct;
+                dashboardState.cities[i].locked = c.locked;
+            });
+            updateDashboardUI();
+        };
+
+        window.deleteSnapshot = function() {
+            const sel = document.getElementById('snapshot-select');
+            const idx = sel.value;
+            if(idx === "") return;
+            if(confirm(`Möchtest du den Speicherstand "${snapshots[idx].name}" wirklich löschen?`)) {
+                snapshots.splice(idx, 1);
+                localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
+                updateSnapshotSelect();
+            }
+        };
+
+        setTimeout(updateSnapshotSelect, 500);
+
+        // --- WERTE & BERECHNUNG ---
         function getCalculatedValues() {
-
             const totalPop = dashboardState.totalPopMio * 1000000;
-
             const urbanPop = Math.round(totalPop * (dashboardState.urbanRate / 100));
-
             const ruralPop = totalPop - urbanPop;
-
             const big5Pop = Math.round(urbanPop * (dashboardState.big5Rate / 100));
-
             const provinzPop = urbanPop - big5Pop;
-
             const marktPop = Math.round(ruralPop * (dashboardState.marktRate / 100));
-
             const weilerPop = ruralPop - marktPop;
 
-
-
             return {
-
                 totalPop, urbanPop, ruralPop, big5Pop, provinzPop, marktPop, weilerPop,
-
                 provinzCount: Math.max(0, Math.round(provinzPop / 8000)),
-
                 marktCount: Math.max(0, Math.round(marktPop / 1200)),
-
                 weilerCount: Math.max(0, Math.round(weilerPop / 150))
-
             };
-
         }
-
-
 
         function balance(idx, newPct) {
-
             const vals = getCalculatedValues();
-
             let lockedSum = 0;
-
-            dashboardState.cities.forEach((c, i) => { 
-
-                if(c.locked && i !== idx) lockedSum += c.pct; 
-
-            });
-
-
-
+            dashboardState.cities.forEach((c, i) => { if(c.locked && i !== idx) lockedSum += c.pct; });
             if(newPct + lockedSum > 100) newPct = 100 - lockedSum;
-
             dashboardState.cities[idx].pct = Math.max(0, newPct);
 
-
-
             let remainder = 100 - dashboardState.cities[idx].pct - lockedSum;
-
             let unlocked = dashboardState.cities.map((c, i) => ({...c, originalIndex: i})).filter((c, i) => !c.locked && i !== idx);
-
             let oldSum = unlocked.reduce((s, c) => s + c.pct, 0);
 
-
-
             if(unlocked.length > 0) {
-
                 unlocked.forEach(c => {
-
                     const indexInState = c.originalIndex;
-
-                    dashboardState.cities[indexInState].pct = oldSum > 0 
-
-                        ? (c.pct / oldSum) * remainder 
-
-                        : remainder / unlocked.length;
-
+                    dashboardState.cities[indexInState].pct = oldSum > 0 ? (c.pct / oldSum) * remainder : remainder / unlocked.length;
                 });
-
             } else {
-
                 dashboardState.cities[idx].pct = 100 - lockedSum;
-
             }
-
             updateDashboardUI();
-
         }
 
-
-
+        // --- OBERFLÄCHE AKTUALISIEREN & SYNC ---
         function updateDashboardUI() {
-
             const vals = getCalculatedValues();
 
-
-
             document.getElementById('display-total-pop').innerText = formatNum(vals.totalPop);
-
-            document.getElementById('display-provinz-count').innerText = vals.provinzCount;
-
-            document.getElementById('display-markt-count').innerText = vals.marktCount;
-
+            document.getElementById('display-provinz-count').innerText = formatNum(vals.provinzCount);
+            document.getElementById('display-markt-count').innerText = formatNum(vals.marktCount);
             document.getElementById('display-weiler-count').innerText = formatNum(vals.weilerCount);
-
-
-
-            document.getElementById('input-pop-mio').value = dashboardState.totalPopMio;
-
-            document.getElementById('range-pop-mio').value = dashboardState.totalPopMio;
-
-            document.getElementById('input-urban-rate').value = dashboardState.urbanRate;
-
-            document.getElementById('range-urban-rate').value = dashboardState.urbanRate;
-
-            document.getElementById('input-big5-rate').value = dashboardState.big5Rate;
-
-            document.getElementById('range-big5-rate').value = dashboardState.big5Rate;
-
-            document.getElementById('input-markt-rate').value = dashboardState.marktRate;
-
-            document.getElementById('range-markt-rate').value = dashboardState.marktRate;
-
-
-
-            const container = document.getElementById('city-cards-container');
-
-            container.innerHTML = `<h2 class="text-lg font-bold px-1">Machtbalance der Fünf</h2>`;
-
             
-
-            dashboardState.cities.forEach((city, index) => {
-
-                const absPop = Math.round(vals.big5Pop * (city.pct / 100));
-
-                const card = document.createElement('div');
-
-                card.className = 'city-card shadow-lg';
-
-                card.style.backgroundImage = `url(${city.img})`;
-
-                card.innerHTML = `
-
-                    <div class="city-overlay">
-
-                        <div class="flex justify-between items-start">
-
-                            <div class="flex items-center gap-3">
-
-                                <button onclick="toggleCityLock(${index})" 
-
-                                        class="p-2 rounded-lg border transition-all bg-slate-900/90 shadow-md ${city.locked ? 'border-red-500 text-red-500' : 'border-slate-700 text-slate-500'}">
-
-                                    ${city.locked ? '🔒' : '🔓'}
-
-                                </button>
-
-                                <div>
-
-                                    <h3 class="text-base font-black italic tracking-tight" style="color: ${city.color}">${city.name}</h3>
-
-                                    <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">${formatNum(absPop)} Ew.</p>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <div class="flex flex-col gap-1 items-end">
-
-                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
-
-                                    <span class="text-[7px] text-slate-500 uppercase font-bold">Ew.</span>
-
-                                    <input type="number" onchange="updateCityByAbs(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
-
-                                           value="${absPop}" 
-
-                                           class="bg-transparent text-right font-mono text-xs w-24 focus:outline-none disabled:opacity-50 text-white">
-
-                                </div>
-
-                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
-
-                                    <span class="text-[7px] text-slate-500 uppercase font-bold">%</span>
-
-                                    <input type="number" onchange="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
-
-                                           value="${city.pct.toFixed(2)}" 
-
-                                           class="bg-transparent text-right font-mono text-[10px] w-12 focus:outline-none disabled:opacity-50 text-slate-300">
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="mt-4 flex items-center gap-2">
-
-                            <input type="range" oninput="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
-
-                                   value="${city.pct}" min="0" max="100" step="0.01" 
-
-                                   class="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-20" 
-
-                                   style="accent-color: ${city.color}">
-
-                        </div>
-
-                    </div>
-
-                `;
-
-                container.appendChild(card);
-
-            });
-
-// Die neuen Fokus-Regler und Zahlen auch updaten!
-            const fPop = document.getElementById('f-range-pop');
-            if(fPop) {
-                fPop.value = dashboardState.totalPopMio;
-                document.getElementById('f-disp-pop').innerText = dashboardState.totalPopMio;
-                
-                document.getElementById('f-range-urban').value = dashboardState.urbanRate;
-                document.getElementById('f-disp-urban').innerText = dashboardState.urbanRate;
-                
-                document.getElementById('f-range-big5').value = dashboardState.big5Rate;
-                document.getElementById('f-disp-big5').innerText = dashboardState.big5Rate;
-                
-                document.getElementById('f-range-markt').value = dashboardState.marktRate;
-                document.getElementById('f-disp-markt').innerText = dashboardState.marktRate;
-
-                document.getElementById('f-val-provinz').innerText = formatNum(vals.provinzCount);
+            const fProv = document.getElementById('f-val-provinz');
+            if(fProv) {
+                fProv.innerText = formatNum(vals.provinzCount);
                 document.getElementById('f-val-markt').innerText = formatNum(vals.marktCount);
                 document.getElementById('f-val-weiler').innerText = formatNum(vals.weilerCount);
             }
-            // ==========================================
+
+            // Sync alle Inputs & Regler (Kleine & Große Karte)
+            const mappings = [
+                { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+                { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+                { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+                { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+            ];
+
+            mappings.forEach(m => {
+                const input = document.getElementById(`input-${m.id}`);
+                const range = document.getElementById(`range-${m.id}`);
+                const fInput = document.getElementById(`f-input-${m.fId}`);
+                const fRange = document.getElementById(`f-range-${m.fId}`);
+                const val = dashboardState[m.stateKey];
+
+                if(input && document.activeElement !== input) input.value = val;
+                if(range) range.value = val;
+                if(fInput && document.activeElement !== fInput) fInput.value = val;
+                if(fRange) fRange.value = val;
+            });
+
+            const container = document.getElementById('city-cards-container');
+            container.innerHTML = `<h2 class="text-lg font-bold px-1">Machtbalance der Fünf</h2>`;
+            
+            dashboardState.cities.forEach((city, index) => {
+                const absPop = Math.round(vals.big5Pop * (city.pct / 100));
+                const card = document.createElement('div');
+                card.className = 'city-card shadow-lg';
+                card.style.backgroundImage = `url(${city.img})`;
+                card.innerHTML = `
+                    <div class="city-overlay">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleCityLock(${index})" 
+                                        class="p-2 rounded-lg border transition-all bg-slate-900/90 shadow-md ${city.locked ? 'border-red-500 text-red-500' : 'border-slate-700 text-slate-500'}">
+                                    ${city.locked ? '🔒' : '🔓'}
+                                </button>
+                                <div>
+                                    <h3 class="text-base font-black italic tracking-tight" style="color: ${city.color}">${city.name}</h3>
+                                    <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">${formatNum(absPop)} Ew.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1 items-end">
+                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
+                                    <span class="text-[7px] text-slate-500 uppercase font-bold">Ew.</span>
+                                    <input type="number" onchange="updateCityByAbs(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                           value="${absPop}" 
+                                           class="bg-transparent text-right font-mono text-xs w-24 focus:outline-none disabled:opacity-50 text-white">
+                                </div>
+                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
+                                    <span class="text-[7px] text-slate-500 uppercase font-bold">%</span>
+                                    <input type="number" onchange="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                           value="${city.pct.toFixed(2)}" 
+                                           class="bg-transparent text-right font-mono text-[10px] w-12 focus:outline-none disabled:opacity-50 text-slate-300">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <input type="range" oninput="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                   value="${city.pct}" min="0" max="100" step="0.01" 
+                                   class="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-20" 
+                                   style="accent-color: ${city.color}">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
 
             refreshDashboardCharts();
         }
 
-
-
-
         window.toggleCityLock = (index) => {
-
             dashboardState.cities[index].locked = !dashboardState.cities[index].locked;
-
             updateDashboardUI();
-
         };
 
-
-
-        window.updateCityByPct = (index, val) => {
-
-            balance(index, parseFloat(val) || 0);
-
-        };
-
-
-
+        window.updateCityByPct = (index, val) => { balance(index, parseFloat(val) || 0); };
         window.updateCityByAbs = (index, val) => {
-
             const vals = getCalculatedValues();
-
-            const pct = ((parseFloat(val) || 0) / vals.big5Pop) * 100;
-
-            balance(index, pct);
-
+            balance(index, ((parseFloat(val) || 0) / vals.big5Pop) * 100);
         };
 
+        // EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
+        const mappings = [
+            { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+            { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+            { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+            { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+        ];
 
-
-        document.getElementById('input-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value) || 1; updateDashboardUI(); });
-
-		// Listener für die Fokus-Regler
-document.getElementById('f-range-pop').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value); updateDashboardUI(); });
-document.getElementById('f-range-urban').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value); updateDashboardUI(); });
-document.getElementById('f-range-big5').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value); updateDashboardUI(); });
-document.getElementById('f-range-markt').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value); updateDashboardUI(); });
-		
-        document.getElementById('range-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value); updateDashboardUI(); });
-
-        document.getElementById('input-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value) || 1; updateDashboardUI(); });
-
-        document.getElementById('range-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value); updateDashboardUI(); });
-
-        document.getElementById('input-big5-rate').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value) || 0; updateDashboardUI(); });
-
-        document.getElementById('range-big5-rate').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value); updateDashboardUI(); });
-
-        document.getElementById('input-markt-rate').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value) || 0; updateDashboardUI(); });
-
-        document.getElementById('range-markt-rate').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value); updateDashboardUI(); });
-
-
+        mappings.forEach(m => {
+            const updateState = (e) => {
+                dashboardState[m.stateKey] = parseFloat(e.target.value) || 0;
+                updateDashboardUI();
+            };
+            document.getElementById(`input-${m.id}`).addEventListener('input', updateState);
+            document.getElementById(`range-${m.id}`).addEventListener('input', updateState);
+            
+            const fInput = document.getElementById(`f-input-${m.fId}`);
+            if(fInput) {
+                fInput.addEventListener('input', updateState);
+                document.getElementById(`f-range-${m.fId}`).addEventListener('input', updateState);
+            }
+        });
 
         function initDashboard() {
-
             const tooltips = { 
-
                 callbacks: { label: (ctx) => `${ctx.label}: ${formatNum(ctx.raw)} Ew.` },
-
                 backgroundColor: '#1e293b', padding: 8, titleFont: { size: 10 }, bodyFont: { size: 10 }
-
             };
-
             const options = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltips } };
 
-
-
             dashboardCharts.urban = new Chart(document.getElementById('chartUrbanRural'), {
-
                 type: 'doughnut',
-
                 data: { labels: ['Stadtbewohner', 'Landbevölkerung'], datasets: [{ data: [0,0], backgroundColor: ['#ef4444', '#334155'], borderWidth: 0 }] },
-
                 options: { ...options, cutout: '80%' }
-
             });
 
-
-
             dashboardCharts.siedlung = new Chart(document.getElementById('chartSiedlung'), {
-
                 type: 'bar',
-
                 data: { labels: ['Big 5', 'Provinz', 'Märkte', 'Dörfer'], datasets: [{ data: [0,0,0,0], backgroundColor: ['#ef4444', '#64748b', '#0d9488', '#166534'], borderRadius: 4 }] },
                 options: { ...options, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 8 } } } } }
             });
@@ -5575,7 +5312,7 @@ document.getElementById('f-range-markt').addEventListener('input', (e) => { dash
             dashboardInitialized = true;
         }
 
-function refreshDashboardCharts() {
+        function refreshDashboardCharts() {
             if(!dashboardCharts.urban) return;
             const vals = getCalculatedValues();
             
@@ -5588,155 +5325,79 @@ function refreshDashboardCharts() {
             dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
             dashboardCharts.big5.update('none');
             
-          /// HIER IST DER NEUE AUFRUF FÜR DIE KARTE:
-            if (autoRerollMap) {
-                currentMapSeed = Math.floor(Math.random() * 1000000); // Nur neu würfeln, wenn Schalter an ist!
-            }
-            updateDynamicMap(vals);
-            updateFocusMap(vals); // <-- Diese Zeile feuert die neue Riesen-Karte ab!
-        }
-
-        // --- 5. KOMMENTAR-FUNKTION LOGIK ---
-        
-        // Lädt Kommentare aus dem LocalStorage beim Start
-        let comments = JSON.parse(localStorage.getItem('osmieen_comments') || '[]');
-
-        function renderComments() {
-            const list = document.getElementById('comment-list');
-            if (comments.length === 0) {
-                list.innerHTML = '<p class="text-stone-400 italic">Noch keine Kommentare vorhanden.</p>';
-                return;
+            if (autoRerollMap) {
+                currentMapSeed = Math.floor(Math.random() * 1000000); 
             }
-
-            list.innerHTML = comments.map((c, index) => `
-                <div class="bg-stone-100 border border-stone-200 rounded p-4 relative group">
-                    <div class="flex justify-between items-start mb-2">
-                        <strong class="text-amber-800">${c.name}</strong>
-                        <span class="text-[10px] text-stone-500">${c.date}</span>
-                    </div>
-                    <p class="text-sm text-stone-700 m-0 whitespace-pre-wrap">${c.text}</p>
-                    <button onclick="deleteComment(${index})" class="absolute top-2 right-10 opacity-0 group-hover:opacity-100 text-red-500 text-xs transition">Löschen</button>
-                </div>
-            `).join('');
+            updateDynamicMap(vals);
+            updateFocusMap(vals); 
         }
 
-        window.addComment = function() {
-            const nameInput = document.getElementById('comment-name');
-            const textInput = document.getElementById('comment-text');
+        // --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
+        let currentZoom = 1;
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let startX = 0;
+        let startY = 0;
+
+        const viewport = document.getElementById('map-viewport');
+        const mapContainer = document.getElementById('map-transform-container');
+
+        function applyTransform() {
+            if (!mapContainer) return;
+            mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;
             
-            if (!nameInput.value.trim() || !textInput.value.trim()) {
-                alert("Bitte fülle beide Felder aus.");
-                return;
+            const scaleHint = document.getElementById('scale-hint');
+            if(scaleHint) {
+                if(currentZoom !== 1) {
+                    scaleHint.innerText = `1 px = ${(2.5 / currentZoom).toFixed(2)} km (Zoom x${currentZoom.toFixed(1)})`;
+                    scaleHint.classList.add('text-amber-500');
+                } else {
+                    scaleHint.innerText = `1 Pixel = 2,5 Kilometer`;
+                    scaleHint.classList.remove('text-amber-500');
+                }
             }
+        }
 
-            const newComment = {
-                name: nameInput.value.trim(),
-                text: textInput.value.trim(),
-                date: new Date().toLocaleString('de-DE'),
-                timestamp: Date.now()
-            };
+        window.zoomMap = function(delta) {
+            currentZoom += delta;
+            if (currentZoom < 0.5) currentZoom = 0.5;
+            if (currentZoom > 5.0) currentZoom = 5.0;
+            applyTransform();
+        }
 
-            comments.unshift(newComment); // Neue Kommentare nach oben
-            localStorage.setItem('osmieen_comments', JSON.stringify(comments));
-            
-            textInput.value = ''; // Textfeld leeren
-            renderComments();
-        };
+        window.resetMapZoom = function() {
+            currentZoom = 1; panX = 0; panY = 0; applyTransform();
+        }
 
-        window.deleteComment = function(index) {
-            if(confirm("Diesen Vorschlag wirklich entfernen?")) {
-                comments.splice(index, 1);
-                localStorage.setItem('osmieen_comments', JSON.stringify(comments));
-                renderComments();
-            }
-        };
+        if (viewport && mapContainer) {
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                window.zoomMap(e.deltaY > 0 ? -0.1 : 0.1);
+            }, { passive: false });
 
-        window.exportComments = function() {
-            if (comments.length === 0) {
-                alert("Es gibt keine Kommentare zum Kopieren.");
-                return;
-            }
-            
-            const text = comments.map(c => `Von: ${c.name} (${c.date})\n---\n${c.text}\n\n`).join('====================\n');
-            
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Alle Vorschläge wurden in die Zwischenablage kopiert!");
+            mapContainer.addEventListener('mousedown', (e) => {
+                isPanning = true;
+                startX = e.clientX - panX;
+                startY = e.clientY - panY;
+                mapContainer.style.transition = 'none';
             });
-        };
 
-		// --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
-let currentZoom = 1;
-let panX = 0;
-let panY = 0;
-let isPanning = false;
-let startX = 0;
-let startY = 0;
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+                panX = e.clientX - startX;
+                panY = e.clientY - startY;
+                applyTransform();
+            });
 
-const viewport = document.getElementById('map-viewport');
-const mapContainer = document.getElementById('map-transform-container');
-
-function applyTransform() {
-    if (!mapContainer) return;
-    mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;
-    
-    // Hinweis anpassen, falls extrem gezoomt wird
-    const scaleHint = document.getElementById('scale-hint');
-    if(scaleHint) {
-        if(currentZoom !== 1) {
-            scaleHint.innerText = `1 px = ${(2.5 / currentZoom).toFixed(2)} km (Zoom x${currentZoom.toFixed(1)})`;
-            scaleHint.classList.add('text-amber-500');
-        } else {
-            scaleHint.innerText = `1 Pixel = 2,5 Kilometer`;
-            scaleHint.classList.remove('text-amber-500');
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    mapContainer.style.transition = 'transform 0.1s ease-out';
+                }
+            });
         }
-    }
-}
-
-window.zoomMap = function(delta) {
-    currentZoom += delta;
-    if (currentZoom < 0.5) currentZoom = 0.5; // Maximal rauszoomen
-    if (currentZoom > 5.0) currentZoom = 5.0; // Maximal reinzoomen
-    applyTransform();
-}
-
-window.resetMapZoom = function() {
-    currentZoom = 1;
-    panX = 0;
-    panY = 0;
-    applyTransform();
-}
-
-if (viewport && mapContainer) {
-    // Mausrad Zoom
-    viewport.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        window.zoomMap(delta);
-    }, { passive: false });
-
-    // Drag & Drop (Pan)
-    mapContainer.addEventListener('mousedown', (e) => {
-        isPanning = true;
-        startX = e.clientX - panX;
-        startY = e.clientY - panY;
-        mapContainer.style.transition = 'none'; // Keine Animation beim Ziehen
-    });
-
-    window.addEventListener('mousemove', (e) => {
-        if (!isPanning) return;
-        panX = e.clientX - startX;
-        panY = e.clientY - startY;
-        applyTransform();
-    });
-
-    window.addEventListener('mouseup', () => {
-        if (isPanning) {
-            isPanning = false;
-            mapContainer.style.transition = 'transform 0.1s ease-out'; // Wieder weich animieren
-        }
-    });
-}
-// --- ZOOM & PAN ENDE ---
+        // --- ZOOM & PAN ENDE ---
 		
        // Init Cults App by default & Comments
         window.onload = () => {
