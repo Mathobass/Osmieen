@@ -5060,16 +5060,16 @@ function updateDynamicMap(vals) {
     if (!markerContainer) return;
     markerContainer.innerHTML = '';
 
-    // Wieder deutlich mehr Punkte für das kleine Dashboard!
-    const visualProvinz = Math.min(60, Math.floor(vals.provinzCount / 2)); 
-    const visualMarkt = Math.min(150, Math.floor(vals.marktCount / 8)); 
-    const visualDorf = Math.min(800, Math.floor(vals.weilerCount / 100)); 
+    // EXAKTES VERHÄLTNIS: 1 Punkt = 20 echte Orte
+    const visualProvinz = Math.floor(vals.provinzCount / 20); 
+    const visualMarkt = Math.floor(vals.marktCount / 20); 
+    const visualDorf = Math.floor(vals.weilerCount / 20); 
 
     const placed = [];
     
     // Provinzen
     for(let i=0; i<visualProvinz; i++) {
-        let pos = findValidPos(currentMapSeed + i + 10000); // 10000 statt "p" (reine Zahl!)
+        let pos = findValidPos(currentMapSeed + i + 10000); 
         if(pos && !placed.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 6)) {
             const dot = document.createElement('div');
             dot.className = "absolute rounded-full bg-slate-400 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2";
@@ -5078,7 +5078,7 @@ function updateDynamicMap(vals) {
             placed.push(pos);
         }
     }
-    // Märkte (wieder hinzugefügt!)
+    // Märkte
     for(let i=0; i<visualMarkt; i++) {
         let pos = findValidPos(currentMapSeed + i + 20000); 
         if(pos) {
@@ -5088,7 +5088,7 @@ function updateDynamicMap(vals) {
             markerContainer.appendChild(dot);
         }
     }
-    // Dörfer (viel mehr!)
+    // Dörfer
     for(let i=0; i<visualDorf; i++) {
         let pos = findValidPos(currentMapSeed + i + 30000);
         if(pos) {
@@ -5118,12 +5118,12 @@ function updateFocusMap(vals) {
     if (!markerContainer) return;
     markerContainer.innerHTML = '';
 
-    const visualProvinz = vals.provinzCount; 
-    const visualMarkt = Math.min(800, Math.floor(vals.marktCount / 2)); 
-    const visualDorf = Math.min(3500, Math.floor(vals.weilerCount / 40)); 
+    // EXAKTES VERHÄLTNIS: 1 Punkt = 10 echte Orte
+    const visualProvinz = Math.floor(vals.provinzCount / 10); 
+    const visualMarkt = Math.floor(vals.marktCount / 10); 
+    const visualDorf = Math.floor(vals.weilerCount / 10); 
     const allPlaced = [];
 
-    // HIER WAR DER FEHLER: offset muss eine Zahl sein, kein Buchstabe!
     const sets = [
         {count: visualProvinz, dist: 40, color: 'bg-slate-400', size: 'w-2.5 h-2.5', offset: 100000},
         {count: visualMarkt, dist: 15, color: 'bg-teal-500/80', size: 'w-2 h-2', offset: 200000},
@@ -5132,7 +5132,7 @@ function updateFocusMap(vals) {
 
     sets.forEach(set => {
         for(let i = 0; i < set.count; i++) {
-            let pos = findValidPos(currentMapSeed + i + set.offset); // Rechnet jetzt korrekt!
+            let pos = findValidPos(currentMapSeed + i + set.offset); 
             if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
                 const dot = document.createElement('div');
                 dot.className = `absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
