@@ -4986,16 +4986,16 @@ let dashboardCharts = {};
             return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
         }
 
-// --- DYNAMISCHE KARTEN LOGIK START ---
+// --- DYNAMISCHE KARTEN LOGIK START (KORRIGIERT & VOLLSTÄNDIG) ---
 const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
 let mapMaskData = null;
 let maskWidth = 0;
 let maskHeight = 0;
 
-// Unser Seed-Generator (Ersetzt den normalen Zufall, um Karten speicherbar zu machen)
 let currentMapSeed = Math.floor(Math.random() * 1000000);
 let prngState = currentMapSeed;
-		let autoRerollMap = true; // Startet im Chaos-Modus (wie du es gewohnt warst)
+let autoRerollMap = true; 
+
 window.toggleAutoReroll = function(isChecked) {
     autoRerollMap = isChecked;
 };
@@ -5026,234 +5026,127 @@ function loadMapMask(callback) {
         mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
         if(callback) callback();
     };
-    img.onerror = function() {
-        console.error("Fehler: Das Masken-Bild konnte nicht geladen werden.");
-        if(callback) callback();
-    };
     img.src = MASK_IMAGE_URL;
 }
 
 loadMapMask(() => { refreshDashboardCharts(); });
 
+function getDistance(x1, y1, x2, y2) {
+    const aspect = 1778 / 1334;
+    return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
+}
+
+function findValidPos(seedBase, attemptsLimit = 100) {
+    let x, y, attempts = 0;
+    prngState = seedBase; 
+    while (attempts < attemptsLimit) {
+        x = 5 + seededRandom() * 90;
+        y = 5 + seededRandom() * 90;
+        attempts++;
+        if (mapMaskData && maskWidth > 0) {
+            const pixelX = Math.floor((x / 100) * maskWidth);
+            const pixelY = Math.floor((y / 100) * maskHeight);
+            const val = mapMaskData[(pixelY * maskWidth + pixelX) * 4];
+            if (val < 50 || seededRandom() > (val / 255)) continue;
+        }
+        return {x, y};
+    }
+    return null;
+}
+
+// 1. DIE KLEINE KARTE (DASHBOARD)
 function updateDynamicMap(vals) {
     const markerContainer = document.getElementById('map-markers');
     if (!markerContainer) return;
     markerContainer.innerHTML = '';
 
-    const visualProvinz = Math.min(40, Math.floor(vals.provinzCount / 4)); 
-    const visualMarkt = Math.min(60, Math.floor(vals.marktCount / 20)); 
-    const visualDorf = Math.min(120, Math.floor(vals.weilerCount / 800)); 
+    // Repräsentative Punkte für die kleine Übersicht
+    const visualProvinz = Math.min(30, Math.floor(vals.provinzCount / 10)); 
+    const visualDorf = Math.min(100, Math.floor(vals.weilerCount / 1000)); 
 
-    function createMarker(colorClass, sizeClass, isMetropole = false, forceX = null, forceY = null) {
-        const dot = document.createElement('div');
-        let x = 0; let y = 0;
-
-        if (isMetropole && forceX !== null && forceY !== null) {
-            x = forceX; y = forceY;
-        } else {
-            let validPosition = false;
-            let attempts = 0;
-            while (!validPosition && attempts < 150) {
-                x = 5 + seededRandom() * 90;
-                y = 5 + seededRandom() * 90;
-                attempts++;
-                if (mapMaskData && maskWidth > 0) {
-                    const pixelX = Math.floor((x / 100) * maskWidth);
-                    const pixelY = Math.floor((y / 100) * maskHeight);
-                    const pixelIndex = (pixelY * maskWidth + pixelX) * 4;
-                    if (mapMaskData[pixelIndex] < 50) continue; 
-                    if (seededRandom() > (mapMaskData[pixelIndex] / 255)) continue; 
-                }
-                validPosition = true;
-            }
-        }
-        
-        dot.className = `absolute rounded-full ${colorClass} ${sizeClass} transform -translate-x-1/2 -translate-y-1/2`;
-        dot.style.left = `${x}%`; dot.style.top = `${y}%`;
-        
-        if (!isMetropole) {
-            dot.classList.add('animate-pulse');
-            dot.style.animationDelay = `${seededRandom() * 2}s`;
-            dot.style.animationDuration = `${2 + seededRandom() * 2}s`;
-        }
-        return dot;
-    }
-
-    // --- NEUE ABSTANDS-LOGIK FÜR PROVINZEN ---
-    prngState = currentMapSeed + 100; // Fixer Startpunkt, damit Dörfer sie nicht verschieben
-    const minDistance = 6; 
-    const placedProvinces = []; 
-    function getDistance(x1, y1, x2, y2) {
-        const aspect = 1778 / 1334; 
-        const dx = (x1 - x2) * aspect;
-        const dy = y1 - y2;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    for(let i = 0; i < visualProvinz; i++) {
-        let dotX = 0; let dotY = 0; let valid = false; let attempts = 0;
-        while (!valid && attempts < 200) {
-            dotX = 5 + seededRandom() * 90; dotY = 5 + seededRandom() * 90;
-            attempts++;
-            if (mapMaskData && maskWidth > 0) {
-                const pixelX = Math.floor((dotX / 100) * maskWidth);
-                const pixelY = Math.floor((dotY / 100) * maskHeight);
-                const pixelIndex = (pixelY * maskWidth + pixelX) * 4;
-                if (mapMaskData[pixelIndex] < 50) continue; 
-                if (seededRandom() > (mapMaskData[pixelIndex] / 255)) continue; 
-            }
-            let tooCloseToCity = false;
-            dashboardState.cities.forEach(city => {
-                if(city.pct > 0 && getDistance(dotX, dotY, city.x, city.y) < minDistance) tooCloseToCity = true;
-            });
-            if (tooCloseToCity) continue; 
-            let tooCloseToOther = false;
-            placedProvinces.forEach(p => {
-                if (getDistance(dotX, dotY, p.x, p.y) < minDistance) tooCloseToOther = true;
-            });
-            if (tooCloseToOther) continue; 
-            valid = true;
-        }
-        if (valid) {
-            placedProvinces.push({x: dotX, y: dotY});
-            markerContainer.appendChild(createMarker('bg-slate-400', 'w-2 h-2', false, dotX, dotY));
+    // Provinzen
+    for(let i=0; i<visualProvinz; i++) {
+        let pos = findValidPos(currentMapSeed + i + 10000);
+        if(pos) {
+            const dot = document.createElement('div');
+            dot.className = "absolute rounded-full bg-slate-400 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2";
+            dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+            markerContainer.appendChild(dot);
         }
     }
-    // --- ENDE ABSTANDS-LOGIK ---
-
-    // Märkte & Dörfer zeichnen
-    prngState = currentMapSeed + 200;
-    for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createMarker('bg-teal-500/70', 'w-1.5 h-1.5'));
-    
-    prngState = currentMapSeed + 300;
-    for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createMarker('bg-green-400/90', 'w-1 h-1'));
-
-// Metropolen zeichnen
+    // Dörfer
+    for(let i=0; i<visualDorf; i++) {
+        let pos = findValidPos(currentMapSeed + i + 20000);
+        if(pos) {
+            const dot = document.createElement('div');
+            dot.className = "absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+            dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+            markerContainer.appendChild(dot);
+        }
+    }
+    // Metropolen
     dashboardState.cities.forEach(city => {
         if (city.pct > 0) {
-            const bigDot = createMarker('', 'w-3 h-3', true, city.x, city.y);
-            
-            if (city.name === 'Schwarze Stadt') {
-                bigDot.style.backgroundColor = '#000000'; 
-                bigDot.style.border = '2.5px solid #94a3b8'; 
-                bigDot.style.boxShadow = '0 0 12px rgba(148, 163, 184, 0.6)'; 
-            } else if (city.name === 'Weiße Hauptstadt') {
-                // === NEU: Goldener Prunk für die Hochkönigin ===
-                bigDot.style.backgroundColor = '#ffffff'; 
-                bigDot.style.border = '2px solid #fbbf24'; // Goldgelber Rahmen
-                bigDot.style.boxShadow = '0 0 16px rgba(251, 191, 36, 0.8)'; // Goldener Heiligenschein
-            } else {
-                bigDot.style.backgroundColor = city.color; 
-                bigDot.style.border = '1px solid rgba(255, 255, 255, 0.4)'; 
-                bigDot.style.boxShadow = `0 0 12px ${city.color}`; 
-            }
-            
-            bigDot.style.zIndex = "10";
+            const bigDot = document.createElement('div');
+            bigDot.className = "absolute rounded-full w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
+            bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
+            bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
+            bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
             markerContainer.appendChild(bigDot);
         }
     });
 }
-// --- DYNAMISCHE KARTEN LOGIK ENDE ---
 
-		// --- NEUE FUNKTION: Die HD Fokus-Karte ---
+// 2. DIE GROSSE HD-KARTE (KOMMANDOZENTRALE)
 function updateFocusMap(vals) {
     const markerContainer = document.getElementById('map-markers-focus');
     if (!markerContainer) return;
     markerContainer.innerHTML = '';
 
- // 1:1 TEST-MODUS - 1 Punkt entspricht exakt 1 Ort in der Welt!
-    // VORSICHT: Population im Menü vorher auf 1-2 Mio. runterschrauben!
     const visualProvinz = vals.provinzCount; 
-    const visualMarkt = vals.marktCount; 
-    const visualDorf = vals.weilerCount;
+    const visualMarkt = Math.min(800, Math.floor(vals.marktCount / 2)); 
+    const visualDorf = Math.min(3500, Math.floor(vals.weilerCount / 40)); 
+    const allPlaced = [];
 
-    function createFocusMarker(colorClass, sizeClass, isMetropole = false, forceX = null, forceY = null) {
-        const dot = document.createElement('div');
-        let x = 0; let y = 0;
+    const sets = [
+        {count: visualProvinz, dist: 40, color: 'bg-slate-400', size: 'w-2.5 h-2.5', key: 'p'},
+        {count: visualMarkt, dist: 15, color: 'bg-teal-500/80', size: 'w-2 h-2', key: 'm'},
+        {count: visualDorf, dist: 5, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', key: 'd'}
+    ];
 
-        if (isMetropole && forceX !== null && forceY !== null) {
-            x = forceX; y = forceY;
-        } else {
-            let valid = false; let attempts = 0;
-            while (!valid && attempts < 150) {
-                x = 5 + seededRandom() * 90;
-                y = 5 + seededRandom() * 90;
-                attempts++;
-                if (mapMaskData && maskWidth > 0) {
-                    const pixelX = Math.floor((x / 100) * maskWidth);
-                    const pixelY = Math.floor((y / 100) * maskHeight);
-                    const pixelIndex = (pixelY * maskWidth + pixelX) * 4;
-                    if (mapMaskData[pixelIndex] < 50) continue; 
-                    if (seededRandom() > (mapMaskData[pixelIndex] / 255)) continue; 
-                }
-                valid = true;
+    sets.forEach(set => {
+        for(let i = 0; i < set.count; i++) {
+            let pos = findValidPos(currentMapSeed + i + set.key);
+            if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
+                const dot = document.createElement('div');
+                dot.className = `absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
+                dot.style.left = pos.x + '%'; 
+                dot.style.top = pos.y + '%';
+                markerContainer.appendChild(dot);
+                allPlaced.push(pos);
             }
         }
-        
-        dot.className = `absolute rounded-full ${colorClass} ${sizeClass} transform -translate-x-1/2 -translate-y-1/2 shadow-sm`;
-        dot.style.left = `${x}%`; dot.style.top = `${y}%`;
-        return dot;
-    }
+    });
 
-    // Provinzen (Abstands-Logik für die große Karte)
-    prngState = currentMapSeed + 100;
-    const minDistance = 4; // Etwas kleinerer Abstand, da die Karte größer ist
-    const placedProvinces = []; 
-    function getDistance(x1, y1, x2, y2) {
-        const aspect = 1778 / 1334; 
-        return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
-    }
-
-    for(let i = 0; i < visualProvinz; i++) {
-        let dotX = 0; let dotY = 0; let valid = false; let attempts = 0;
-        while (!valid && attempts < 200) {
-            dotX = 5 + seededRandom() * 90; dotY = 5 + seededRandom() * 90;
-            attempts++;
-            if (mapMaskData && maskWidth > 0) {
-                const pixelX = Math.floor((dotX / 100) * maskWidth);
-                const pixelY = Math.floor((dotY / 100) * maskHeight);
-                if (mapMaskData[(pixelY * maskWidth + pixelX) * 4] < 50) continue; 
-                if (seededRandom() > (mapMaskData[(pixelY * maskWidth + pixelX) * 4] / 255)) continue; 
-            }
-            if (dashboardState.cities.some(c => c.pct > 0 && getDistance(dotX, dotY, c.x, c.y) < minDistance)) continue; 
-            if (placedProvinces.some(p => getDistance(dotX, dotY, p.x, p.y) < minDistance)) continue; 
-            valid = true;
-        }
-        if (valid) {
-            placedProvinces.push({x: dotX, y: dotY});
-            markerContainer.appendChild(createFocusMarker('bg-slate-400', 'w-2.5 h-2.5', false, dotX, dotY));
-        }
-    }
-
-    // Märkte & Dörfer
-    prngState = currentMapSeed + 200;
-    for(let i = 0; i < visualMarkt; i++) markerContainer.appendChild(createFocusMarker('bg-teal-500/80', 'w-2 h-2'));
-    
-    prngState = currentMapSeed + 300;
-    for(let i = 0; i < visualDorf; i++) markerContainer.appendChild(createFocusMarker('bg-green-400/80', 'w-1.5 h-1.5'));
-
-   // Metropolen
     dashboardState.cities.forEach(city => {
         if (city.pct > 0) {
-            // Metropolen sind in der großen Karte nochmal etwas präsenter (w-4 h-4)
-            const bigDot = createFocusMarker('', 'w-4 h-4', true, city.x, city.y);
-            
+            const bigDot = document.createElement('div');
+            bigDot.className = `absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-20`;
+            bigDot.style.left = city.x + '%'; 
+            bigDot.style.top = city.y + '%';
             if (city.name === 'Schwarze Stadt') {
                 bigDot.style.backgroundColor = '#000000'; 
                 bigDot.style.border = '3px solid #94a3b8'; 
                 bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
             } else if (city.name === 'Weiße Hauptstadt') {
-                // === NEU: Massives Gold für die große Fokus-Karte ===
                 bigDot.style.backgroundColor = '#ffffff'; 
-                bigDot.style.border = '2.5px solid #f59e0b'; // Kräftiges Gold
-                bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; // Strahlende Aura
+                bigDot.style.border = '2.5px solid #f59e0b'; 
+                bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
             } else {
                 bigDot.style.backgroundColor = city.color; 
                 bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
                 bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
             }
-            
-            bigDot.style.zIndex = "10";
             markerContainer.appendChild(bigDot);
         }
     });
@@ -5273,11 +5166,10 @@ window.saveSnapshot = function() {
     const nameInput = document.getElementById('snapshot-name');
     const name = nameInput.value.trim();
     if(!name) { alert("Bitte gib dem Speicherstand einen Namen."); return; }
-
     const snap = {
         name: name,
         seed: currentMapSeed,
-        state: JSON.parse(JSON.stringify(dashboardState)) // Kopiert alle Regler & Städte
+        state: JSON.parse(JSON.stringify(dashboardState))
     };
     snapshots.push(snap);
     localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
@@ -5290,15 +5182,11 @@ window.loadSnapshot = function() {
     const sel = document.getElementById('snapshot-select');
     const idx = sel.value;
     if(idx === "") return;
-
     const snap = snapshots[idx];
-	// Schalter automatisch auf "Fixiert" stellen, damit der geladene Seed sicher bleibt!
     const toggle = document.getElementById('auto-reroll-toggle');
     if (toggle) toggle.checked = false;
     autoRerollMap = false;
-    currentMapSeed = snap.seed; // Lade exakt selbe Map-Verteilung
-    
-    // Lade Regler-Einstellungen
+    currentMapSeed = snap.seed;
     dashboardState.totalPopMio = snap.state.totalPopMio;
     dashboardState.urbanRate = snap.state.urbanRate;
     dashboardState.big5Rate = snap.state.big5Rate;
@@ -5307,8 +5195,7 @@ window.loadSnapshot = function() {
         dashboardState.cities[i].pct = c.pct;
         dashboardState.cities[i].locked = c.locked;
     });
-
-    updateDashboardUI(); // Alles neu zeichnen!
+    updateDashboardUI();
 };
 
 window.deleteSnapshot = function() {
@@ -5322,7 +5209,6 @@ window.deleteSnapshot = function() {
     }
 };
 
-// Initialisiere die Dropdown-Liste beim Start
 setTimeout(updateSnapshotSelect, 500);
 // --- SNAPSHOT SPEICHER LOGIK ENDE ---
 
