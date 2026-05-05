@@ -4968,7 +4968,7 @@ function initApp() {
             return null;
         }
 
-        function updateDynamicMap(vals) {
+function updateDynamicMap(vals) {
             const markerContainer = document.getElementById('map-markers');
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
@@ -4982,7 +4982,8 @@ function initApp() {
                 let pos = findValidPos(currentMapSeed + i + 10000); 
                 if(pos && !placed.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5)) {
                     const dot = document.createElement('div');
-                    dot.className = "marker-provinz absolute rounded-full bg-slate-400 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2";
+                    // GRÖSSER (w-2 h-2), BLAU & EBENE Z-20
+                    dot.className = "marker-provinz absolute rounded-full bg-blue-600 border border-blue-300 w-2 h-2 transform -translate-x-1/2 -translate-y-1/2 z-20";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
                     markerContainer.appendChild(dot);
                     placed.push(pos);
@@ -4992,7 +4993,8 @@ function initApp() {
                 let pos = findValidPos(currentMapSeed + i + 20000); 
                 if(pos) {
                     const dot = document.createElement('div');
-                    dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+                    // EBENE Z-10
+                    dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
                     markerContainer.appendChild(dot);
                 }
@@ -5001,7 +5003,8 @@ function initApp() {
                 let pos = findValidPos(currentMapSeed + i + 30000);
                 if(pos) {
                     const dot = document.createElement('div');
-                    dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+                    // EBENE Z-0 (Bleiben ganz unten)
+                    dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2 z-0";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
                     markerContainer.appendChild(dot);
                 }
@@ -5010,10 +5013,67 @@ function initApp() {
             dashboardState.cities.forEach(city => {
                 if (city.pct > 0) {
                     const bigDot = document.createElement('div');
-                    bigDot.className = "marker-metropole absolute rounded-full w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
+                    // EBENE Z-30 (Ganz oben)
+                    bigDot.className = "marker-metropole absolute rounded-full w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-30";
                     bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
                     bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
                     bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
+
+        function updateFocusMap(vals) {
+            const markerContainer = document.getElementById('map-markers-focus');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+
+            const visualProvinz = Math.floor(vals.provinzCount / 10); 
+            const visualMarkt = Math.floor(vals.marktCount / 10); 
+            const visualDorf = Math.floor(vals.weilerCount / 10); 
+            const allPlaced = [];
+
+            // HIER SIND GRÖSSE (w-3 h-3), FARBE UND Z-INDEX ANGEPASST
+            const sets = [
+                {count: visualProvinz, dist: 2.0, color: 'bg-blue-600 border border-blue-300 shadow-[0_0_5px_rgba(37,99,235,0.8)]', size: 'w-3 h-3', offset: 100000, markerClass: 'marker-provinz z-20'},
+                {count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2 h-2', offset: 200000, markerClass: 'marker-markt z-10'},
+                {count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1 h-1', offset: 300000, markerClass: 'marker-dorf z-0'}
+            ];
+
+            sets.forEach(set => {
+                for(let i = 0; i < set.count; i++) {
+                    let pos = findValidPos(currentMapSeed + i + set.offset); 
+                    if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
+                        const dot = document.createElement('div');
+                        dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
+                        dot.style.left = pos.x + '%'; 
+                        dot.style.top = pos.y + '%';
+                        markerContainer.appendChild(dot);
+                        allPlaced.push(pos);
+                    }
+                }
+            });
+
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    // EBENE Z-30 (Ganz oben)
+                    bigDot.className = `marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-30`;
+                    bigDot.style.left = city.x + '%'; 
+                    bigDot.style.top = city.y + '%';
+                    if (city.name === 'Schwarze Stadt') {
+                        bigDot.style.backgroundColor = '#000000'; 
+                        bigDot.style.border = '3px solid #94a3b8'; 
+                        bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
+                    } else if (city.name === 'Weiße Hauptstadt') {
+                        bigDot.style.backgroundColor = '#ffffff'; 
+                        bigDot.style.border = '2.5px solid #f59e0b'; 
+                        bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
+                    } else {
+                        bigDot.style.backgroundColor = city.color; 
+                        bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
+                        bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
+                    }
                     markerContainer.appendChild(bigDot);
                 }
             });
