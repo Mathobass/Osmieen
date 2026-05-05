@@ -4968,7 +4968,7 @@ function initApp() {
             return null;
         }
 
-    function updateDynamicMap(vals) {
+   function updateDynamicMap(vals) {
             const markerContainer = document.getElementById('map-markers');
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
@@ -5078,7 +5078,6 @@ function initApp() {
                 }
             });
         }
-
         // --- SNAPSHOT LOGIK START ---
         let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
 
