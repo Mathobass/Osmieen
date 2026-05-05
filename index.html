@@ -5266,28 +5266,34 @@ function initApp() {
             balance(index, ((parseFloat(val) || 0) / vals.big5Pop) * 100);
         };
 
-        // EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
-        const mappings = [
-            { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
-            { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
-            { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
-            { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
-        ];
+		// Wir haben den Code in eine Funktion gepackt, damit er nicht sofort losrennt
+function setupAllEventListeners() {
+    const mappings = [
+        { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+        { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+        { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+        { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+    ];
 
-        mappings.forEach(m => {
-            const updateState = (e) => {
-                dashboardState[m.stateKey] = parseFloat(e.target.value) || 0;
-                updateDashboardUI();
-            };
-            document.getElementById(`input-${m.id}`).addEventListener('input', updateState);
-            document.getElementById(`range-${m.id}`).addEventListener('input', updateState);
-            
-            const fInput = document.getElementById(`f-input-${m.fId}`);
-            if(fInput) {
-                fInput.addEventListener('input', updateState);
-                document.getElementById(`f-range-${m.fId}`).addEventListener('input', updateState);
-            }
-        });
+    mappings.forEach(m => {
+        const updateState = (e) => {
+            dashboardState[m.stateKey] = parseFloat(e.target.value) || 0;
+            updateDashboardUI();
+        };
+
+        // Wir holen uns die Elemente
+        const input = document.getElementById(`input-${m.id}`);
+        const range = document.getElementById(`range-${m.id}`);
+        const fInput = document.getElementById(`f-input-${m.fId}`);
+        const fRange = document.getElementById(`f-range-${m.fId}`);
+
+        // WICHTIG: Wir prüfen erst, ob das Element existiert (if), bevor wir addEventListener nutzen
+        if(input) input.addEventListener('input', updateState);
+        if(range) range.addEventListener('input', updateState);
+        if(fInput) fInput.addEventListener('input', updateState);
+        if(fRange) fRange.addEventListener('input', updateState);
+    });
+}
 
         function initDashboard() {
             const tooltips = { 
@@ -5729,8 +5735,33 @@ window.switchTab = function(tabId) {
 };
 
 window.addEventListener('load', () => {
-    setTimeout(() => { synth.getVoices(); }, 50);
-    renderStoryPage();
+    // 1. Sprachausgabe für das Storybook vorbereiten
+    setTimeout(() => { 
+        if(window.speechSynthesis) speechSynthesis.getVoices(); 
+    }, 50);
+
+    // 2. Die Regler-Logik aktivieren (die Funktion aus Schritt 1)
+    if (typeof setupAllEventListeners === "function") {
+        setupAllEventListeners();
+    }
+
+    // 3. Die Diagramme (Charts) einmalig bauen
+    if (typeof initDashboard === "function") {
+        initDashboard();
+    }
+
+    // 4. Die Karte und die Zahlen berechnen & zeichnen
+    if (typeof getCalculatedValues === "function") {
+        const initialVals = getCalculatedValues();
+        if (typeof updateFocusMap === "function") updateFocusMap(initialVals);
+        if (typeof updateDynamicMap === "function") updateDynamicMap(initialVals);
+    }
+
+    // 5. Kommentare und die erste Seite der Geschichte anzeigen
+    if (typeof renderComments === "function") renderComments();
+    renderStoryPage();
+
+    console.log("Osmieen-Wiki: Alle Systeme erfolgreich initialisiert.");
 });
     </script>
 </body>
