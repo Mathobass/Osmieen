@@ -2507,9 +2507,9 @@ function updateDynamicMap(vals) {
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
             
-            const visualProvinz = Math.floor(vals.provinzCount / 10); 
+            const visualProvinz = Math.floor(vals.provinzCount / 2.5); 
             const visualMarkt = Math.floor(vals.marktCount / 5); 
-            const visualDorf = Math.floor(vals.weilerCount / 2.5); 
+            const visualDorf = Math.floor(vals.weilerCount / 10); 
             
             const allPlaced = [];
             const sets = [
