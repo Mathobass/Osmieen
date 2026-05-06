@@ -3370,37 +3370,28 @@ window.jumpToCult = function(catId, itemIdx) {
             window.scrollTo(0,0);
         };
 
-        function calculateQuizResult() {
+function calculateQuizResult() {
             document.getElementById('quiz-question-area').classList.add('hidden');
             document.getElementById('quiz-result-area').classList.remove('hidden');
             
-            // 1. Deine Gesamtpunkte summieren
+            // 1. Grundwerte ermitteln
             let totalScore = userScores.reduce((a, b) => a + b, 0);
             if (totalScore === 0) totalScore = 1;
-
-            // 2. Deine Prozentanteile pro Farbe (0-100%)
             let pcts = userScores.map(v => Math.round((v / totalScore) * 100));
 
-            // 3. Dominanz-Schwelle festlegen
-            // Wir schauen: In welchen Farben hast du mehr als 20% erreicht?
-            // (Dieser Wert sorgt dafür, dass auch 1- oder 2-farbige Ergebnisse möglich sind)
+            // 2. Platz 1 bestimmen (Exakter Match über Schwelle)
             let dominantColors = pcts.map(p => p >= 20 ? 1 : 0);
-            
-            // Sonderfall: Falls du extrem ausgeglichen gewählt hast und nichts über 20% liegt,
-            // nehmen wir einfach die höchste Farbe.
             if (!dominantColors.includes(1)) {
                 let maxIdx = pcts.indexOf(Math.max(...pcts));
                 dominantColors[maxIdx] = 1;
             }
 
-            // 4. Den Kult suchen, der EXAKT diese Farbkombination hat
             let finalCult = null;
             let finalCat = '';
             let finalIdx = 0;
 
             Object.keys(appData.data).forEach(cat => {
                 appData.data[cat].forEach((cult, index) => {
-                    // Vergleiche dein Profil [1,0,0,1,0] mit dem Profil des Kults
                     if (cult.colors.every((val, i) => val === dominantColors[i])) {
                         finalCult = cult;
                         finalCat = cat;
@@ -3409,13 +3400,12 @@ window.jumpToCult = function(catId, itemIdx) {
                 });
             });
 
-            // Fallback: Wenn keine exakte Kombi gefunden wurde (Sicherheit)
             if (!finalCult) {
                 finalCult = appData.data['mono'][pcts.indexOf(Math.max(...pcts))];
                 finalCat = 'mono';
             }
 
-            // 5. UI befüllen
+            // UI für Platz 1 befüllen
             document.getElementById('quiz-result-title').innerText = finalCult.name;
             document.getElementById('quiz-result-subtitle').innerText = finalCult.subtitle;
             document.getElementById('quiz-result-essence').innerText = finalCult.sections[0].essence;
@@ -3423,41 +3413,57 @@ window.jumpToCult = function(catId, itemIdx) {
             const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
             let sortedColors = pcts.map((p, i) => ({p, n: colorNames[i]})).sort((a,b) => b.p - a.p);
 
-            let explanation = `Deine Seele setzt sich aus folgenden Kräften zusammen:<br>
-            <div class="flex flex-wrap gap-2 mt-3 mb-4 justify-center">
-                ${sortedColors.filter(c => c.p > 5).map(c => `
-                    <span class="px-2 py-1 bg-stone-200 rounded font-mono text-[10px] text-stone-800 border border-stone-300">
-                        <b>${c.p}%</b> ${c.n}
-                    </span>
-                `).join('')}
-            </div>
-            Basierend auf deiner Punkteverteilung bist du ein Vertreter von <strong>${finalCult.name}</strong>.`;
+            document.getElementById('quiz-result-explanation').innerHTML = `
+                Deine Seele setzt sich aus folgenden Kräften zusammen:<br>
+                <div class="flex flex-wrap gap-2 mt-3 mb-4 justify-center">
+                    ${sortedColors.filter(c => c.p > 5).map(c => `
+                        <span class="px-2 py-1 bg-stone-200 rounded font-mono text-[10px] text-stone-800 border border-stone-300">
+                            <b>${c.p}%</b> ${c.n}
+                        </span>
+                    `).join('')}
+                </div>
+                Basierend auf deinem Fokus wurdest du als <strong>${finalCult.name}</strong> identifiziert.`;
 
-            document.getElementById('quiz-result-explanation').innerHTML = explanation;
+            document.getElementById('quiz-result-link-container').innerHTML = `
+                <button onclick="jumpToCult('${finalCat}', ${finalIdx})" class="mt-4 text-sm bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition hover:bg-amber-700 shadow-md flex items-center gap-2 mx-auto">
+                    <span>➔ Details im Kompendium</span>
+                </button>`;
 
-            const linkContainer = document.getElementById('quiz-result-link-container');
-            linkContainer.innerHTML = `<button onclick="jumpToCult('${finalCat}', ${finalIdx})" class="mt-4 text-sm bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition hover:bg-amber-700 shadow-md flex items-center gap-2 mx-auto"><span>➔ Details im Kompendium</span></button>`;
-
-            // 6. Die "Ähnlichen Pfade" (Nächstbeste Treffer)
-            let otherResults = [];
+            // 3. Platz 2 & 3 NEU berechnen (Fokus-Dichte-Logik)
+            let otherOptions = [];
             Object.keys(appData.data).forEach(cat => {
                 appData.data[cat].forEach((cult, index) => {
+                    // Den bereits gewählten Haupt-Kult ausschließen
                     if (cult.name === finalCult.name) return;
-                    let score = 0;
+
+                    // Wie viele Farben hat dieser Kult? (z.B. 1, 2 oder 3)
+                    let numColorsInCult = cult.colors.reduce((a, b) => a + b, 0);
+                    
+                    // Wie viele Punkte hast du in den Farben, die dieser Kult hat?
+                    let pointsInCultColors = 0;
                     for (let i = 0; i < 5; i++) {
-                        score += (userScores[i] * cult.colors[i]);
+                        if (cult.colors[i] === 1) pointsInCultColors += pcts[i];
                     }
-                    otherResults.push({cult, score, cat, index});
+
+                    // Der "Fokus-Score": Durchschnittliche Übereinstimmung pro Farbe
+                    // Das verhindert, dass 5-Farben-Kulte durch bloße Masse gewinnen
+                    let focusScore = pointsInCultColors / numColorsInCult;
+
+                    otherOptions.push({ cult, focusScore, cat, index });
                 });
             });
-            otherResults.sort((a, b) => b.score - a.score);
+
+            // Nach Fokus-Dichte sortieren
+            otherOptions.sort((a, b) => b.focusScore - a.focusScore);
 
             const getColorLabels = (colors) => {
                 const names = ["Weiß", "Blau", "Schwarz", "Rot", "Grün"];
                 return colors.map((val, i) => val === 1 ? names[i] : null).filter(n => n).join(' / ');
             };
+
+            // Plätze 2 und 3 anzeigen
             [1, 2].forEach(i => {
-                const res = otherResults[i-1];
+                const res = otherOptions[i-1];
                 document.getElementById(`quiz-runnerup-${i}-title`).innerText = res.cult.name;
                 document.getElementById(`quiz-runnerup-${i}-sub`).innerHTML = `
                     <span class="block mb-1 text-[10px] opacity-75">${res.cult.subtitle}</span>
