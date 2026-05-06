@@ -2131,7 +2131,10 @@ function switchTab(tabId) {
                 else { refreshDashboardCharts(); }
             } else if(tabId === 'tab-map-focus') {
                 activeTab.classList.remove('hidden');
-                activeTab.classList.add('flex'); // <--- WICHTIG: flex statt block!
+                activeTab.classList.add('flex'); 
+                // NEU: Zwingt die Karte sich sofort aufzubauen, wenn der Tab angeklickt wird!
+                if(!dashboardInitialized) { initDashboard(); } 
+                else { refreshDashboardCharts(); }
             } else {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('block');
