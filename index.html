@@ -116,6 +116,28 @@
         body.hide-provinz .marker-provinz { display: none !important; }
         body.hide-markt .marker-markt { display: none !important; }
         body.hide-dorf .marker-dorf { display: none !important; }
+		/* --- NEU: MAP TOOLTIP --- */
+        #map-tooltip {
+            position: absolute;
+            pointer-events: none;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(4px);
+            border: 1px solid #475569;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: monospace;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            transform: translate(-50%, -120%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+        }
+        #map-tooltip.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="flex h-screen w-full bg-stone-50 overflow-hidden">
@@ -1905,7 +1927,8 @@
                     <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
                         <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
                              style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
-                            <div id="map-markers-focus" class="absolute inset-0"></div>       
+                            <div id="map-markers-focus" class="absolute inset-0"></div>     
+							<div id="map-tooltip"></div>
                             <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
                                 <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
                                 <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
@@ -2544,12 +2567,14 @@ function updateDynamicMap(vals) {
                 }
             });
             
+// Tooltip Element holen
+            const tooltip = document.getElementById('map-tooltip');
             dashboardState.cities.forEach(city => {
                 if (city.pct > 0) {
                     const bigDot = document.createElement('div');
-                    bigDot.className = `marker-metropole absolute rounded-full w-7 h-7 transform -translate-x-1/2 -translate-y-1/2 z-30`;
+                    bigDot.className = `marker-metropole absolute rounded-full w-7 h-7 transform -translate-x-1/2 -translate-y-1/2 z-30 cursor-help`;
                     bigDot.style.left = city.x + '%'; 
-                    bigDot.style.top = city.y + '%';
+                    bigDot.style.top = city.y + '%';               
                     if (city.name === 'Schwarze Stadt') {
                         bigDot.style.backgroundColor = '#000000'; 
                         bigDot.style.border = '3px solid #94a3b8'; 
@@ -2563,6 +2588,22 @@ function updateDynamicMap(vals) {
                         bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
                         bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
                     }
+                    // Tooltip Logik (Rechnet die % in absolute Einwohner um)
+                    const absPop = Math.round(vals.big5Pop * (city.pct / 100));               
+                    bigDot.addEventListener('mouseenter', () => {
+                        tooltip.innerHTML = `<strong style="color: ${city.color}; font-size: 13px;">${city.name}</strong><br/><span class="text-slate-400">Einwohner:</span> ${formatNum(absPop)}`;
+                        tooltip.classList.add('visible');
+                    });        
+                    bigDot.addEventListener('mousemove', (e) => {
+                        const containerRect = document.getElementById('map-transform-container').getBoundingClientRect();
+                        const x = (e.clientX - containerRect.left) / currentZoom;
+                        const y = (e.clientY - containerRect.top) / currentZoom;
+                        tooltip.style.left = x + 'px';
+                        tooltip.style.top = y + 'px';
+                    });     
+                    bigDot.addEventListener('mouseleave', () => {
+                        tooltip.classList.remove('visible');
+                    });
                     markerContainer.appendChild(bigDot);
                 }
             });
