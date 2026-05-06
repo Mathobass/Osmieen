@@ -216,7 +216,7 @@
                         <span>Blutprozession (Idee)</span>
                         <span>🩸</span>
                     </button></li>
-                    <li><button onclick="switchTab('tab-cults')" id="btn-cults" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+						<li><button onclick="switchTab('tab-cults')" id="btn-cults" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                         <span>Vampirkulte (Interaktiv)</span>
                         <span>🩸</span>
                     </button></li>
@@ -224,11 +224,11 @@
                         <span>Kompaktes Dashboard</span>
                         <span>📱</span>
                     </button></li>
-                    <li><button onclick="switchTab('tab-map-focus')" id="btn-map-focus" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+						<li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                         <span>Große Karten-Ansicht</span>
                         <span>🗺️</span>
                     </button></li>
-                    <li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+                    <li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                      <span>Storybook: Geschichte (Test)</span>
                     <span>📖</span>
                     </button></li>
@@ -1913,7 +1913,12 @@
             <!-- === KARTEN FOKUS TAB START === -->
             <section id="tab-map-focus" class="content-tab w-full h-full hidden bg-slate-950 flex-col overflow-hidden">
                 <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center z-10 shadow-lg shrink-0">
-                    <h2 class="text-xl font-black text-amber-600 uppercase italic tracking-tighter m-0">Kommandozentrale</h2>
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-xl font-black text-amber-600 uppercase italic tracking-tighter m-0">Kommandozentrale</h2>
+                        <button onclick="openFeedbackModal('Große Karten-Ansicht')" type="button" class="px-2 py-1 rounded bg-slate-800 border border-slate-600 hover:border-slate-400 hover:bg-slate-700 transition-all flex items-center shadow-sm cursor-pointer">
+                            💬 <span class="text-[10px] uppercase tracking-widest font-normal text-slate-300 ml-1 hidden md:inline">Notiz</span>
+                        </button>
+                    </div>
                     <div class="text-[10px] text-slate-500 font-mono">HD-Rendering: Erhöhte Siedlungsdichte</div>
                 </div>
                 <div class="flex-1 flex overflow-hidden relative">
@@ -1957,7 +1962,7 @@
                     <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
 						<button id="fs-btn-focus" onclick="const vp = document.getElementById('map-viewport'); vp.classList.toggle('map-fullscreen'); this.innerText = vp.classList.contains('map-fullscreen') ? '✖ Schließen' : '⛶ Vollbild';" class="lg:hidden absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-lg border border-slate-600 shadow-xl z-[100] text-xs font-bold uppercase tracking-widest transition backdrop-blur-sm">⛶ Vollbild</button>
                         <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
-                             style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
+                             style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(0.7);">
                             <div id="map-markers-focus" class="absolute inset-0"></div>     
 							<div id="map-tooltip"></div>
                             <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
@@ -2868,8 +2873,8 @@ function updateDynamicMap(vals) {
             updateDynamicMap(vals);
             updateFocusMap(vals); 
         }
-        // --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
-        let currentZoom = 1;
+	// --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
+        let currentZoom = 0.7; // Startet weiter rausgezoomt
         let panX = 0;
         let panY = 0;
         let isPanning = false;
@@ -2893,12 +2898,12 @@ function updateDynamicMap(vals) {
         }
         window.zoomMap = function(delta) {
             currentZoom += delta;
-            if (currentZoom < 0.5) currentZoom = 0.5;
+            if (currentZoom < 0.3) currentZoom = 0.3; // Lässt dich jetzt noch weiter rauszoomen
             if (currentZoom > 5.0) currentZoom = 5.0;
             applyTransform();
         }
         window.resetMapZoom = function() {
-        	   currentZoom = 1; panX = 0; panY = 0; applyTransform();
+             currentZoom = 0.7; panX = 0; panY = 0; applyTransform(); // Reset geht jetzt auch auf 0.7 zurück
         }
         if (viewport && mapContainer) {
             viewport.addEventListener('wheel', (e) => {
