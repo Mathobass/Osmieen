@@ -2123,14 +2123,1031 @@
                     </div>
                 </div>
             </section>
-            ```
----
-### Schritt 2: Die Intelligenz (JavaScript) einbauen
-Scrolle nun in deinem Code **ganz nach unten**, fast bis ans Ende der Datei.
-Suche mit **STRG + F** nach exakt diesem Text:
-```javascript
-window.addEventListener('load', () => {
-			// --- 6. QUIZ LOGIK (ERWEITERT) ---
+<section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <h1>Dein Feedback-Zettel</h1>
+                <p class="text-lg text-stone-500 font-medium mb-8">Hier sind alle deine gesammelten Anmerkungen. Überprüfe sie und schicke sie gesammelt an mich ab. Mach das am besten nicht nach jedem Ding einzeln, sondern sammel die Sachen erst hier</p>
+                <div id="feedback-cart-list" class="space-y-4 mb-8">
+                    <p class="text-stone-400 italic py-8 text-center border-2 border-dashed border-stone-200 rounded-xl">Dein Zettel ist noch leer. Klicke im Wiki auf die 💬 Buttons neben den Überschriften!</p>
+                </div>
+                <div class="bg-white border border-stone-200 rounded-xl p-6 shadow-sm">
+                    <h3 class="mt-0 mb-4 text-stone-800">Alles fertig? Dann ab dafür!</h3>
+                    <form action="https://formspree.io/f/xojrvjvz" method="POST" id="final-submit-form" onsubmit="prepareFinalSubmission(event)">
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Dein Name</label>
+                            <input type="text" name="Absender" required class="w-full bg-stone-50 border border-stone-200 rounded p-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Wer schickt dieses Feedback?">
+                        </div>
+                        <textarea name="Gesammeltes_Feedback" id="hidden-feedback-payload" hidden></textarea>
+                        <button type="submit" id="btn-submit-all" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>Gesammeltes Feedback abschicken</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="feedback-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative">
+            <div class="bg-stone-900 p-4 flex justify-between items-center text-white">
+                <h3 class="font-bold text-lg m-0">Notiz hinzufügen</h3>
+                <button onclick="closeFeedbackModal()" class="text-stone-400 hover:text-white text-xl leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Bereich:</label>
+                    <input type="text" id="modal-context" readonly class="w-full bg-stone-100 border border-stone-200 rounded p-2 text-sm text-amber-700 font-bold focus:outline-none">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Dein Vorschlag</label>
+                    <textarea id="modal-text" rows="5" class="w-full bg-stone-50 border border-stone-200 rounded p-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Was würdest du hier ändern?"></textarea>
+                </div>
+                <button onclick="saveFeedbackToCart()" class="w-full bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 rounded-lg transition shadow-md">Auf den Zettel packen</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 0. NEUE LOGIK FÜR ALLE AUF/ZUKLAPPEN & QUERVERWEISE ---
+        function toggleAllDetails(buttonElem, state) {
+            const tab = buttonElem.closest('.content-tab');
+            if (tab) {
+                const details = tab.querySelectorAll('details.section-details'); 
+                details.forEach(d => d.open = state);
+            }
+        }
+        function crossReference(tabId, targetId) {
+            switchTab(tabId);
+            setTimeout(() => {
+                const target = document.getElementById(targetId);
+                if (target) {
+                    const details = target.closest('details');
+                    if (details && !details.open) {
+                        details.open = true;
+                    }
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    target.style.transition = 'background-color 0.5s ease-in-out';
+                    target.style.backgroundColor = '#fde68a'; // amber-200
+                    setTimeout(() => {
+                        target.style.backgroundColor = ''; 
+                    }, 1500);
+                }
+            }, 100);
+        }
+        function openCultsTool(categoryId) {
+            switchTab('tab-cults');
+            if (categoryId) {
+                setTimeout(() => { selectCategory(categoryId); }, 100);
+            }
+        }
+
+        // --- 1. SIDEBAR RESPONSIVE & RESIZE LOGIK ---
+        function toggleSidebar(forceState) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            const open = forceState !== undefined ? forceState : isClosed;
+            if (open) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+        const sidebar = document.getElementById('sidebar');
+        const resizer = document.getElementById('resizer');
+        let isResizing = false;
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none'; 
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            let newWidth = e.clientX;
+            if (newWidth >= 200 && newWidth <= 500) {
+                sidebar.style.width = newWidth + 'px';
+            }
+        });
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = '';
+            }
+        });
+
+        // --- 2. TAB NAVIGATION LOGIK ---
+        function switchTab(tabId) {
+            if (window.innerWidth < 1024) { toggleSidebar(false); }
+            document.querySelectorAll('.content-tab').forEach(tab => {
+                tab.classList.remove('block', 'flex');
+                tab.classList.add('hidden');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-stone-800', 'text-white');
+                btn.classList.add('text-stone-400');
+            });
+            const activeTab = document.getElementById(tabId);
+            if(tabId === 'tab-cults') {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('flex');
+                if(radarChartInstance) { radarChartInstance.resize(); } 
+                else { initApp(); }
+            } else if(tabId === 'tab-dashboard') {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('block');
+                if(!dashboardInitialized) { initDashboard(); } 
+                else { refreshDashboardCharts(); }
+            } else if(tabId === 'tab-map-focus') {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('flex'); 
+                if(!dashboardInitialized) { initDashboard(); } 
+                else { refreshDashboardCharts(); }
+            } else {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('block');
+            }
+            const activeBtn = document.getElementById(tabId.replace('tab-', 'btn-'));
+            if(activeBtn) {
+                activeBtn.classList.remove('text-stone-400');
+                if(tabId === 'tab-cults') {
+                    activeBtn.classList.add('bg-stone-800'); 
+                } else {
+                    activeBtn.classList.add('bg-stone-800', 'text-white');
+                }
+            }
+            if(tabId === 'tab-feedback') { renderFeedbackCart(); }
+            if(tabId !== 'tab-storybook') { stopStoryPlayback(); } else { renderStoryPage(); }
+        }
+
+        // --- 3. VAMPIRKULT DATEN & LOGIK ---
+        const appData = {
+            categories: [
+                { id: 'mono', title: 'Fundamente (1 Gott)' },
+                { id: 'guilds', title: 'Pakte (2 Götter)' },
+                { id: 'shards', title: 'Shards (3 Verbündete)' },
+                { id: 'wedges', title: 'Wedges (3 Verfeindete)' },
+                { id: 'four', title: 'Nephilim (4 Götter)' },
+                { id: 'five', title: 'Die Weltenseele (5 Götter)' }
+            ],
+            introTexts: {
+                'mono': 'Dieser Bereich analysiert die fünf fundamentalen Kulte. Jeder repräsentiert die reine, kompromisslose Weltanschauung seines Gottes.',
+                'guilds': 'Zweifarbige Kombinationen zeigen, wie sich Kulte verbünden. Sie repräsentieren starke Synergien und formen spezialisierte, mächtige Gesellschaften.',
+                'shards': 'Die Shards repräsentieren drei verbündete Götter. Diese Kombinationen erzeugen stabile, aber oft hochgradig spezialisierte extreme Strukturen.',
+                'wedges': 'Die Wedges vereinen einen Kern mit seinen zwei "Feinden". Dies erzeugt tiefe innere Spannungen, die zu faszinierenden Lösungen führen.',
+                'four': 'Vier-Götter-Konzepte werden am besten dadurch definiert, wer ihnen fehlt. Der blinde Fleck diktiert die fundamentalen Schwächen dieser Strukturen.',
+                'five': 'Die Vereinigung aller Aspekte. Die absolute Vollkommenheit, die jedoch die Gefahr birgt, an einem Mangel an klarem Fokus zu zerbrechen.'
+            },
+            data: {
+                'mono': [
+                    {
+                        name: 'Elidias Kult', colors: [1,0,0,0,0], stats: [10, 3, 2, 1, 2], subtitle: 'Frieden durch Ordnung',
+                        sections: [{ type: 'standard', essence: 'Die Welt braucht Gesetze, um das Leid zu beenden.', pos: 'Gerechtigkeit, Schutz der Schwachen, Ehre, Uneigennützigkeit, Gemeinschaft.', neg: 'Dogmatismus, Autoritarismus, Starrheit, Unterdrückung des Individuums.' }]
+                    },
+                    {
+                        name: 'Efaros Kult', colors: [0,1,0,0,0], stats: [6, 10, 4, 1, 2], subtitle: 'Perfektion durch Wissen',
+                        sections: [{ type: 'standard', essence: 'Die Welt ist ein System, das durch Verstand optimiert wird.', pos: 'Logik, Rationalität, Neugier, Erfindergeist, stetige Selbstverbesserung.', neg: 'Kaltblütigkeit, Arroganz, Passivität (durch Überanalyse), manipulative Geheimniskrämerei.' }]
+                    },
+                    {
+                        name: 'Erebias Kult', colors: [0,0,1,0,0], stats: [3, 4, 10, 6, 2], subtitle: 'Macht durch Gelegenheit',
+                        sections: [{ type: 'standard', essence: 'Die Welt ist grausam; nur der Stärkste (und Skrupelloseste) überlebt.', pos: 'Ambition, Selbstvertrauen, Unabhängigkeit, brutaler Realismus, Pragmatismus.', neg: 'Grausamkeit, Egoismus, Nihilismus, totale Rücksichtslosigkeit.' }]
+                    },
+                    {
+                        name: 'Porfiras Kult', colors: [0,0,0,1,0], stats: [1, 2, 6, 10, 7], subtitle: 'Freiheit durch Handeln',
+                        sections: [{ type: 'standard', essence: 'Die Welt muss gefühlt werden; Emotionen und Impulsivität sind der Weg.', pos: 'Empathie, Leidenschaft, Mut, Loyalität gegenüber Freunden, totale Authentizität.', neg: 'Kurzfristiges Denken, Unberechenbarkeit, blinde Wut, unkontrollierte Destruktivität.' }]
+                    },
+                    {
+                        name: 'Nileos Kult', colors: [0,0,0,0,1], stats: [5, 1, 3, 5, 10], subtitle: 'Akzeptanz durch Natur',
+                        sections: [{ type: 'standard', essence: 'Die Welt ist bereits perfekt; das Schicksal und der Instinkt leiten den Weg.', pos: 'Harmonie, Geduld, Naturverbundenheit, Stärke, spirituelle Ruhe.', neg: 'Fatalismus (Schicksalsergebenheit), Fortschrittsfeindlichkeit, Primitivismus.' }]
+                    }
+                ],
+                'guilds': [
+                    { name: 'Azorius (Elidia/Efaro)', colors: [1,1,0,0,0], stats: [10, 8, 2, 1, 2], subtitle: 'Ordnung durch Wissen', sections: [{ type: 'standard', essence: 'Perfekte Bürokratie und unfehlbare Gesetze.', pos: 'Stabilität, Fairness vor dem Gesetz, friedliche Konfliktlösung.', neg: 'Lähmende Bürokratie, emotionale Kälte, Tyrannei durch Paragraphen.' }]},
+                    { name: 'Dimir (Efaro/Erebia)', colors: [0,1,1,0,0], stats: [4, 9, 9, 1, 2], subtitle: 'Macht durch Wissen', sections: [{ type: 'standard', essence: 'Kontrolle der Realität aus dem Verborgenen.', pos: 'Strategische Genialität, Diskretion, Anpassungsfähigkeit.', neg: 'Paranoia, Täuschung, Identitätsverlust, Zerstörung von Vertrauen.' }]},
+                    { name: 'Rakdos (Erebia/Porfira)', colors: [0,0,1,1,0], stats: [1, 2, 9, 9, 3], subtitle: 'Freiheit durch Schmerz/Lust', sections: [{ type: 'standard', essence: 'Ungezügelter Hedonismus im Hier und Jetzt.', pos: 'Furchtlose Selbstentfaltung, enorme emotionale Energie.', neg: 'Sadismus, Chaos, Selbstzerstörung, völlige Rücksichtslosigkeit.' }]},
+                    { name: 'Gruul (Porfira/Nileo)', colors: [0,0,0,1,1], stats: [1, 1, 4, 8, 9], subtitle: 'Instinkt über Zivilisation', sections: [{ type: 'standard', essence: 'Einreißen der Mauern, die den Geist einengen.', pos: 'Natürliche Stärke, Ehrlichkeit, tiefe Verbundenheit zur physischen Welt.', neg: 'Primitivismus, unkontrollierte Wutausbrüche, Unfähigkeit zur Planung.' }]},
+                    { name: 'Selesnya (Nileo/Elidia)', colors: [1,0,0,0,1], stats: [8, 2, 1, 3, 9], subtitle: 'Harmonie durch Gemeinschaft', sections: [{ type: 'standard', essence: 'Das Individuum ordnet sich dem großen Ganzen unter.', pos: 'Altruismus, nachhaltiges Wachstum, Schutz der Schwachen.', neg: 'Konformitätsdruck, Unterdrückung des Individuums, Xenophobie.' }]},
+                    { name: 'Orzhov (Elidia/Erebia)', colors: [1,0,1,0,0], stats: [8, 4, 9, 2, 1], subtitle: 'Hierarchie durch Gier', sections: [{ type: 'standard', essence: 'Strukturierte Ausbeutung durch Religion und Gesetz.', pos: 'Loyalität innerhalb der Hierarchie, Disziplin, Langzeitplanung.', neg: 'Gnadenlose Gier, Korruption, Versklavung, Heuchelei.' }]},
+                    { name: 'Izzet (Efaro/Porfira)', colors: [0,1,0,1,0], stats: [2, 8, 4, 9, 2], subtitle: 'Kreativität durch Experiment', sections: [{ type: 'standard', essence: 'Brillante, wenn auch riskante Geistesblitze.', pos: 'Wissenschaftlicher Fortschritt, intellektuelle Begeisterung, Innovation.', neg: 'Unverantwortlichkeit, Unfokussiertheit, extreme Sicherheitsrisiken.' }]},
+                    { name: 'Golgari (Erebia/Nileo)', colors: [0,0,1,0,1], stats: [3, 2, 7, 3, 9], subtitle: 'Leben durch Tod', sections: [{ type: 'standard', essence: 'Akzeptanz des ewigen Kreislaufs von Verfall und neuem Wachstum.', pos: 'Pragmatismus, Widerstandsfähigkeit, ökologischer Realismus.', neg: 'Besessenheit vom Morbiden, mangelnde Ästhetik, Entmenschlichung.' }]},
+                    { name: 'Boros (Porfira/Elidia)', colors: [1,0,0,1,0], stats: [7, 2, 2, 8, 2], subtitle: 'Leidenschaftliche Ordnung', sections: [{ type: 'standard', essence: 'Gerechter Zorn zur Durchsetzung von Moral und Sicherheit.', pos: 'Heroismus, Mut, Kameradschaft, kompromissloser moralischer Kompass.', neg: 'Fanatismus, militante Aggression, Neigung zur Lynchjustiz.' }]},
+                    { name: 'Simic (Nileo/Efaro)', colors: [0,1,0,0,1], stats: [4, 8, 2, 2, 8], subtitle: 'Beschleunigte Evolution', sections: [{ type: 'standard', essence: 'Optimierung des biologischen Erbes durch Wissenschaft.', pos: 'Anpassungsfähigkeit, medizinischer Fortschritt, ökologische Innovation.', neg: 'Hybris (Gott spielen), Erschaffung von Monstrositäten, Entfremdung.' }]}
+                ],
+                'shards': [
+                    { name: 'Bant', colors: [1,1,0,0,1], stats: [9, 5, 1, 1, 7], subtitle: 'Die strukturierte Gesellschaft', sections: [{ type: 'standard', essence: 'Die utopische Ritterordnung. Frieden durch Disziplin, Kastenwesen und Ehre.', pos: 'Schutz, Verlässlichkeit.', neg: 'Soziale Starrheit, Hilflosigkeit gegen Böses.' }]},
+                    { name: 'Obscura', colors: [1,1,1,0,0], stats: [9, 9, 8, 1, 1], subtitle: 'Die meisterhaften Spione', sections: [{ type: 'standard', essence: 'Macht durch Kontrolle von Informationen und Prophezeiungen.', pos: 'Weitsicht, strategische Brillanz.', neg: 'Paranoia, Manipulation der objektiven Wahrheit.' }]},
+                    { name: 'Maestros', colors: [0,1,1,1,0], stats: [2, 8, 10, 8, 1], subtitle: 'Die mörderischen Eliten', sections: [{ type: 'standard', essence: 'Aristokraten, die Auftragsmord als hohe Kunstform zelebrieren.', pos: 'Ästhetik, Bewahrung der Geschichte.', neg: 'Arroganz, Dekadenz, Mord aus Vergnügen.' }]},
+                    { name: 'Riveteers', colors: [0,0,1,1,1], stats: [1, 1, 8, 8, 10], subtitle: 'Die Arbeiter der Zerstörung', sections: [{ type: 'standard', essence: 'Ein mafia-ähnlicher Zusammenschluss, der durch rohe Kraft dominiert.', pos: 'Solidarität untereinander, Belastbarkeit.', neg: 'Zerstörungswut, Rücksichtslosigkeit.' }]},
+                    { name: 'Naya', colors: [1,0,0,1,1], stats: [6, 1, 1, 8, 9], subtitle: 'Die wilde Pracht', sections: [{ type: 'standard', essence: 'Ein Dschungelparadies, das gigantische Bestien verehrt.', pos: 'Lebensfreude, Respekt vor der Natur.', neg: 'Naivität, Anti-Intellektualismus.' }]}
+                ],
+                'wedges': [
+                    { name: 'Abzan', colors: [1,0,1,0,1], stats: [7, 2, 7, 2, 8], subtitle: 'Die Festung der Familie', sections: [{ type: 'standard', essence: 'Überleben in der Wüste durch absolute Loyalität, Verteidigung und Ahnenverehrung.', pos: 'Resilienz.', neg: 'Isolationismus, Starrheit.' }]},
+                    { name: 'Jeskai', colors: [1,1,0,1,0], stats: [9, 8, 2, 6, 2], subtitle: 'Die erleuchteten Strategen', sections: [{ type: 'standard', essence: 'Kampfmönche, die durch körperliche Disziplin und geistige Klarheit siegen.', pos: 'Intellektuelle Beherrschung.', neg: 'Arroganz, emotionale Distanz.' }]},
+                    { name: 'Zagoth', colors: [0,1,1,0,1], stats: [3, 7, 8, 1, 7], subtitle: 'Der illusionäre Dschungel', sections: [{ type: 'standard', essence: 'Ein Ökosystem, in dem Überleben durch perfekte Tarnung und ständige Mutation gesichert wird.', pos: 'Höchste biologische Komplexität.', neg: 'Ein Leben in ständiger Paranoia.' }]},
+                    { name: 'Savai', colors: [1,0,1,1,0], stats: [6, 2, 8, 8, 2], subtitle: 'Das blutige Grasland', sections: [{ type: 'standard', essence: 'Eine gnadenlose Jagdwelt, in der Raubtiere in perfekten, brutalen Rudeln agieren.', pos: 'Perfekte Jagd-Zusammenarbeit.', neg: 'Absolute Unerbittlichkeit, Schwäche ist das Todesurteil.' }]},
+                    { name: 'Temur', colors: [0,1,0,1,1], stats: [2, 6, 2, 7, 8], subtitle: 'Die eisigen Schamanen', sections: [{ type: 'standard', essence: 'Tief spirituelle Überlebenskünstler in rauen Bergen, geführt durch Ahnenvisionen.', pos: 'Urwissen, physische Robustheit.', neg: 'Ablehnung von Fortschritt, Wildheit.' }]}
+                ],
+                'four': [
+                    { name: 'Glint (Ohne Elidia)', colors: [0,1,1,1,1], stats: [0, 8, 8, 8, 8], subtitle: 'Fehlen von Ordnung', sections: [{ type: 'standard', essence: 'Totales, instinktives Wachstum und Chaos ohne jeglichen moralischen Kompass oder soziale Struktur.', pos: 'Grenzenlose Freiheit und Anpassungsfähigkeit.', neg: 'Komplette Instabilität, kein Sinn für Gemeinschaft.' }]},
+                    { name: 'Dune (Ohne Efaro)', colors: [1,0,1,1,1], stats: [6, 0, 7, 8, 8], subtitle: 'Fehlen von Logik', sections: [{ type: 'standard', essence: 'Physische Präsenz und Stärke ohne den Drang zu reflektieren, zu planen oder technologischen Fortschritt zu suchen.', pos: 'Rohe Effizienz, unerschütterliche physische Macht.', neg: 'Unfähigkeit zur Weiterentwicklung, blinder Aktionismus.' }]},
+                    { name: 'Ink (Ohne Erebia)', colors: [1,1,0,1,1], stats: [7, 7, 0, 7, 7], subtitle: 'Fehlen von Egoismus', sections: [{ type: 'standard', essence: 'Maximale altruistische Zusammenarbeit ohne die Fähigkeit zu Egoismus; unfähig, harte Entscheidungen zu treffen.', pos: 'Totale Empathie und kollektives Wachstum.', neg: 'Schutzlosigkeit gegenüber Verrat, naiv.' }]},
+                    { name: 'Witch (Ohne Porfira)', colors: [1,1,1,0,1], stats: [8, 8, 7, 0, 7], subtitle: 'Fehlen von Emotion', sections: [{ type: 'standard', essence: 'Eine perfekt geplante, organisch wachsende Hierarchie ohne jegliche Leidenschaft oder Impulsivität.', pos: 'Perfekte Organisation und logisches organisches Wachstum.', neg: 'Freudlos, mechanisch, eiskalt und berechnend.' }]},
+                    { name: 'Yore (Ohne Nileo)', colors: [1,1,1,1,0], stats: [7, 8, 7, 7, 0], subtitle: 'Fehlen von Natur', sections: [{ type: 'standard', essence: 'Absolute gesellschaftliche Brillanz ohne Bindung an Natur oder Tradition; instabil mangels natürlicher Erdung.', pos: 'Maximaler Fortschritt.', neg: 'Entfremdung von den Ursprüngen, zerstörerisch.' }]}
+                ],
+                'five': [
+                    { name: 'Die Weltenseele', colors: [1,1,1,1,1], stats: [5, 5, 5, 5, 5], subtitle: 'Das absolute Gleichgewicht', sections: [{ type: 'standard', essence: 'Das absolute Gleichgewicht aller Kräfte. Konflikte werden nicht gelöst, sondern existieren harmonisch nebeneinander.', pos: 'Allmacht, Vollkommenheit und universelles Verständnis.', neg: 'Identitätsverlust durch Überlastung und ein eklatanter Mangel an Fokus.' }]}
+                ]
+            }
+        };
+        let currentCategory = 'mono';
+        let currentItemIndex = 0;
+        let radarChartInstance = null;
+        let appInitialized = false;
+
+        function initApp() {
+            if(appInitialized) return;
+            initChart(); 
+            renderCategoryNav();
+            selectCategory('mono'); 
+            appInitialized = true;
+        }
+
+        function renderCategoryNav() {
+            const nav = document.getElementById('categoryNav');
+            nav.innerHTML = '';
+            appData.categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `text-left px-3 py-2 rounded transition-colors text-sm font-medium ${cat.id === currentCategory ? 'bg-amber-100 text-amber-900' : 'text-stone-600 hover:bg-stone-100'}`;
+                btn.innerText = cat.title;
+                btn.onclick = () => selectCategory(cat.id);
+                nav.appendChild(btn);
+            });
+        }
+
+        function selectCategory(categoryId) {
+            currentCategory = categoryId;
+            currentItemIndex = 0;
+            renderCategoryNav();
+            document.getElementById('introText').innerText = appData.introTexts[categoryId];
+            renderItemNav();
+            updateContent();
+        }
+
+        function renderItemNav() {
+            const nav = document.getElementById('itemNav');
+            nav.innerHTML = '';
+            const items = appData.data[currentCategory];
+            items.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.className = `text-left px-3 py-2 rounded transition-colors text-sm ${index === currentItemIndex ? 'bg-stone-800 text-stone-100' : 'text-stone-600 hover:bg-stone-100'}`;
+                btn.innerText = item.name;
+                btn.onclick = () => {
+                    currentItemIndex = index;
+                    renderItemNav();
+                    updateContent();
+                };
+                nav.appendChild(btn);
+            });
+        }
+
+        function updateContent() {
+            const item = appData.data[currentCategory][currentItemIndex];
+            document.getElementById('detailTitle').innerText = item.name;
+            document.getElementById('detailSubtitle').innerText = item.subtitle;
+            const contentDiv = document.getElementById('detailContent');
+            contentDiv.innerHTML = '';
+            item.sections.forEach(sec => {
+                const secDiv = document.createElement('div');
+                secDiv.className = 'bg-stone-50 border border-stone-200 rounded-lg p-5';
+                const essenceEl = document.createElement('p');
+                essenceEl.className = 'text-stone-700 font-medium mb-4';
+                essenceEl.innerText = sec.essence;
+                secDiv.appendChild(essenceEl);
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4';
+                const posDiv = document.createElement('div');
+                posDiv.className = 'bg-green-50 border border-green-100 rounded p-3';
+                posDiv.innerHTML = `<h5 class="text-xs font-bold text-green-800 uppercase tracking-wide mb-1">Stärken (Positiv)</h5><p class="text-sm text-green-900">${sec.pos}</p>`;
+                const negDiv = document.createElement('div');
+                negDiv.className = 'bg-red-50 border border-red-100 rounded p-3';
+                negDiv.innerHTML = `<h5 class="text-xs font-bold text-red-800 uppercase tracking-wide mb-1">Schwächen (Negativ)</h5><p class="text-sm text-red-900">${sec.neg}</p>`;
+                gridDiv.appendChild(posDiv);
+                gridDiv.appendChild(negDiv);
+                secDiv.appendChild(gridDiv);
+                contentDiv.appendChild(secDiv);
+            });
+            updateChart(item);
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('colorRadarChart').getContext('2d');
+            Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
+            Chart.defaults.color = '#78716c';
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Gesetz & Ordnung', 'Logik & Intellekt', 'Egoismus & Macht', 'Emotion & Chaos', 'Natur & Instinkt'],
+                    datasets: [{
+                        label: 'Ausprägung', data: [0,0,0,0,0],
+                        backgroundColor: 'rgba(217, 119, 6, 0.2)', borderColor: 'rgba(217, 119, 6, 0.8)',
+                        pointBackgroundColor: '#fff', pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#fff',
+                        borderWidth: 2, pointRadius: 5, pointHoverRadius: 7, pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e7e5e4' }, grid: { color: '#e7e5e4' },
+                            pointLabels: { font: { size: 11, weight: '600' }, color: '#57534e' },
+                            min: 0, max: 10, ticks: { display: false, stepSize: 1 }
+                        }
+                    },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return ' ' + c.formattedValue + ' / 10'; } } } }
+                }
+            });
+        }
+
+        function updateChart(item) {
+            if(!radarChartInstance) return;
+            const canvas = document.getElementById('colorRadarChart');
+            const ctx = canvas.getContext('2d');
+            const baseColors = [
+                { r: 250, g: 204, b: 21 }, { r: 59, g: 130, b: 246 }, { r: 39, g: 39, b: 42 },
+                { r: 239, g: 68, b: 68 }, { r: 34, g: 197, b: 94 }
+            ];
+            const chartArea = radarChartInstance.chartArea;
+            const cx = chartArea ? (chartArea.left + chartArea.right) / 2 : canvas.width / 2;
+            const cy = chartArea ? (chartArea.top + chartArea.bottom) / 2 : canvas.height / 2;
+            let fillGradient, borderGradient;
+            if (ctx.createConicGradient) {
+                fillGradient = ctx.createConicGradient(-Math.PI / 2, cx, cy);
+                borderGradient = ctx.createConicGradient(-Math.PI / 2, cx, cy);
+                const addStop = (offset, colorIndex) => {
+                    const stat = item.stats[colorIndex];
+                    const c = baseColors[colorIndex];
+                    const fillAlpha = 0.05 + (stat / 10) * 0.65; 
+                    const borderAlpha = 0.15 + (stat / 10) * 0.85;
+                    fillGradient.addColorStop(offset, `rgba(${c.r}, ${c.g}, ${c.b}, ${fillAlpha})`);
+                    borderGradient.addColorStop(offset, `rgba(${c.r}, ${c.g}, ${c.b}, ${borderAlpha})`);
+                };
+                addStop(0, 0); addStop(0.2, 1); addStop(0.4, 2); addStop(0.6, 3); addStop(0.8, 4); addStop(1, 0);
+            } else {
+                fillGradient = 'rgba(120, 113, 108, 0.4)'; borderGradient = 'rgba(87, 83, 76, 1)';
+            }
+            const pointBgColors = baseColors.map(c => `rgba(${c.r}, ${c.g}, ${c.b}, 1)`);
+            radarChartInstance.data.datasets[0].data = item.stats;
+            radarChartInstance.data.datasets[0].backgroundColor = fillGradient;
+            radarChartInstance.data.datasets[0].borderColor = borderGradient;
+            radarChartInstance.data.datasets[0].pointBackgroundColor = pointBgColors;
+            radarChartInstance.data.datasets[0].pointHoverBorderColor = pointBgColors;
+            radarChartInstance.update();
+        }
+
+        // --- 4. DASHBOARD & KARTEN LOGIK ---
+        let dashboardInitialized = false;
+        const dashboardState = {
+            totalPopMio: 19,
+            urbanRate: 13,
+            big5Rate: 63,
+            marktRate: 15,
+            cities: [
+                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 50, y: 49 },
+                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 67.5, y: 30 },
+                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 77, y: 57 },
+                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 19, y: 21 },
+                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 31, y: 33.5 }
+            ]
+        };
+        let dashboardCharts = {};
+
+        function formatNum(n) { 
+            return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
+        }
+
+        // --- LAYER-TOGGLE FUNKTION ---
+        window.toggleLayer = function(layer, isVisible) {
+            if (isVisible) { document.body.classList.remove('hide-' + layer); } 
+            else { document.body.classList.add('hide-' + layer); }   
+            document.querySelectorAll('.chk-' + layer).forEach(cb => { cb.checked = isVisible; });
+        }
+
+        // --- DYNAMISCHE KARTEN LOGIK START ---
+        const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
+        let mapMaskData = null;
+        let maskWidth = 0;
+        let maskHeight = 0;
+        let currentMapSeed = Math.floor(Math.random() * 1000000);
+        let prngState = currentMapSeed;
+        let autoRerollMap = true; 
+        
+        window.toggleAutoReroll = function(isChecked) { autoRerollMap = isChecked; };
+        
+        function seededRandom() {
+            let t = prngState += 0x6D2B79F5;
+            t = Math.imul(t ^ t >>> 15, t | 1);
+            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+
+        window.rerollMap = function() {
+            currentMapSeed = Math.floor(Math.random() * 1000000);
+            refreshDashboardCharts();
+        };
+
+        function loadMapMask(callback) {
+            if (!MASK_IMAGE_URL) { if(callback) callback(); return; }
+            const img = new Image();
+            img.crossOrigin = "Anonymous"; 
+            img.onload = function() {
+                const canvas = document.getElementById('map-mask-canvas');
+                if(!canvas) { if(callback) callback(); return; }
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                canvas.width = img.width; canvas.height = img.height;
+                maskWidth = img.width; maskHeight = img.height;
+                ctx.drawImage(img, 0, 0);
+                mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
+                if(callback) callback();
+            };
+            img.src = MASK_IMAGE_URL;
+        }
+        loadMapMask(() => { refreshDashboardCharts(); });
+
+        function getDistance(x1, y1, x2, y2) {
+            const aspect = 1778 / 1334;
+            return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
+        }
+
+        function findValidPos(seedBase, attemptsLimit = 500) {
+            let x, y, attempts = 0;
+            prngState = seedBase; 
+            while (attempts < attemptsLimit) {
+                x = 5 + seededRandom() * 90;
+                y = 5 + seededRandom() * 90;
+                attempts++;
+                if (mapMaskData && maskWidth > 0) {
+                    const pixelX = Math.floor((x / 100) * maskWidth);
+                    const pixelY = Math.floor((y / 100) * maskHeight);
+                    const val = mapMaskData[(pixelY * maskWidth + pixelX) * 4];
+                    if (val < 50 || seededRandom() > (val / 255)) continue;
+                }
+                return {x, y};
+            }
+            return null;
+        }
+
+        function updateDynamicMap(vals) {
+            const markerContainer = document.getElementById('map-markers');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+            
+            const visualProvinz = Math.floor(vals.provinzCount / 20); 
+            const visualMarkt = Math.floor(vals.marktCount / 20); 
+            const visualDorf = Math.floor(vals.weilerCount / 20); 
+            
+            const placedProvinz = [];
+            const placedMarkt = [];
+
+            for(let i=0; i<visualProvinz; i++) {
+                let pos = findValidPos(currentMapSeed + i + 10000); 
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 2.0)) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-provinz absolute rounded-full bg-fuchsia-500 border border-fuchsia-200 w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-20 shadow-[0_0_5px_rgba(217,70,239,0.8)]";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                    placedProvinz.push(pos);
+                }
+            }
+            
+            for(let i=0; i<visualMarkt; i++) {
+                let pos = findValidPos(currentMapSeed + i + 20000); 
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5) && !placedMarkt.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.8)) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                    placedMarkt.push(pos);
+                }
+            }
+            
+            for(let i=0; i<visualDorf; i++) {
+                let pos = findValidPos(currentMapSeed + i + 30000);
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.2)) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2 z-0";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                }
+            }
+            
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    bigDot.className = "marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-30";
+                    bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
+                    bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
+                    bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
+
+        function updateFocusMap(vals) {
+            const markerContainer = document.getElementById('map-markers-focus');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+            
+            const visualProvinz = Math.floor(vals.provinzCount / 2.5); 
+            const visualMarkt = Math.floor(vals.marktCount / 5); 
+            const visualDorf = Math.floor(vals.weilerCount / 10); 
+            
+            const allPlaced = [];
+            const sets = [
+                {type: 'provinz', count: visualProvinz, dist: 2.5, color: 'bg-fuchsia-500 border border-fuchsia-200 shadow-[0_0_6px_rgba(217,70,239,0.8)]', size: 'w-4 h-4', offset: 100000, markerClass: 'marker-provinz z-20'},
+                {type: 'markt', count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2.5 h-2.5', offset: 200000, markerClass: 'marker-markt z-10'},
+                {type: 'dorf', count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf z-0'}
+            ];
+            
+            sets.forEach(set => {
+                for(let i = 0; i < set.count; i++) {
+                    let pos = findValidPos(currentMapSeed + i + set.offset); 
+                    if (pos) {
+                        let tooClose = allPlaced.some(p => {
+                            let reqDist = set.dist; 
+                            if (p.type === 'provinz') {
+                                if (set.type === 'provinz') reqDist = 2.5; 
+                                if (set.type === 'markt') reqDist = 1.8;   
+                                if (set.type === 'dorf') reqDist = 0.3;    
+                            }
+                            return getDistance(pos.x, pos.y, p.x, p.y) < reqDist;
+                        });
+
+                        if (!tooClose) {
+                            const dot = document.createElement('div');
+                            dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
+                            dot.style.left = pos.x + '%'; 
+                            dot.style.top = pos.y + '%';
+                            markerContainer.appendChild(dot);
+                            allPlaced.push({x: pos.x, y: pos.y, type: set.type});
+                        }
+                    }
+                }
+            });
+            
+            // Tooltip Element holen
+            const tooltip = document.getElementById('map-tooltip');
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    bigDot.className = `marker-metropole absolute rounded-full w-7 h-7 transform -translate-x-1/2 -translate-y-1/2 z-30 cursor-help`;
+                    bigDot.style.left = city.x + '%'; 
+                    bigDot.style.top = city.y + '%';               
+                    if (city.name === 'Schwarze Stadt') {
+                        bigDot.style.backgroundColor = '#000000'; 
+                        bigDot.style.border = '3px solid #94a3b8'; 
+                        bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
+                    } else if (city.name === 'Weiße Hauptstadt') {
+                        bigDot.style.backgroundColor = '#ffffff'; 
+                        bigDot.style.border = '2.5px solid #f59e0b'; 
+                        bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
+                    } else {
+                        bigDot.style.backgroundColor = city.color; 
+                        bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
+                        bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
+                    }
+                    // Tooltip Logik
+                    const absPop = Math.round(vals.big5Pop * (city.pct / 100));                
+                    bigDot.addEventListener('mouseenter', () => {
+                        tooltip.innerHTML = `<strong style="color: ${city.color}; font-size: 13px;">${city.name}</strong><br/><span class="text-slate-400">Einwohner:</span> ${formatNum(absPop)}`;
+                        tooltip.classList.add('visible');
+                    });        
+                    bigDot.addEventListener('mousemove', (e) => {
+                        const containerRect = document.getElementById('map-transform-container').getBoundingClientRect();
+                        const x = (e.clientX - containerRect.left) / currentZoom;
+                        const y = (e.clientY - containerRect.top) / currentZoom;
+                        tooltip.style.left = x + 'px';
+                        tooltip.style.top = y + 'px';
+                    });     
+                    bigDot.addEventListener('mouseleave', () => {
+                        tooltip.classList.remove('visible');
+                    });
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
+
+        // --- SNAPSHOT LOGIK START ---
+        let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
+        function updateSnapshotSelect() {
+            const sel = document.getElementById('snapshot-select');
+            if(!sel) return;
+            sel.innerHTML = '<option value="">-- Zustand laden --</option>';
+            snapshots.forEach((snap, idx) => { sel.innerHTML += `<option value="${idx}">${snap.name}</option>`; });
+        }
+        window.saveSnapshot = function() {
+            const nameInput = document.getElementById('snapshot-name');
+            const name = nameInput.value.trim();
+            if(!name) { alert("Bitte gib dem Speicherstand einen Namen."); return; }
+            const snap = { name: name, seed: currentMapSeed, state: JSON.parse(JSON.stringify(dashboardState)) };
+            snapshots.push(snap);
+            localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
+            nameInput.value = '';
+            updateSnapshotSelect();
+            alert(`Speicherstand "${name}" wurde gesichert!`);
+        };
+        window.loadSnapshot = function() {
+            const sel = document.getElementById('snapshot-select');
+            const idx = sel.value;
+            if(idx === "") return;
+            const snap = snapshots[idx];
+            const toggle = document.getElementById('auto-reroll-toggle');
+            if (toggle) toggle.checked = false;
+            autoRerollMap = false;
+            currentMapSeed = snap.seed;
+            dashboardState.totalPopMio = snap.state.totalPopMio;
+            dashboardState.urbanRate = snap.state.urbanRate;
+            dashboardState.big5Rate = snap.state.big5Rate;
+            dashboardState.marktRate = snap.state.marktRate;
+            snap.state.cities.forEach((c, i) => {
+                dashboardState.cities[i].pct = c.pct;
+                dashboardState.cities[i].locked = c.locked;
+            });
+            updateDashboardUI();
+        };
+        window.deleteSnapshot = function() {
+            const sel = document.getElementById('snapshot-select');
+            const idx = sel.value;
+            if(idx === "") return;
+            if(confirm(`Möchtest du den Speicherstand "${snapshots[idx].name}" wirklich löschen?`)) {
+                snapshots.splice(idx, 1);
+                localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
+                updateSnapshotSelect();
+            }
+        };
+        setTimeout(updateSnapshotSelect, 500);
+
+        // --- WERTE & BERECHNUNG ---
+        function getCalculatedValues() {
+            const totalPop = dashboardState.totalPopMio * 1000000;
+            const urbanPop = Math.round(totalPop * (dashboardState.urbanRate / 100));
+            const ruralPop = totalPop - urbanPop;
+            const big5Pop = Math.round(urbanPop * (dashboardState.big5Rate / 100));
+            const provinzPop = urbanPop - big5Pop;
+            const marktPop = Math.round(ruralPop * (dashboardState.marktRate / 100));
+            const weilerPop = ruralPop - marktPop;
+            return {
+                totalPop, urbanPop, ruralPop, big5Pop, provinzPop, marktPop, weilerPop,
+                provinzCount: Math.max(0, Math.round(provinzPop / 8000)),
+                marktCount: Math.max(0, Math.round(marktPop / 1200)),
+                weilerCount: Math.max(0, Math.round(weilerPop / 150))
+            };
+        }
+
+        function balance(idx, newPct) {
+            const vals = getCalculatedValues();
+            let lockedSum = 0;
+            dashboardState.cities.forEach((c, i) => { if(c.locked && i !== idx) lockedSum += c.pct; });
+            if(newPct + lockedSum > 100) newPct = 100 - lockedSum;
+            dashboardState.cities[idx].pct = Math.max(0, newPct);
+            let remainder = 100 - dashboardState.cities[idx].pct - lockedSum;
+            let unlocked = dashboardState.cities.map((c, i) => ({...c, originalIndex: i})).filter((c, i) => !c.locked && i !== idx);
+            let oldSum = unlocked.reduce((s, c) => s + c.pct, 0);
+            if(unlocked.length > 0) {
+                unlocked.forEach(c => {
+                    const indexInState = c.originalIndex;
+                    dashboardState.cities[indexInState].pct = oldSum > 0 ? (c.pct / oldSum) * remainder : remainder / unlocked.length;
+                });
+            } else {
+                dashboardState.cities[idx].pct = 100 - lockedSum;
+            }
+            updateDashboardUI();
+        }
+
+        // --- OBERFLÄCHE AKTUALISIEREN & SYNC ---
+        function updateDashboardUI() {
+            const vals = getCalculatedValues();
+            document.getElementById('display-total-pop').innerText = formatNum(vals.totalPop);
+            document.getElementById('display-provinz-count').innerText = formatNum(vals.provinzCount);
+            document.getElementById('display-markt-count').innerText = formatNum(vals.marktCount);
+            document.getElementById('display-weiler-count').innerText = formatNum(vals.weilerCount);
+            const fProv = document.getElementById('f-val-provinz');
+            if(fProv) {
+                fProv.innerText = formatNum(vals.provinzCount);
+                document.getElementById('f-val-markt').innerText = formatNum(vals.marktCount);
+                document.getElementById('f-val-weiler').innerText = formatNum(vals.weilerCount);
+            }
+            const mappings = [
+                { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+                { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+                { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+                { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+            ];
+            mappings.forEach(m => {
+                const input = document.getElementById(`input-${m.id}`);
+                const range = document.getElementById(`range-${m.id}`);
+                const fInput = document.getElementById(`f-input-${m.fId}`);
+                const fRange = document.getElementById(`f-range-${m.fId}`);
+                const val = dashboardState[m.stateKey];
+                if(input && document.activeElement !== input) input.value = val;
+                if(range) range.value = val;
+                if(fInput && document.activeElement !== fInput) fInput.value = val;
+                if(fRange) fRange.value = val;
+            });
+            const container = document.getElementById('city-cards-container');
+            container.innerHTML = `<h2 class="text-lg font-bold px-1">Machtbalance der Fünf</h2>`;
+            dashboardState.cities.forEach((city, index) => {
+                const absPop = Math.round(vals.big5Pop * (city.pct / 100));
+                const card = document.createElement('div');
+                card.className = 'city-card shadow-lg';
+                card.style.backgroundImage = `url(${city.img})`;
+                card.innerHTML = `
+                    <div class="city-overlay">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleCityLock(${index})" 
+                                        class="p-2 rounded-lg border transition-all bg-slate-900/90 shadow-md ${city.locked ? 'border-red-500 text-red-500' : 'border-slate-700 text-slate-500'}">
+                                    ${city.locked ? '🔒' : '🔓'}
+                                </button>
+                                <div>
+                                    <h3 class="text-base font-black italic tracking-tight" style="color: ${city.color}">${city.name}</h3>
+                                    <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">${formatNum(absPop)} Ew.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1 items-end">
+                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
+                                    <span class="text-[7px] text-slate-500 uppercase font-bold">Ew.</span>
+                                    <input type="number" onchange="updateCityByAbs(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                           value="${absPop}" 
+                                           class="bg-transparent text-right font-mono text-xs w-24 focus:outline-none disabled:opacity-50 text-white">
+                                </div>
+                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
+                                    <span class="text-[7px] text-slate-500 uppercase font-bold">%</span>
+                                    <input type="number" onchange="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                           value="${city.pct.toFixed(2)}" 
+                                           class="bg-transparent text-right font-mono text-[10px] w-12 focus:outline-none disabled:opacity-50 text-slate-300">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <input type="range" oninput="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
+                                   value="${city.pct}" min="0" max="100" step="0.01" 
+                                   class="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-20" 
+                                   style="accent-color: ${city.color}">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            refreshDashboardCharts();
+        }
+
+        window.toggleCityLock = (index) => {
+            dashboardState.cities[index].locked = !dashboardState.cities[index].locked;
+            updateDashboardUI();
+        };
+        window.updateCityByPct = (index, val) => { balance(index, parseFloat(val) || 0); };
+        window.updateCityByAbs = (index, val) => {
+            const vals = getCalculatedValues();
+            balance(index, ((parseFloat(val) || 0) / vals.big5Pop) * 100);
+        };
+
+        // EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
+        const mappings = [
+            { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+            { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+            { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+            { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+        ];
+        mappings.forEach(m => {
+            const updateState = (e) => {
+                dashboardState[m.stateKey] = parseFloat(e.target.value) || 0;
+                updateDashboardUI();
+            };
+            document.getElementById(`input-${m.id}`).addEventListener('input', updateState);
+            document.getElementById(`range-${m.id}`).addEventListener('input', updateState); 
+            const fInput = document.getElementById(`f-input-${m.fId}`);
+            if(fInput) {
+                fInput.addEventListener('input', updateState);
+                document.getElementById(`f-range-${m.fId}`).addEventListener('input', updateState);
+            }
+        });
+
+        function initDashboard() {
+            const tooltips = { 
+                callbacks: { label: (ctx) => `${ctx.label}: ${formatNum(ctx.raw)} Ew.` },
+                backgroundColor: '#1e293b', padding: 8, titleFont: { size: 10 }, bodyFont: { size: 10 }
+            };
+            const options = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltips } };
+            
+            dashboardCharts.urban = new Chart(document.getElementById('chartUrbanRural'), {
+                type: 'doughnut',
+                data: { labels: ['Stadtbewohner', 'Landbevölkerung'], datasets: [{ data: [0,0], backgroundColor: ['#ef4444', '#334155'], borderWidth: 0 }] },
+                options: { ...options, cutout: '80%' }
+            });
+            
+            dashboardCharts.siedlung = new Chart(document.getElementById('chartSiedlung'), {
+                type: 'bar',
+                data: { labels: ['Big 5', 'Provinz', 'Märkte', 'Dörfer'], datasets: [{ data: [0,0,0,0], backgroundColor: ['#ef4444', '#64748b', '#0d9488', '#166534'], borderRadius: 4 }] },
+                options: { ...options, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 8 } } } } }
+            });
+            
+            dashboardCharts.big5 = new Chart(document.getElementById('chartBig5'), {
+                type: 'pie',
+                data: { labels: dashboardState.cities.map(c => c.name), datasets: [{ data: [0,0,0,0,0], backgroundColor: dashboardState.cities.map(c => c.color), borderWidth: 2, borderColor: '#0f172a' }] },
+                options: options
+            });   
+            
+            updateDashboardUI();
+            dashboardInitialized = true;
+        }
+
+        function refreshDashboardCharts() {
+            if(!dashboardCharts.urban) return;
+            const vals = getCalculatedValues();
+            dashboardCharts.urban.data.datasets[0].data = [vals.urbanPop, vals.ruralPop];
+            dashboardCharts.urban.update('none');
+            
+            dashboardCharts.siedlung.data.datasets[0].data = [vals.big5Pop, vals.provinzPop, vals.marktPop, vals.weilerPop];
+            dashboardCharts.siedlung.update('none');
+            
+            dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
+            dashboardCharts.big5.update('none');   
+            
+            if (autoRerollMap) {
+                currentMapSeed = Math.floor(Math.random() * 1000000); 
+            }
+            updateDynamicMap(vals);
+            updateFocusMap(vals); 
+        }
+
+        // --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
+        let currentZoom = 1; // Startet weiter rausgezoomt
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let startX = 0;
+        let startY = 0;
+        const viewport = document.getElementById('map-viewport');
+        const mapContainer = document.getElementById('map-transform-container');
+
+        function applyTransform() {
+            if (!mapContainer) return;
+            mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;   
+            const scaleHint = document.getElementById('scale-hint');
+            if(scaleHint) {
+                if(currentZoom !== 1) {
+                    scaleHint.innerText = `1 px = ${(2.5 / currentZoom).toFixed(2)} km (Zoom x${currentZoom.toFixed(1)})`;
+                    scaleHint.classList.add('text-amber-500');
+                } else {
+                    scaleHint.innerText = `1 Pixel = 2,5 Kilometer`;
+                    scaleHint.classList.remove('text-amber-500');
+                }
+            }
+        }
+
+        window.zoomMap = function(delta) {
+            currentZoom += delta;
+            if (currentZoom < 0.3) currentZoom = 0.3; // Lässt dich jetzt noch weiter rauszoomen
+            if (currentZoom > 5.0) currentZoom = 5.0;
+            applyTransform();
+        }
+
+        window.resetMapZoom = function() {
+             currentZoom = 1; panX = 0; panY = 0; applyTransform(); 
+        }
+
+        if (viewport && mapContainer) {
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                window.zoomMap(e.deltaY > 0 ? -0.1 : 0.1);
+            }, { passive: false });
+            
+            mapContainer.addEventListener('mousedown', (e) => {
+                isPanning = true;
+                startX = e.clientX - panX;
+                startY = e.clientY - panY;
+                mapContainer.style.transition = 'none';
+            });
+            
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+                panX = e.clientX - startX;
+                panY = e.clientY - startY;
+                applyTransform();
+            });
+            
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    mapContainer.style.transition = 'transform 0.1s ease-out';
+                }
+            });
+        }
+
+        // --- 5. KOMMENTAR-FUNKTION LOGIK ---
+        window.onload = () => {
+            const initialVals = getCalculatedValues();
+            updateFocusMap(initialVals); 
+        };
+
+        // --- ZWEISTUFIGE FEEDBACK LOGIK ---
+        let feedbackCart = JSON.parse(localStorage.getItem('osmieen_feedback_cart') || '[]');
+        
+        function injectFeedbackButtons() {
+            document.querySelectorAll('summary.section-summary').forEach(summary => {
+                const titleDiv = summary.querySelector('.summary-title');
+                if(!titleDiv || titleDiv.querySelector('.feedback-trigger')) return;
+                const sectionName = titleDiv.innerText.replace('▼', '').trim();
+                const btn = document.createElement('button');
+                btn.innerHTML = '💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 hover:text-amber-600 ml-1 hidden md:inline">Notiz</span>';
+                btn.className = 'feedback-trigger ml-4 px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center';
+                btn.onclick = (e) => {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    openFeedbackModal(sectionName);
+                };
+                titleDiv.appendChild(btn);
+            });
+            updateFeedbackBadge();
+        }
+
+        function openFeedbackModal(contextName) {
+            document.getElementById('modal-context').value = contextName;
+            document.getElementById('modal-text').value = '';
+            document.getElementById('feedback-modal').classList.remove('hidden');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedback-modal').classList.add('hidden');
+        }
+
+        function saveFeedbackToCart() {
+            const text = document.getElementById('modal-text').value.trim();
+            const context = document.getElementById('modal-context').value;
+            if(!text) { alert("Bitte schreib etwas auf, bevor du speicherst."); return; }
+            feedbackCart.push({ context: context, text: text });
+            localStorage.setItem('osmieen_feedback_cart', JSON.stringify(feedbackCart));
+            closeFeedbackModal();
+            updateFeedbackBadge();
+            alert("Wurde auf deinen Feedback-Zettel gepackt!");
+        }
+
+        function updateFeedbackBadge() {
+            const badge = document.getElementById('feedback-badge');
+            const submitBtn = document.getElementById('btn-submit-all');
+            if(feedbackCart.length > 0) {
+                if(badge) { badge.innerText = feedbackCart.length; badge.classList.remove('hidden'); }
+                if(submitBtn) submitBtn.disabled = false;
+            } else {
+                if(badge) badge.classList.add('hidden');
+                if(submitBtn) submitBtn.disabled = true;
+            }
+            const tab = document.getElementById('tab-feedback');
+            if(tab && !tab.classList.contains('hidden')) {
+                renderFeedbackCart();
+            }
+        }
+
+        function renderFeedbackCart() {
+            const list = document.getElementById('feedback-cart-list');
+            if(feedbackCart.length === 0) {
+                list.innerHTML = '<p class="text-stone-400 italic py-8 text-center border-2 border-dashed border-stone-200 rounded-xl">Dein Zettel ist noch leer. Klicke im Wiki auf die 💬 Buttons!</p>';
+                return;
+            }
+            list.innerHTML = feedbackCart.map((item, index) => `
+                <div class="bg-white border border-stone-200 rounded-lg p-4 shadow-sm relative group">
+                    <span class="text-xs font-bold text-amber-700 uppercase tracking-tighter bg-amber-50 px-2 py-0.5 rounded border border-amber-200">${item.context}</span>
+                    <p class="text-sm text-stone-700 mt-3 whitespace-pre-wrap">${item.text}</p>
+                    <button onclick="removeFromCart(${index})" type="button" class="absolute top-4 right-4 text-xs text-red-400 hover:text-red-600 transition">Entfernen</button>
+                </div>
+            `).join('');
+        }
+
+        function removeFromCart(index) {
+            feedbackCart.splice(index, 1);
+            localStorage.setItem('osmieen_feedback_cart', JSON.stringify(feedbackCart));
+            updateFeedbackBadge();
+        }
+
+        function prepareFinalSubmission(e) {
+            if(feedbackCart.length === 0) {
+                e.preventDefault();
+                alert("Es gibt nichts zum Abschicken!");
+                return;
+            }
+            let mailText = "Hier ist das gesammelte Feedback:\n\n";
+            feedbackCart.forEach(item => {
+                mailText += `--- BEREICH: ${item.context} ---\n`;
+                mailText += `${item.text}\n\n`;
+            });
+            document.getElementById('hidden-feedback-payload').value = mailText;
+            localStorage.removeItem('osmieen_feedback_cart');
+            feedbackCart = [];
+            setTimeout(() => { updateFeedbackBadge(); }, 100);
+        }
+
+        setTimeout(injectFeedbackButtons, 500);
+
         const qQuick = [
             { q: "In deiner Straße bricht ein Aufstand aus. Wie reagierst du?", options: [ { text: "Ich rufe die Wache. Ordnung muss gewahrt werden.", colors: [1,0,0,0,0] }, { text: "Ich analysiere die Taktiken beider Seiten.", colors: [0,1,0,0,0] }, { text: "Ich plündere das Geschäft meines Rivalen.", colors: [0,0,1,0,0] }, { text: "Ich stürze mich brüllend ins Getümmel!", colors: [0,0,0,1,0] }, { text: "Nur der Starke überlebt. Das ist natürlich.", colors: [0,0,0,0,1] } ] },
             { q: "Du findest ein verbotenes Buch. Was tust du?", options: [ { text: "Verbrennen. Alte Regeln abwerfen ist Freiheit.", colors: [0,0,0,1,0] }, { text: "Vergraben. Es sollte im Kreislauf ruhen.", colors: [0,0,0,0,1] }, { text: "Der Inquisition übergeben. Sicherheit zuerst.", colors: [1,0,0,0,0] }, { text: "Studieren, um Wissen zu erlangen.", colors: [0,1,0,0,0] }, { text: "Behalten und jemanden damit erpressen.", colors: [0,0,1,0,0] } ] },
@@ -2240,980 +3257,9 @@ window.addEventListener('load', () => {
             document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
             document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
         }
-            <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
-                <h1>Dein Feedback-Zettel</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Hier sind alle deine gesammelten Anmerkungen. Überprüfe sie und schicke sie gesammelt an mich ab. Mach das am besten nicht nach jedem Ding einzeln, sondern sammel die Sachen erst hier</p>
-                <div id="feedback-cart-list" class="space-y-4 mb-8">
-                    <p class="text-stone-400 italic py-8 text-center border-2 border-dashed border-stone-200 rounded-xl">Dein Zettel ist noch leer. Klicke im Wiki auf die 💬 Buttons neben den Überschriften!</p>
-                </div>
-                <div class="bg-white border border-stone-200 rounded-xl p-6 shadow-sm">
-                    <h3 class="mt-0 mb-4 text-stone-800">Alles fertig? Dann ab dafür!</h3>
-                    <form action="https://formspree.io/f/xojrvjvz" method="POST" id="final-submit-form" onsubmit="prepareFinalSubmission(event)">
-                        <div class="mb-4">
-                            <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Dein Name</label>
-                            <input type="text" name="Absender" required class="w-full bg-stone-50 border border-stone-200 rounded p-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Wer schickt dieses Feedback?">
-                        </div>
-                        <!-- Dieses unsichtbare Textfeld sammelt alle Kommentare für die E-Mail -->
-                        <textarea name="Gesammeltes_Feedback" id="hidden-feedback-payload" hidden></textarea>
-                        <button type="submit" id="btn-submit-all" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>Gesammeltes Feedback abschicken</button>
-                    </form>
-                </div>
-            </section>
-        </main>
-    </div>
-<!-- === DAS POPUP (ZUM ZETTEL HINZUFÜGEN) === -->
-    <div id="feedback-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative">
-            <div class="bg-stone-900 p-4 flex justify-between items-center text-white">
-                <h3 class="font-bold text-lg m-0">Notiz hinzufügen</h3>
-                <button onclick="closeFeedbackModal()" class="text-stone-400 hover:text-white text-xl leading-none">&times;</button>
-            </div>
-            <div class="p-6">
-                <div class="mb-4">
-                    <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Bereich:</label>
-                    <input type="text" id="modal-context" readonly class="w-full bg-stone-100 border border-stone-200 rounded p-2 text-sm text-amber-700 font-bold focus:outline-none">
-                </div>
-                <div class="mb-6">
-                    <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Dein Vorschlag</label>
-                    <textarea id="modal-text" rows="5" class="w-full bg-stone-50 border border-stone-200 rounded p-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Was würdest du hier ändern?"></textarea>
-                </div>
-                <button onclick="saveFeedbackToCart()" class="w-full bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 rounded-lg transition shadow-md">Auf den Zettel packen</button>
-            </div>
-        </div>
-    </div>
-    <script>
-        // --- 0. NEUE LOGIK FÜR ALLE AUF/ZUKLAPPEN & QUERVERWEISE ---
-        function toggleAllDetails(buttonElem, state) {
-            const tab = buttonElem.closest('.content-tab');
-            if (tab) {
-                const details = tab.querySelectorAll('details.section-details'); 
-                details.forEach(d => d.open = state);
-            }
-        }
-        function crossReference(tabId, targetId) {
-            switchTab(tabId);
-            setTimeout(() => {
-                const target = document.getElementById(targetId);
-                if (target) {
-                    const details = target.closest('details');
-                    if (details && !details.open) {
-                        details.open = true;
-                    }
-                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    target.style.transition = 'background-color 0.5s ease-in-out';
-                    target.style.backgroundColor = '#fde68a'; // amber-200
-                    setTimeout(() => {
-                        target.style.backgroundColor = ''; 
-                    }, 1500);
-                }
-            }, 100);
-        }
-        function openCultsTool(categoryId) {
-            switchTab('tab-cults');
-            if (categoryId) {
-                setTimeout(() => { selectCategory(categoryId); }, 100);
-            }
-        }
-        // --- 1. SIDEBAR RESPONSIVE & RESIZE LOGIK ---
-        function toggleSidebar(forceState) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const isClosed = sidebar.classList.contains('-translate-x-full');
-            const open = forceState !== undefined ? forceState : isClosed;
-            if (open) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            }
-        }
-        const sidebar = document.getElementById('sidebar');
-        const resizer = document.getElementById('resizer');
-        let isResizing = false;
-        resizer.addEventListener('mousedown', (e) => {
-            isResizing = true;
-            document.body.style.cursor = 'col-resize';
-            document.body.style.userSelect = 'none'; 
-        });
-        document.addEventListener('mousemove', (e) => {
-            if (!isResizing) return;
-            let newWidth = e.clientX;
-            if (newWidth >= 200 && newWidth <= 500) {
-                sidebar.style.width = newWidth + 'px';
-            }
-        });
-        document.addEventListener('mouseup', () => {
-            if (isResizing) {
-                isResizing = false;
-                document.body.style.cursor = 'default';
-                document.body.style.userSelect = '';
-            }
-        });
-        // --- 2. TAB NAVIGATION LOGIK ---
-function switchTab(tabId) {
-            if (window.innerWidth < 1024) { toggleSidebar(false); }
-            document.querySelectorAll('.content-tab').forEach(tab => {
-                tab.classList.remove('block', 'flex');
-                tab.classList.add('hidden');
-            });
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-stone-800', 'text-white');
-                btn.classList.add('text-stone-400');
-            });
-            const activeTab = document.getElementById(tabId);
-            if(tabId === 'tab-cults') {
-                activeTab.classList.remove('hidden');
-                activeTab.classList.add('flex');
-                if(radarChartInstance) { radarChartInstance.resize(); } 
-                else { initApp(); }
-            } else if(tabId === 'tab-dashboard') {
-                activeTab.classList.remove('hidden');
-                activeTab.classList.add('block');
-                if(!dashboardInitialized) { initDashboard(); } 
-                else { refreshDashboardCharts(); }
-            } else if(tabId === 'tab-map-focus') {
-                activeTab.classList.remove('hidden');
-                activeTab.classList.add('flex'); 
-                if(!dashboardInitialized) { initDashboard(); } 
-                else { refreshDashboardCharts(); }
-            } else {
-                activeTab.classList.remove('hidden');
-                activeTab.classList.add('block');
-            }
-            const activeBtn = document.getElementById(tabId.replace('tab-', 'btn-'));
-            if(activeBtn) {
-                activeBtn.classList.remove('text-stone-400');
-                if(tabId === 'tab-cults') {
-                    activeBtn.classList.add('bg-stone-800'); 
-                } else {
-                    activeBtn.classList.add('bg-stone-800', 'text-white');
-                }
-            }
-	if(tabId === 'tab-feedback') { renderFeedbackCart(); }
-if(tabId !== 'tab-storybook') { stopStoryPlayback(); } else { renderStoryPage(); }
-        }
-        // --- 3. VAMPIRKULT DATEN & LOGIK ---
-        const appData = {
-            categories: [
-                { id: 'mono', title: 'Fundamente (1 Gott)' },
-                { id: 'guilds', title: 'Pakte (2 Götter)' },
-                { id: 'shards', title: 'Shards (3 Verbündete)' },
-                { id: 'wedges', title: 'Wedges (3 Verfeindete)' },
-                { id: 'four', title: 'Nephilim (4 Götter)' },
-                { id: 'five', title: 'Die Weltenseele (5 Götter)' }
-            ],
-            introTexts: {
-                'mono': 'Dieser Bereich analysiert die fünf fundamentalen Kulte. Jeder repräsentiert die reine, kompromisslose Weltanschauung seines Gottes.',
-                'guilds': 'Zweifarbige Kombinationen zeigen, wie sich Kulte verbünden. Sie repräsentieren starke Synergien und formen spezialisierte, mächtige Gesellschaften.',
-                'shards': 'Die Shards repräsentieren drei verbündete Götter. Diese Kombinationen erzeugen stabile, aber oft hochgradig spezialisierte extreme Strukturen.',
-                'wedges': 'Die Wedges vereinen einen Kern mit seinen zwei "Feinden". Dies erzeugt tiefe innere Spannungen, die zu faszinierenden Lösungen führen.',
-                'four': 'Vier-Götter-Konzepte werden am besten dadurch definiert, wer ihnen fehlt. Der blinde Fleck diktiert die fundamentalen Schwächen dieser Strukturen.',
-                'five': 'Die Vereinigung aller Aspekte. Die absolute Vollkommenheit, die jedoch die Gefahr birgt, an einem Mangel an klarem Fokus zu zerbrechen.'
-            },
-            data: {
-                'mono': [
-                    {
-                        name: 'Elidias Kult', colors: [1,0,0,0,0], stats: [10, 3, 2, 1, 2], subtitle: 'Frieden durch Ordnung',
-                        sections: [{ type: 'standard', essence: 'Die Welt braucht Gesetze, um das Leid zu beenden.', pos: 'Gerechtigkeit, Schutz der Schwachen, Ehre, Uneigennützigkeit, Gemeinschaft.', neg: 'Dogmatismus, Autoritarismus, Starrheit, Unterdrückung des Individuums.' }]
-                    },
-                    {
-                        name: 'Efaros Kult', colors: [0,1,0,0,0], stats: [6, 10, 4, 1, 2], subtitle: 'Perfektion durch Wissen',
-                        sections: [{ type: 'standard', essence: 'Die Welt ist ein System, das durch Verstand optimiert wird.', pos: 'Logik, Rationalität, Neugier, Erfindergeist, stetige Selbstverbesserung.', neg: 'Kaltblütigkeit, Arroganz, Passivität (durch Überanalyse), manipulative Geheimniskrämerei.' }]
-                    },
-                    {
-                        name: 'Erebias Kult', colors: [0,0,1,0,0], stats: [3, 4, 10, 6, 2], subtitle: 'Macht durch Gelegenheit',
-                        sections: [{ type: 'standard', essence: 'Die Welt ist grausam; nur der Stärkste (und Skrupelloseste) überlebt.', pos: 'Ambition, Selbstvertrauen, Unabhängigkeit, brutaler Realismus, Pragmatismus.', neg: 'Grausamkeit, Egoismus, Nihilismus, totale Rücksichtslosigkeit.' }]
-                    },
-                    {
-                        name: 'Porfiras Kult', colors: [0,0,0,1,0], stats: [1, 2, 6, 10, 7], subtitle: 'Freiheit durch Handeln',
-                        sections: [{ type: 'standard', essence: 'Die Welt muss gefühlt werden; Emotionen und Impulsivität sind der Weg.', pos: 'Empathie, Leidenschaft, Mut, Loyalität gegenüber Freunden, totale Authentizität.', neg: 'Kurzfristiges Denken, Unberechenbarkeit, blinde Wut, unkontrollierte Destruktivität.' }]
-                    },
-                    {
-                        name: 'Nileos Kult', colors: [0,0,0,0,1], stats: [5, 1, 3, 5, 10], subtitle: 'Akzeptanz durch Natur',
-                        sections: [{ type: 'standard', essence: 'Die Welt ist bereits perfekt; das Schicksal und der Instinkt leiten den Weg.', pos: 'Harmonie, Geduld, Naturverbundenheit, Stärke, spirituelle Ruhe.', neg: 'Fatalismus (Schicksalsergebenheit), Fortschrittsfeindlichkeit, Primitivismus.' }]
-                    }
-                ],
-                'guilds': [
-                    { name: 'Azorius (Elidia/Efaro)', colors: [1,1,0,0,0], stats: [10, 8, 2, 1, 2], subtitle: 'Ordnung durch Wissen', sections: [{ type: 'standard', essence: 'Perfekte Bürokratie und unfehlbare Gesetze.', pos: 'Stabilität, Fairness vor dem Gesetz, friedliche Konfliktlösung.', neg: 'Lähmende Bürokratie, emotionale Kälte, Tyrannei durch Paragraphen.' }]},
-                    { name: 'Dimir (Efaro/Erebia)', colors: [0,1,1,0,0], stats: [4, 9, 9, 1, 2], subtitle: 'Macht durch Wissen', sections: [{ type: 'standard', essence: 'Kontrolle der Realität aus dem Verborgenen.', pos: 'Strategische Genialität, Diskretion, Anpassungsfähigkeit.', neg: 'Paranoia, Täuschung, Identitätsverlust, Zerstörung von Vertrauen.' }]},
-                    { name: 'Rakdos (Erebia/Porfira)', colors: [0,0,1,1,0], stats: [1, 2, 9, 9, 3], subtitle: 'Freiheit durch Schmerz/Lust', sections: [{ type: 'standard', essence: 'Ungezügelter Hedonismus im Hier und Jetzt.', pos: 'Furchtlose Selbstentfaltung, enorme emotionale Energie.', neg: 'Sadismus, Chaos, Selbstzerstörung, völlige Rücksichtslosigkeit.' }]},
-                    { name: 'Gruul (Porfira/Nileo)', colors: [0,0,0,1,1], stats: [1, 1, 4, 8, 9], subtitle: 'Instinkt über Zivilisation', sections: [{ type: 'standard', essence: 'Einreißen der Mauern, die den Geist einengen.', pos: 'Natürliche Stärke, Ehrlichkeit, tiefe Verbundenheit zur physischen Welt.', neg: 'Primitivismus, unkontrollierte Wutausbrüche, Unfähigkeit zur Planung.' }]},
-                    { name: 'Selesnya (Nileo/Elidia)', colors: [1,0,0,0,1], stats: [8, 2, 1, 3, 9], subtitle: 'Harmonie durch Gemeinschaft', sections: [{ type: 'standard', essence: 'Das Individuum ordnet sich dem großen Ganzen unter.', pos: 'Altruismus, nachhaltiges Wachstum, Schutz der Schwachen.', neg: 'Konformitätsdruck, Unterdrückung des Individuums, Xenophobie.' }]},
-                    { name: 'Orzhov (Elidia/Erebia)', colors: [1,0,1,0,0], stats: [8, 4, 9, 2, 1], subtitle: 'Hierarchie durch Gier', sections: [{ type: 'standard', essence: 'Strukturierte Ausbeutung durch Religion und Gesetz.', pos: 'Loyalität innerhalb der Hierarchie, Disziplin, Langzeitplanung.', neg: 'Gnadenlose Gier, Korruption, Versklavung, Heuchelei.' }]},
-                    { name: 'Izzet (Efaro/Porfira)', colors: [0,1,0,1,0], stats: [2, 8, 4, 9, 2], subtitle: 'Kreativität durch Experiment', sections: [{ type: 'standard', essence: 'Brillante, wenn auch riskante Geistesblitze.', pos: 'Wissenschaftlicher Fortschritt, intellektuelle Begeisterung, Innovation.', neg: 'Unverantwortlichkeit, Unfokussiertheit, extreme Sicherheitsrisiken.' }]},
-                    { name: 'Golgari (Erebia/Nileo)', colors: [0,0,1,0,1], stats: [3, 2, 7, 3, 9], subtitle: 'Leben durch Tod', sections: [{ type: 'standard', essence: 'Akzeptanz des ewigen Kreislaufs von Verfall und neuem Wachstum.', pos: 'Pragmatismus, Widerstandsfähigkeit, ökologischer Realismus.', neg: 'Besessenheit vom Morbiden, mangelnde Ästhetik, Entmenschlichung.' }]},
-                    { name: 'Boros (Porfira/Elidia)', colors: [1,0,0,1,0], stats: [7, 2, 2, 8, 2], subtitle: 'Leidenschaftliche Ordnung', sections: [{ type: 'standard', essence: 'Gerechter Zorn zur Durchsetzung von Moral und Sicherheit.', pos: 'Heroismus, Mut, Kameradschaft, kompromissloser moralischer Kompass.', neg: 'Fanatismus, militante Aggression, Neigung zur Lynchjustiz.' }]},
-                    { name: 'Simic (Nileo/Efaro)', colors: [0,1,0,0,1], stats: [4, 8, 2, 2, 8], subtitle: 'Beschleunigte Evolution', sections: [{ type: 'standard', essence: 'Optimierung des biologischen Erbes durch Wissenschaft.', pos: 'Anpassungsfähigkeit, medizinischer Fortschritt, ökologische Innovation.', neg: 'Hybris (Gott spielen), Erschaffung von Monstrositäten, Entfremdung.' }]}
-                ],
-                'shards': [
-                    { name: 'Bant', colors: [1,1,0,0,1], stats: [9, 5, 1, 1, 7], subtitle: 'Die strukturierte Gesellschaft', sections: [{ type: 'standard', essence: 'Die utopische Ritterordnung. Frieden durch Disziplin, Kastenwesen und Ehre.', pos: 'Schutz, Verlässlichkeit.', neg: 'Soziale Starrheit, Hilflosigkeit gegen Böses.' }]},
-                    { name: 'Obscura', colors: [1,1,1,0,0], stats: [9, 9, 8, 1, 1], subtitle: 'Die meisterhaften Spione', sections: [{ type: 'standard', essence: 'Macht durch Kontrolle von Informationen und Prophezeiungen.', pos: 'Weitsicht, strategische Brillanz.', neg: 'Paranoia, Manipulation der objektiven Wahrheit.' }]},
-                    { name: 'Maestros', colors: [0,1,1,1,0], stats: [2, 8, 10, 8, 1], subtitle: 'Die mörderischen Eliten', sections: [{ type: 'standard', essence: 'Aristokraten, die Auftragsmord als hohe Kunstform zelebrieren.', pos: 'Ästhetik, Bewahrung der Geschichte.', neg: 'Arroganz, Dekadenz, Mord aus Vergnügen.' }]},
-                    { name: 'Riveteers', colors: [0,0,1,1,1], stats: [1, 1, 8, 8, 10], subtitle: 'Die Arbeiter der Zerstörung', sections: [{ type: 'standard', essence: 'Ein mafia-ähnlicher Zusammenschluss, der durch rohe Kraft dominiert.', pos: 'Solidarität untereinander, Belastbarkeit.', neg: 'Zerstörungswut, Rücksichtslosigkeit.' }]},
-                    { name: 'Naya', colors: [1,0,0,1,1], stats: [6, 1, 1, 8, 9], subtitle: 'Die wilde Pracht', sections: [{ type: 'standard', essence: 'Ein Dschungelparadies, das gigantische Bestien verehrt.', pos: 'Lebensfreude, Respekt vor der Natur.', neg: 'Naivität, Anti-Intellektualismus.' }]}
-                ],
-                'wedges': [
-                    { name: 'Abzan', colors: [1,0,1,0,1], stats: [7, 2, 7, 2, 8], subtitle: 'Die Festung der Familie', sections: [{ type: 'standard', essence: 'Überleben in der Wüste durch absolute Loyalität, Verteidigung und Ahnenverehrung.', pos: 'Resilienz.', neg: 'Isolationismus, Starrheit.' }]},
-                    { name: 'Jeskai', colors: [1,1,0,1,0], stats: [9, 8, 2, 6, 2], subtitle: 'Die erleuchteten Strategen', sections: [{ type: 'standard', essence: 'Kampfmönche, die durch körperliche Disziplin und geistige Klarheit siegen.', pos: 'Intellektuelle Beherrschung.', neg: 'Arroganz, emotionale Distanz.' }]},
-                    { name: 'Zagoth', colors: [0,1,1,0,1], stats: [3, 7, 8, 1, 7], subtitle: 'Der illusionäre Dschungel', sections: [{ type: 'standard', essence: 'Ein Ökosystem, in dem Überleben durch perfekte Tarnung und ständige Mutation gesichert wird.', pos: 'Höchste biologische Komplexität.', neg: 'Ein Leben in ständiger Paranoia.' }]},
-                    { name: 'Savai', colors: [1,0,1,1,0], stats: [6, 2, 8, 8, 2], subtitle: 'Das blutige Grasland', sections: [{ type: 'standard', essence: 'Eine gnadenlose Jagdwelt, in der Raubtiere in perfekten, brutalen Rudeln agieren.', pos: 'Perfekte Jagd-Zusammenarbeit.', neg: 'Absolute Unerbittlichkeit, Schwäche ist das Todesurteil.' }]},
-                    { name: 'Temur', colors: [0,1,0,1,1], stats: [2, 6, 2, 7, 8], subtitle: 'Die eisigen Schamanen', sections: [{ type: 'standard', essence: 'Tief spirituelle Überlebenskünstler in rauen Bergen, geführt durch Ahnenvisionen.', pos: 'Urwissen, physische Robustheit.', neg: 'Ablehnung von Fortschritt, Wildheit.' }]}
-                ],
-                'four': [
-                    { name: 'Glint (Ohne Elidia)', colors: [0,1,1,1,1], stats: [0, 8, 8, 8, 8], subtitle: 'Fehlen von Ordnung', sections: [{ type: 'standard', essence: 'Totales, instinktives Wachstum und Chaos ohne jeglichen moralischen Kompass oder soziale Struktur.', pos: 'Grenzenlose Freiheit und Anpassungsfähigkeit.', neg: 'Komplette Instabilität, kein Sinn für Gemeinschaft.' }]},
-                    { name: 'Dune (Ohne Efaro)', colors: [1,0,1,1,1], stats: [6, 0, 7, 8, 8], subtitle: 'Fehlen von Logik', sections: [{ type: 'standard', essence: 'Physische Präsenz und Stärke ohne den Drang zu reflektieren, zu planen oder technologischen Fortschritt zu suchen.', pos: 'Rohe Effizienz, unerschütterliche physische Macht.', neg: 'Unfähigkeit zur Weiterentwicklung, blinder Aktionismus.' }]},
-                    { name: 'Ink (Ohne Erebia)', colors: [1,1,0,1,1], stats: [7, 7, 0, 7, 7], subtitle: 'Fehlen von Egoismus', sections: [{ type: 'standard', essence: 'Maximale altruistische Zusammenarbeit ohne die Fähigkeit zu Egoismus; unfähig, harte Entscheidungen zu treffen.', pos: 'Totale Empathie und kollektives Wachstum.', neg: 'Schutzlosigkeit gegenüber Verrat, naiv.' }]},
-                    { name: 'Witch (Ohne Porfira)', colors: [1,1,1,0,1], stats: [8, 8, 7, 0, 7], subtitle: 'Fehlen von Emotion', sections: [{ type: 'standard', essence: 'Eine perfekt geplante, organisch wachsende Hierarchie ohne jegliche Leidenschaft oder Impulsivität.', pos: 'Perfekte Organisation und logisches organisches Wachstum.', neg: 'Freudlos, mechanisch, eiskalt und berechnend.' }]},
-                    { name: 'Yore (Ohne Nileo)', colors: [1,1,1,1,0], stats: [7, 8, 7, 7, 0], subtitle: 'Fehlen von Natur', sections: [{ type: 'standard', essence: 'Absolute gesellschaftliche Brillanz ohne Bindung an Natur oder Tradition; instabil mangels natürlicher Erdung.', pos: 'Maximaler Fortschritt.', neg: 'Entfremdung von den Ursprüngen, zerstörerisch.' }]}
-                ],
-                'five': [
-                    { name: 'Die Weltenseele', colors: [1,1,1,1,1], stats: [5, 5, 5, 5, 5], subtitle: 'Das absolute Gleichgewicht', sections: [{ type: 'standard', essence: 'Das absolute Gleichgewicht aller Kräfte. Konflikte werden nicht gelöst, sondern existieren harmonisch nebeneinander.', pos: 'Allmacht, Vollkommenheit und universelles Verständnis.', neg: 'Identitätsverlust durch Überlastung und ein eklatanter Mangel an Fokus.' }]}
-                ]
-            }
-        };
-        let currentCategory = 'mono';
-        let currentItemIndex = 0;
-        let radarChartInstance = null;
-        let appInitialized = false;
-function initApp() {
-            if(appInitialized) return;
-            initChart(); //
-            renderCategoryNav();
-            selectCategory('mono'); //
-            appInitialized = true;
-        }
-        function renderCategoryNav() {
-            const nav = document.getElementById('categoryNav');
-            nav.innerHTML = '';
-            appData.categories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = `text-left px-3 py-2 rounded transition-colors text-sm font-medium ${cat.id === currentCategory ? 'bg-amber-100 text-amber-900' : 'text-stone-600 hover:bg-stone-100'}`;
-                btn.innerText = cat.title;
-                btn.onclick = () => selectCategory(cat.id);
-                nav.appendChild(btn);
-            });
-        }
-        function selectCategory(categoryId) {
-            currentCategory = categoryId;
-            currentItemIndex = 0;
-            renderCategoryNav();
-            document.getElementById('introText').innerText = appData.introTexts[categoryId];
-            renderItemNav();
-            updateContent();
-        }
-        function renderItemNav() {
-            const nav = document.getElementById('itemNav');
-            nav.innerHTML = '';
-            const items = appData.data[currentCategory];
-            items.forEach((item, index) => {
-                const btn = document.createElement('button');
-                btn.className = `text-left px-3 py-2 rounded transition-colors text-sm ${index === currentItemIndex ? 'bg-stone-800 text-stone-100' : 'text-stone-600 hover:bg-stone-100'}`;
-                btn.innerText = item.name;
-                btn.onclick = () => {
-                    currentItemIndex = index;
-                    renderItemNav();
-                    updateContent();
-                };
-                nav.appendChild(btn);
-            });
-        }
-        function updateContent() {
-            const item = appData.data[currentCategory][currentItemIndex];
-            document.getElementById('detailTitle').innerText = item.name;
-            document.getElementById('detailSubtitle').innerText = item.subtitle;
-            const contentDiv = document.getElementById('detailContent');
-            contentDiv.innerHTML = '';
-            item.sections.forEach(sec => {
-                const secDiv = document.createElement('div');
-                secDiv.className = 'bg-stone-50 border border-stone-200 rounded-lg p-5';
-                const essenceEl = document.createElement('p');
-                essenceEl.className = 'text-stone-700 font-medium mb-4';
-                essenceEl.innerText = sec.essence;
-                secDiv.appendChild(essenceEl);
-                const gridDiv = document.createElement('div');
-                gridDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4';
-                const posDiv = document.createElement('div');
-                posDiv.className = 'bg-green-50 border border-green-100 rounded p-3';
-                posDiv.innerHTML = `<h5 class="text-xs font-bold text-green-800 uppercase tracking-wide mb-1">Stärken (Positiv)</h5><p class="text-sm text-green-900">${sec.pos}</p>`;
-                const negDiv = document.createElement('div');
-                negDiv.className = 'bg-red-50 border border-red-100 rounded p-3';
-                negDiv.innerHTML = `<h5 class="text-xs font-bold text-red-800 uppercase tracking-wide mb-1">Schwächen (Negativ)</h5><p class="text-sm text-red-900">${sec.neg}</p>`;
-                gridDiv.appendChild(posDiv);
-                gridDiv.appendChild(negDiv);
-                secDiv.appendChild(gridDiv);
-                contentDiv.appendChild(secDiv);
-            });
-            updateChart(item);
-        }
-        function initChart() {
-            const ctx = document.getElementById('colorRadarChart').getContext('2d');
-            Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
-            Chart.defaults.color = '#78716c';
-            radarChartInstance = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Gesetz & Ordnung', 'Logik & Intellekt', 'Egoismus & Macht', 'Emotion & Chaos', 'Natur & Instinkt'],
-                    datasets: [{
-                        label: 'Ausprägung', data: [0,0,0,0,0],
-                        backgroundColor: 'rgba(217, 119, 6, 0.2)', borderColor: 'rgba(217, 119, 6, 0.8)',
-                        pointBackgroundColor: '#fff', pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#fff',
-                        borderWidth: 2, pointRadius: 5, pointHoverRadius: 7, pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            angleLines: { color: '#e7e5e4' }, grid: { color: '#e7e5e4' },
-                            pointLabels: { font: { size: 11, weight: '600' }, color: '#57534e' },
-                            min: 0, max: 10, ticks: { display: false, stepSize: 1 }
-                        }
-                    },
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c) { return ' ' + c.formattedValue + ' / 10'; } } } }
-                }
-            });
-        }
-        function updateChart(item) {
-            if(!radarChartInstance) return;
-            const canvas = document.getElementById('colorRadarChart');
-            const ctx = canvas.getContext('2d');
-            const baseColors = [
-                { r: 250, g: 204, b: 21 }, { r: 59, g: 130, b: 246 }, { r: 39, g: 39, b: 42 },
-                { r: 239, g: 68, b: 68 }, { r: 34, g: 197, b: 94 }
-            ];
-            const chartArea = radarChartInstance.chartArea;
-            const cx = chartArea ? (chartArea.left + chartArea.right) / 2 : canvas.width / 2;
-            const cy = chartArea ? (chartArea.top + chartArea.bottom) / 2 : canvas.height / 2;
-            let fillGradient, borderGradient;
-            if (ctx.createConicGradient) {
-                fillGradient = ctx.createConicGradient(-Math.PI / 2, cx, cy);
-                borderGradient = ctx.createConicGradient(-Math.PI / 2, cx, cy);
-                const addStop = (offset, colorIndex) => {
-                    const stat = item.stats[colorIndex];
-                    const c = baseColors[colorIndex];
-                    const fillAlpha = 0.05 + (stat / 10) * 0.65; 
-                    const borderAlpha = 0.15 + (stat / 10) * 0.85;
-                    fillGradient.addColorStop(offset, `rgba(${c.r}, ${c.g}, ${c.b}, ${fillAlpha})`);
-                    borderGradient.addColorStop(offset, `rgba(${c.r}, ${c.g}, ${c.b}, ${borderAlpha})`);
-                };
-                addStop(0, 0); addStop(0.2, 1); addStop(0.4, 2); addStop(0.6, 3); addStop(0.8, 4); addStop(1, 0);
-            } else {
-                fillGradient = 'rgba(120, 113, 108, 0.4)'; borderGradient = 'rgba(87, 83, 76, 1)';
-            }
-            const pointBgColors = baseColors.map(c => `rgba(${c.r}, ${c.g}, ${c.b}, 1)`);
-            radarChartInstance.data.datasets[0].data = item.stats;
-            radarChartInstance.data.datasets[0].backgroundColor = fillGradient;
-            radarChartInstance.data.datasets[0].borderColor = borderGradient;
-            radarChartInstance.data.datasets[0].pointBackgroundColor = pointBgColors;
-            radarChartInstance.data.datasets[0].pointHoverBorderColor = pointBgColors;
-            radarChartInstance.update();
-        }
-// --- 4. DASHBOARD & KARTEN LOGIK ---
-        let dashboardInitialized = false;
-        const dashboardState = {
-            totalPopMio: 19,
-            urbanRate: 13,
-            big5Rate: 63,
-            marktRate: 15,
-            cities: [
-                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 50, y: 49 },
-                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 67.5, y: 30 },
-                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 77, y: 57 },
-                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 19, y: 21 },
-                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 31, y: 33.5 }
-            ]
-        };
-        let dashboardCharts = {};
-        function formatNum(n) { 
-            return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
-        }
-        // --- LAYER-TOGGLE FUNKTION ---
-        window.toggleLayer = function(layer, isVisible) {
-            if (isVisible) { document.body.classList.remove('hide-' + layer); } 
-            else { document.body.classList.add('hide-' + layer); }   
-            document.querySelectorAll('.chk-' + layer).forEach(cb => { cb.checked = isVisible; });
-        }
-        // --- DYNAMISCHE KARTEN LOGIK START ---
-        const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
-        let mapMaskData = null;
-        let maskWidth = 0;
-        let maskHeight = 0;
-        let currentMapSeed = Math.floor(Math.random() * 1000000);
-        let prngState = currentMapSeed;
-        let autoRerollMap = true; 
-        window.toggleAutoReroll = function(isChecked) { autoRerollMap = isChecked; };
-        function seededRandom() {
-            let t = prngState += 0x6D2B79F5;
-            t = Math.imul(t ^ t >>> 15, t | 1);
-            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-            return ((t ^ t >>> 14) >>> 0) / 4294967296;
-        }
-        window.rerollMap = function() {
-            currentMapSeed = Math.floor(Math.random() * 1000000);
-            refreshDashboardCharts();
-        };
-        function loadMapMask(callback) {
-            if (!MASK_IMAGE_URL) { if(callback) callback(); return; }
-            const img = new Image();
-            img.crossOrigin = "Anonymous"; 
-            img.onload = function() {
-                const canvas = document.getElementById('map-mask-canvas');
-                if(!canvas) { if(callback) callback(); return; }
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                canvas.width = img.width; canvas.height = img.height;
-                maskWidth = img.width; maskHeight = img.height;
-                ctx.drawImage(img, 0, 0);
-                mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
-                if(callback) callback();
-            };
-            img.src = MASK_IMAGE_URL;
-        }
-        loadMapMask(() => { refreshDashboardCharts(); });
-        function getDistance(x1, y1, x2, y2) {
-            const aspect = 1778 / 1334;
-            return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
-        }
-        function findValidPos(seedBase, attemptsLimit = 500) {
-            let x, y, attempts = 0;
-            prngState = seedBase; 
-            while (attempts < attemptsLimit) {
-                x = 5 + seededRandom() * 90;
-                y = 5 + seededRandom() * 90;
-                attempts++;
-                if (mapMaskData && maskWidth > 0) {
-                    const pixelX = Math.floor((x / 100) * maskWidth);
-                    const pixelY = Math.floor((y / 100) * maskHeight);
-                    const val = mapMaskData[(pixelY * maskWidth + pixelX) * 4];
-                    if (val < 50 || seededRandom() > (val / 255)) continue;
-                }
-                return {x, y};
-            }
-            return null;
-        }
-function updateDynamicMap(vals) {
-            const markerContainer = document.getElementById('map-markers');
-            if (!markerContainer) return;
-            markerContainer.innerHTML = '';
-            
-            const visualProvinz = Math.floor(vals.provinzCount / 20); 
-            const visualMarkt = Math.floor(vals.marktCount / 20); 
-            const visualDorf = Math.floor(vals.weilerCount / 20); 
-            
-            const placedProvinz = [];
-            const placedMarkt = [];
+        resetQuizUI();
 
-            for(let i=0; i<visualProvinz; i++) {
-                let pos = findValidPos(currentMapSeed + i + 10000); 
-                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 2.0)) {
-                    const dot = document.createElement('div');
-                    dot.className = "marker-provinz absolute rounded-full bg-fuchsia-500 border border-fuchsia-200 w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-20 shadow-[0_0_5px_rgba(217,70,239,0.8)]";
-                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
-                    markerContainer.appendChild(dot);
-                    placedProvinz.push(pos);
-                }
-            }
-            
-            for(let i=0; i<visualMarkt; i++) {
-                let pos = findValidPos(currentMapSeed + i + 20000); 
-                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5) && !placedMarkt.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.8)) {
-                    const dot = document.createElement('div');
-                    dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
-                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
-                    markerContainer.appendChild(dot);
-                    placedMarkt.push(pos);
-                }
-            }
-            
-            for(let i=0; i<visualDorf; i++) {
-                let pos = findValidPos(currentMapSeed + i + 30000);
-                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.2)) {
-                    const dot = document.createElement('div');
-                    dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2 z-0";
-                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
-                    markerContainer.appendChild(dot);
-                }
-            }
-            
-            dashboardState.cities.forEach(city => {
-                if (city.pct > 0) {
-                    const bigDot = document.createElement('div');
-                    bigDot.className = "marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-30";
-                    bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
-                    bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
-                    bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
-                    markerContainer.appendChild(bigDot);
-                }
-            });
-        }
-
-        function updateFocusMap(vals) {
-            const markerContainer = document.getElementById('map-markers-focus');
-            if (!markerContainer) return;
-            markerContainer.innerHTML = '';
-            
-            const visualProvinz = Math.floor(vals.provinzCount / 2.5); 
-            const visualMarkt = Math.floor(vals.marktCount / 5); 
-            const visualDorf = Math.floor(vals.weilerCount / 10); 
-            
-            const allPlaced = [];
-            const sets = [
-                {type: 'provinz', count: visualProvinz, dist: 2.5, color: 'bg-fuchsia-500 border border-fuchsia-200 shadow-[0_0_6px_rgba(217,70,239,0.8)]', size: 'w-4 h-4', offset: 100000, markerClass: 'marker-provinz z-20'},
-                {type: 'markt', count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2.5 h-2.5', offset: 200000, markerClass: 'marker-markt z-10'},
-                {type: 'dorf', count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf z-0'}
-            ];
-            
-            sets.forEach(set => {
-                for(let i = 0; i < set.count; i++) {
-                    let pos = findValidPos(currentMapSeed + i + set.offset); 
-                    if (pos) {
-                        let tooClose = allPlaced.some(p => {
-                            let reqDist = set.dist; 
-                            if (p.type === 'provinz') {
-                                if (set.type === 'provinz') reqDist = 2.5; 
-                                if (set.type === 'markt') reqDist = 1.8;   
-                                if (set.type === 'dorf') reqDist = 0.3;    
-                            }
-                            return getDistance(pos.x, pos.y, p.x, p.y) < reqDist;
-                        });
-
-                        if (!tooClose) {
-                            const dot = document.createElement('div');
-                            dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
-                            dot.style.left = pos.x + '%'; 
-                            dot.style.top = pos.y + '%';
-                            markerContainer.appendChild(dot);
-                            allPlaced.push({x: pos.x, y: pos.y, type: set.type});
-                        }
-                    }
-                }
-            });
-            
-// Tooltip Element holen
-            const tooltip = document.getElementById('map-tooltip');
-            dashboardState.cities.forEach(city => {
-                if (city.pct > 0) {
-                    const bigDot = document.createElement('div');
-                    bigDot.className = `marker-metropole absolute rounded-full w-7 h-7 transform -translate-x-1/2 -translate-y-1/2 z-30 cursor-help`;
-                    bigDot.style.left = city.x + '%'; 
-                    bigDot.style.top = city.y + '%';               
-                    if (city.name === 'Schwarze Stadt') {
-                        bigDot.style.backgroundColor = '#000000'; 
-                        bigDot.style.border = '3px solid #94a3b8'; 
-                        bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
-                    } else if (city.name === 'Weiße Hauptstadt') {
-                        bigDot.style.backgroundColor = '#ffffff'; 
-                        bigDot.style.border = '2.5px solid #f59e0b'; 
-                        bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
-                    } else {
-                        bigDot.style.backgroundColor = city.color; 
-                        bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
-                        bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
-                    }
-                    // Tooltip Logik (Rechnet die % in absolute Einwohner um)
-                    const absPop = Math.round(vals.big5Pop * (city.pct / 100));               
-                    bigDot.addEventListener('mouseenter', () => {
-                        tooltip.innerHTML = `<strong style="color: ${city.color}; font-size: 13px;">${city.name}</strong><br/><span class="text-slate-400">Einwohner:</span> ${formatNum(absPop)}`;
-                        tooltip.classList.add('visible');
-                    });        
-                    bigDot.addEventListener('mousemove', (e) => {
-                        const containerRect = document.getElementById('map-transform-container').getBoundingClientRect();
-                        const x = (e.clientX - containerRect.left) / currentZoom;
-                        const y = (e.clientY - containerRect.top) / currentZoom;
-                        tooltip.style.left = x + 'px';
-                        tooltip.style.top = y + 'px';
-                    });     
-                    bigDot.addEventListener('mouseleave', () => {
-                        tooltip.classList.remove('visible');
-                    });
-                    markerContainer.appendChild(bigDot);
-                }
-            });
-        }
-        // --- SNAPSHOT LOGIK START ---
-        let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
-        function updateSnapshotSelect() {
-            const sel = document.getElementById('snapshot-select');
-            if(!sel) return;
-            sel.innerHTML = '<option value="">-- Zustand laden --</option>';
-            snapshots.forEach((snap, idx) => { sel.innerHTML += `<option value="${idx}">${snap.name}</option>`; });
-        }
-        window.saveSnapshot = function() {
-            const nameInput = document.getElementById('snapshot-name');
-            const name = nameInput.value.trim();
-            if(!name) { alert("Bitte gib dem Speicherstand einen Namen."); return; }
-            const snap = { name: name, seed: currentMapSeed, state: JSON.parse(JSON.stringify(dashboardState)) };
-            snapshots.push(snap);
-            localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
-            nameInput.value = '';
-            updateSnapshotSelect();
-            alert(`Speicherstand "${name}" wurde gesichert!`);
-        };
-        window.loadSnapshot = function() {
-            const sel = document.getElementById('snapshot-select');
-            const idx = sel.value;
-            if(idx === "") return;
-            const snap = snapshots[idx];
-            const toggle = document.getElementById('auto-reroll-toggle');
-            if (toggle) toggle.checked = false;
-            autoRerollMap = false;
-            currentMapSeed = snap.seed;
-            dashboardState.totalPopMio = snap.state.totalPopMio;
-            dashboardState.urbanRate = snap.state.urbanRate;
-            dashboardState.big5Rate = snap.state.big5Rate;
-            dashboardState.marktRate = snap.state.marktRate;
-            snap.state.cities.forEach((c, i) => {
-                dashboardState.cities[i].pct = c.pct;
-                dashboardState.cities[i].locked = c.locked;
-            });
-            updateDashboardUI();
-        };
-        window.deleteSnapshot = function() {
-            const sel = document.getElementById('snapshot-select');
-            const idx = sel.value;
-            if(idx === "") return;
-            if(confirm(`Möchtest du den Speicherstand "${snapshots[idx].name}" wirklich löschen?`)) {
-                snapshots.splice(idx, 1);
-                localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
-                updateSnapshotSelect();
-            }
-        };
-        setTimeout(updateSnapshotSelect, 500);
-        // --- WERTE & BERECHNUNG ---
-        function getCalculatedValues() {
-            const totalPop = dashboardState.totalPopMio * 1000000;
-            const urbanPop = Math.round(totalPop * (dashboardState.urbanRate / 100));
-            const ruralPop = totalPop - urbanPop;
-            const big5Pop = Math.round(urbanPop * (dashboardState.big5Rate / 100));
-            const provinzPop = urbanPop - big5Pop;
-            const marktPop = Math.round(ruralPop * (dashboardState.marktRate / 100));
-            const weilerPop = ruralPop - marktPop;
-            return {
-                totalPop, urbanPop, ruralPop, big5Pop, provinzPop, marktPop, weilerPop,
-                provinzCount: Math.max(0, Math.round(provinzPop / 8000)),
-                marktCount: Math.max(0, Math.round(marktPop / 1200)),
-                weilerCount: Math.max(0, Math.round(weilerPop / 150))
-            };
-        }
-        function balance(idx, newPct) {
-            const vals = getCalculatedValues();
-            let lockedSum = 0;
-            dashboardState.cities.forEach((c, i) => { if(c.locked && i !== idx) lockedSum += c.pct; });
-            if(newPct + lockedSum > 100) newPct = 100 - lockedSum;
-            dashboardState.cities[idx].pct = Math.max(0, newPct);
-            let remainder = 100 - dashboardState.cities[idx].pct - lockedSum;
-            let unlocked = dashboardState.cities.map((c, i) => ({...c, originalIndex: i})).filter((c, i) => !c.locked && i !== idx);
-            let oldSum = unlocked.reduce((s, c) => s + c.pct, 0);
-            if(unlocked.length > 0) {
-                unlocked.forEach(c => {
-                    const indexInState = c.originalIndex;
-                    dashboardState.cities[indexInState].pct = oldSum > 0 ? (c.pct / oldSum) * remainder : remainder / unlocked.length;
-                });
-            } else {
-                dashboardState.cities[idx].pct = 100 - lockedSum;
-            }
-            updateDashboardUI();
-        }
-        // --- OBERFLÄCHE AKTUALISIEREN & SYNC ---
-        function updateDashboardUI() {
-            const vals = getCalculatedValues();
-            document.getElementById('display-total-pop').innerText = formatNum(vals.totalPop);
-            document.getElementById('display-provinz-count').innerText = formatNum(vals.provinzCount);
-            document.getElementById('display-markt-count').innerText = formatNum(vals.marktCount);
-            document.getElementById('display-weiler-count').innerText = formatNum(vals.weilerCount);
-            const fProv = document.getElementById('f-val-provinz');
-            if(fProv) {
-                fProv.innerText = formatNum(vals.provinzCount);
-                document.getElementById('f-val-markt').innerText = formatNum(vals.marktCount);
-                document.getElementById('f-val-weiler').innerText = formatNum(vals.weilerCount);
-            }
-            const mappings = [
-                { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
-                { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
-                { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
-                { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
-            ];
-            mappings.forEach(m => {
-                const input = document.getElementById(`input-${m.id}`);
-                const range = document.getElementById(`range-${m.id}`);
-                const fInput = document.getElementById(`f-input-${m.fId}`);
-                const fRange = document.getElementById(`f-range-${m.fId}`);
-                const val = dashboardState[m.stateKey];
-                if(input && document.activeElement !== input) input.value = val;
-                if(range) range.value = val;
-                if(fInput && document.activeElement !== fInput) fInput.value = val;
-                if(fRange) fRange.value = val;
-            });
-            const container = document.getElementById('city-cards-container');
-            container.innerHTML = `<h2 class="text-lg font-bold px-1">Machtbalance der Fünf</h2>`;
-            dashboardState.cities.forEach((city, index) => {
-                const absPop = Math.round(vals.big5Pop * (city.pct / 100));
-                const card = document.createElement('div');
-                card.className = 'city-card shadow-lg';
-                card.style.backgroundImage = `url(${city.img})`;
-                card.innerHTML = `
-                    <div class="city-overlay">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-center gap-3">
-                                <button onclick="toggleCityLock(${index})" 
-                                        class="p-2 rounded-lg border transition-all bg-slate-900/90 shadow-md ${city.locked ? 'border-red-500 text-red-500' : 'border-slate-700 text-slate-500'}">
-                                    ${city.locked ? '🔒' : '🔓'}
-                                </button>
-                                <div>
-                                    <h3 class="text-base font-black italic tracking-tight" style="color: ${city.color}">${city.name}</h3>
-                                    <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">${formatNum(absPop)} Ew.</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-1 items-end">
-                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
-                                    <span class="text-[7px] text-slate-500 uppercase font-bold">Ew.</span>
-                                    <input type="number" onchange="updateCityByAbs(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
-                                           value="${absPop}" 
-                                           class="bg-transparent text-right font-mono text-xs w-24 focus:outline-none disabled:opacity-50 text-white">
-                                </div>
-                                <div class="bg-slate-950/90 border border-slate-700 rounded px-1.5 py-0.5 flex items-center gap-1">
-                                    <span class="text-[7px] text-slate-500 uppercase font-bold">%</span>
-                                    <input type="number" onchange="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
-                                           value="${city.pct.toFixed(2)}" 
-                                           class="bg-transparent text-right font-mono text-[10px] w-12 focus:outline-none disabled:opacity-50 text-slate-300">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex items-center gap-2">
-                            <input type="range" oninput="updateCityByPct(${index}, this.value)" ${city.locked ? 'disabled' : ''} 
-                                   value="${city.pct}" min="0" max="100" step="0.01" 
-                                   class="w-full h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-20" 
-                                   style="accent-color: ${city.color}">
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            refreshDashboardCharts();
-        }
-        window.toggleCityLock = (index) => {
-            dashboardState.cities[index].locked = !dashboardState.cities[index].locked;
-            updateDashboardUI();
-        };
-        window.updateCityByPct = (index, val) => { balance(index, parseFloat(val) || 0); };
-        window.updateCityByAbs = (index, val) => {
-            const vals = getCalculatedValues();
-            balance(index, ((parseFloat(val) || 0) / vals.big5Pop) * 100);
-        };
-        // EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
-        const mappings = [
-            { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
-            { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
-            { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
-            { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
-        ];
-        mappings.forEach(m => {
-            const updateState = (e) => {
-                dashboardState[m.stateKey] = parseFloat(e.target.value) || 0;
-                updateDashboardUI();
-            };
-            document.getElementById(`input-${m.id}`).addEventListener('input', updateState);
-            document.getElementById(`range-${m.id}`).addEventListener('input', updateState); 
-            const fInput = document.getElementById(`f-input-${m.fId}`);
-            if(fInput) {
-                fInput.addEventListener('input', updateState);
-                document.getElementById(`f-range-${m.fId}`).addEventListener('input', updateState);
-            }
-        });
-        function initDashboard() {
-            const tooltips = { 
-                callbacks: { label: (ctx) => `${ctx.label}: ${formatNum(ctx.raw)} Ew.` },
-                backgroundColor: '#1e293b', padding: 8, titleFont: { size: 10 }, bodyFont: { size: 10 }
-            };
-            const options = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltips } };
-            dashboardCharts.urban = new Chart(document.getElementById('chartUrbanRural'), {
-                type: 'doughnut',
-                data: { labels: ['Stadtbewohner', 'Landbevölkerung'], datasets: [{ data: [0,0], backgroundColor: ['#ef4444', '#334155'], borderWidth: 0 }] },
-                options: { ...options, cutout: '80%' }
-            });
-            dashboardCharts.siedlung = new Chart(document.getElementById('chartSiedlung'), {
-                type: 'bar',
-                data: { labels: ['Big 5', 'Provinz', 'Märkte', 'Dörfer'], datasets: [{ data: [0,0,0,0], backgroundColor: ['#ef4444', '#64748b', '#0d9488', '#166534'], borderRadius: 4 }] },
-                options: { ...options, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 8 } } } } }
-            });
-            dashboardCharts.big5 = new Chart(document.getElementById('chartBig5'), {
-                type: 'pie',
-                data: { labels: dashboardState.cities.map(c => c.name), datasets: [{ data: [0,0,0,0,0], backgroundColor: dashboardState.cities.map(c => c.color), borderWidth: 2, borderColor: '#0f172a' }] },
-                options: options
-            });   
-            updateDashboardUI();
-            dashboardInitialized = true;
-        }
-        function refreshDashboardCharts() {
-            if(!dashboardCharts.urban) return;
-            const vals = getCalculatedValues();
-            dashboardCharts.urban.data.datasets[0].data = [vals.urbanPop, vals.ruralPop];
-            dashboardCharts.urban.update('none');
-            dashboardCharts.siedlung.data.datasets[0].data = [vals.big5Pop, vals.provinzPop, vals.marktPop, vals.weilerPop];
-            dashboardCharts.siedlung.update('none');
-            dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
-            dashboardCharts.big5.update('none');   
-            if (autoRerollMap) {
-                currentMapSeed = Math.floor(Math.random() * 1000000); 
-            }
-            updateDynamicMap(vals);
-            updateFocusMap(vals); 
-        }
-	// --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
-        let currentZoom = 1; // Startet weiter rausgezoomt
-        let panX = 0;
-        let panY = 0;
-        let isPanning = false;
-        let startX = 0;
-        let startY = 0;
-        const viewport = document.getElementById('map-viewport');
-        const mapContainer = document.getElementById('map-transform-container');
-        function applyTransform() {
-            if (!mapContainer) return;
-            mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;   
-            const scaleHint = document.getElementById('scale-hint');
-            if(scaleHint) {
-                if(currentZoom !== 1) {
-                    scaleHint.innerText = `1 px = ${(2.5 / currentZoom).toFixed(2)} km (Zoom x${currentZoom.toFixed(1)})`;
-                    scaleHint.classList.add('text-amber-500');
-                } else {
-                    scaleHint.innerText = `1 Pixel = 2,5 Kilometer`;
-                    scaleHint.classList.remove('text-amber-500');
-                }
-            }
-        }
-        window.zoomMap = function(delta) {
-            currentZoom += delta;
-            if (currentZoom < 0.3) currentZoom = 0.3; // Lässt dich jetzt noch weiter rauszoomen
-            if (currentZoom > 5.0) currentZoom = 5.0;
-            applyTransform();
-        }
-        window.resetMapZoom = function() {
-             currentZoom = 0.8; panX = 0; panY = 0; applyTransform(); // Reset geht jetzt auch auf 0.7 zurück
-        }
-        if (viewport && mapContainer) {
-            viewport.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                window.zoomMap(e.deltaY > 0 ? -0.1 : 0.1);
-            }, { passive: false });
-            mapContainer.addEventListener('mousedown', (e) => {
-                isPanning = true;
-                startX = e.clientX - panX;
-                startY = e.clientY - panY;
-                mapContainer.style.transition = 'none';
-            });
-            window.addEventListener('mousemove', (e) => {
-                if (!isPanning) return;
-                panX = e.clientX - startX;
-                panY = e.clientY - startY;
-                applyTransform();
-            });
-            window.addEventListener('mouseup', () => {
-                if (isPanning) {
-                    isPanning = false;
-                    mapContainer.style.transition = 'transform 0.1s ease-out';
-                }
-            });
-        }
-        // --- ZOOM & PAN ENDE ---
-        // --- 5. KOMMENTAR-FUNKTION LOGIK ---
-        // Lädt Kommentare aus dem LocalStorage beim Start
-// Init Cults App by default & Comments
-        window.onload = () => {
-            // INIT: Beide Dashboards & Karten berechnen, egal welcher Tab aktiv ist
-            const initialVals = getCalculatedValues();
-            updateFocusMap(initialVals); 
-        };
-// --- ZWEISTUFIGE FEEDBACK LOGIK ---
-        let feedbackCart = JSON.parse(localStorage.getItem('osmieen_feedback_cart') || '[]');
-        function injectFeedbackButtons() {
-            document.querySelectorAll('summary.section-summary').forEach(summary => {
-                const titleDiv = summary.querySelector('.summary-title');
-                if(!titleDiv || titleDiv.querySelector('.feedback-trigger')) return;
-                const sectionName = titleDiv.innerText.replace('▼', '').trim();
-                const btn = document.createElement('button');
-                btn.innerHTML = '💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 hover:text-amber-600 ml-1 hidden md:inline">Notiz</span>';
-                btn.className = 'feedback-trigger ml-4 px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center';
-                btn.onclick = (e) => {
-                    e.preventDefault(); 
-                    e.stopPropagation();
-                    openFeedbackModal(sectionName);
-                };
-                titleDiv.appendChild(btn);
-            });
-            updateFeedbackBadge();
-        }
-        function openFeedbackModal(contextName) {
-            document.getElementById('modal-context').value = contextName;
-            document.getElementById('modal-text').value = '';
-            document.getElementById('feedback-modal').classList.remove('hidden');
-        }
-        function closeFeedbackModal() {
-            document.getElementById('feedback-modal').classList.add('hidden');
-        }
-        function saveFeedbackToCart() {
-            const text = document.getElementById('modal-text').value.trim();
-            const context = document.getElementById('modal-context').value;
-            if(!text) { alert("Bitte schreib etwas auf, bevor du speicherst."); return; }
-            feedbackCart.push({ context: context, text: text });
-            localStorage.setItem('osmieen_feedback_cart', JSON.stringify(feedbackCart));
-            closeFeedbackModal();
-            updateFeedbackBadge();
-            alert("Wurde auf deinen Feedback-Zettel gepackt!");
-        }
-        function updateFeedbackBadge() {
-            const badge = document.getElementById('feedback-badge');
-            const submitBtn = document.getElementById('btn-submit-all');
-            if(feedbackCart.length > 0) {
-                if(badge) { badge.innerText = feedbackCart.length; badge.classList.remove('hidden'); }
-                if(submitBtn) submitBtn.disabled = false;
-            } else {
-                if(badge) badge.classList.add('hidden');
-                if(submitBtn) submitBtn.disabled = true;
-            }
-            const tab = document.getElementById('tab-feedback');
-            if(tab && !tab.classList.contains('hidden')) {
-                renderFeedbackCart();
-            }
-        }
-        function renderFeedbackCart() {
-            const list = document.getElementById('feedback-cart-list');
-            if(feedbackCart.length === 0) {
-                list.innerHTML = '<p class="text-stone-400 italic py-8 text-center border-2 border-dashed border-stone-200 rounded-xl">Dein Zettel ist noch leer. Klicke im Wiki auf die 💬 Buttons!</p>';
-                return;
-            }
-            list.innerHTML = feedbackCart.map((item, index) => `
-                <div class="bg-white border border-stone-200 rounded-lg p-4 shadow-sm relative group">
-                    <span class="text-xs font-bold text-amber-700 uppercase tracking-tighter bg-amber-50 px-2 py-0.5 rounded border border-amber-200">${item.context}</span>
-                    <p class="text-sm text-stone-700 mt-3 whitespace-pre-wrap">${item.text}</p>
-                    <button onclick="removeFromCart(${index})" type="button" class="absolute top-4 right-4 text-xs text-red-400 hover:text-red-600 transition">Entfernen</button>
-                </div>
-            `).join('');
-        }
-        function removeFromCart(index) {
-            feedbackCart.splice(index, 1);
-            localStorage.setItem('osmieen_feedback_cart', JSON.stringify(feedbackCart));
-            updateFeedbackBadge();
-        }
-        function prepareFinalSubmission(e) {
-            if(feedbackCart.length === 0) {
-                e.preventDefault();
-                alert("Es gibt nichts zum Abschicken!");
-                return;
-            }
-            let mailText = "Hier ist das gesammelte Feedback:\\n\\n";
-            feedbackCart.forEach(item => {
-                mailText += `--- BEREICH: ${item.context} ---\\n`;
-                mailText += `${item.text}\\n\\n`;
-            });
-            document.getElementById('hidden-feedback-payload').value = mailText;
-            localStorage.removeItem('osmieen_feedback_cart');
-            feedbackCart = [];
-            setTimeout(() => { updateFeedbackBadge(); }, 100);
-        }
-        setTimeout(injectFeedbackButtons, 500);
-		const storyPages = [
+        const storyPages = [
             {
                 title: "Die Venen von Osmieen: Der Sektor 4",
                 img: "0.png", 
@@ -3280,80 +3326,12 @@ function updateDynamicMap(vals) {
                 text: "Der Galapa schritt langsam über die Fluchtspur der Gruppe hinweg. Wo seine gewaltigen Füße den Boden berührten, spross augenblicklich dickes Moos und weißer Klee hervor, der den Geruch von Schweiß und vergossenem Blut unter einer Schicht aus Natur begrub. Vespera beobachtete fasziniert, wie Beryl die magischen Rückstände ihrer Flucht mit einer Geste in das grüne Herz des Waldes zog. Ihre Spuren waren ausgelöscht, verloren im ewigen Kreislauf des Wachstums. Für heute waren sie Geister in einer Welt, die nur an Fleisch und Eisen glaubte."
             }
         ];
-		const qQuick = [
-            { q: "In deiner Straße bricht ein Aufstand aus. Wie reagierst du?", options: [ { text: "Ich rufe die Wache. Ordnung muss gewahrt werden.", colors: [1,0,0,0,0] }, { text: "Ich analysiere die Taktiken beider Seiten.", colors: [0,1,0,0,0] }, { text: "Ich plündere das Geschäft meines Rivalen.", colors: [0,0,1,0,0] }, { text: "Ich stürze mich brüllend ins Getümmel!", colors: [0,0,0,1,0] }, { text: "Nur der Starke überlebt. Das ist natürlich.", colors: [0,0,0,0,1] } ] },
-            { q: "Du findest ein verbotenes Buch. Was tust du?", options: [ { text: "Verbrennen. Alte Regeln abwerfen ist Freiheit.", colors: [0,0,0,1,0] }, { text: "Vergraben. Es sollte im Kreislauf ruhen.", colors: [0,0,0,0,1] }, { text: "Der Inquisition übergeben. Sicherheit zuerst.", colors: [1,0,0,0,0] }, { text: "Studieren, um Wissen zu erlangen.", colors: [0,1,0,0,0] }, { text: "Behalten und jemanden damit erpressen.", colors: [0,0,1,0,0] } ] },
-            { q: "Ein Verbündeter hintergeht dich. Deine Rache?", options: [ { text: "Vernichtung mit bloßen Händen!", colors: [0,0,0,1,0] }, { text: "Ausstoßung aus dem Rudel.", colors: [0,0,0,0,1] }, { text: "Ich lerne aus dem Fehler in meinem System.", colors: [0,1,0,0,0] }, { text: "Ein fairer, unbarmherziger Prozess.", colors: [1,0,0,0,0] }, { text: "Ich ruiniere ihn finanziell restlos.", colors: [0,0,1,0,0] } ] },
-            { q: "Was ist die größte Belohnung?", options: [ { text: "Verstehen aller arkanen Mysterien.", colors: [0,1,0,0,0] }, { text: "Ewiges Leben und Autorität.", colors: [0,0,1,0,0] }, { text: "Einklang mit der Wildnis.", colors: [0,0,0,0,1] }, { text: "Totale Freiheit ohne Grenzen.", colors: [0,0,0,1,0] }, { text: "Frieden in der Gemeinschaft.", colors: [1,0,0,0,0] } ] },
-            { q: "Ein Kollege gefährdet die Quote. Was tust du?", options: [ { text: "Wir arbeiten solidarisch für ihn mit.", colors: [1,0,0,0,0] }, { text: "Ich automatisiere den Prozess.", colors: [0,1,0,0,0] }, { text: "Ich melde ihn, um befördert zu werden.", colors: [0,0,1,0,0] }, { text: "Ich stachle zum Aufstand auf!", colors: [0,0,0,1,0] }, { text: "Wer zu schwach ist, wird zurückgelassen.", colors: [0,0,0,0,1] } ] },
-            { q: "Größte Gefahr für die Welt?", options: [ { text: "Kälte und Willensverlust.", colors: [0,0,0,1,0] }, { text: "Ignoranz und Dummheit.", colors: [0,1,0,0,0] }, { text: "Zivilisation und Fabriken.", colors: [0,0,0,0,1] }, { text: "Chaos und fehlende Tradition.", colors: [1,0,0,0,0] }, { text: "Schwäche und unverdientes Mitleid.", colors: [0,0,1,0,0] } ] },
-            { q: "Wunsch-Magie?", options: [ { text: "Schilde und heilige Schwüre.", colors: [1,0,0,0,0] }, { text: "Telepathie und Illusion.", colors: [0,1,0,0,0] }, { text: "Totenbeschwörung.", colors: [0,0,1,0,0] }, { text: "Stürme und Feuer.", colors: [0,0,0,1,0] }, { text: "Wachstum und Bestien.", colors: [0,0,0,0,1] } ] }
-        ];
-        const qDeep = [
-            ...qQuick,
-            { q: "Ein Bettler stiehlt Brot. Strafe?", options: [ {text: "Harte Strafe nach dem Gesetz.", colors: [1,0,0,0,0]}, {text: "Umerziehung durch Studium.", colors: [0,1,0,0,0]}, {text: "Er wird mein Sklave.", colors: [0,0,1,0,0]}, {text: "Ich lasse ihn laufen; Freiheit zuerst.", colors: [0,0,0,1,0]}, {text: "Er muss jagen lernen oder verhungern.", colors: [0,0,0,0,1]} ]},
-            { q: "Was ist Erfolg?", options: [ {text: "Sicherheit für meine Familie.", colors: [1,0,0,0,0]}, {text: "Ein Rätsel gelöst zu haben.", colors: [0,1,0,0,0]}, {text: "Dass andere mich fürchten.", colors: [0,0,1,0,0]}, {text: "Momente purer Extase.", colors: [0,0,0,1,0]}, {text: "Mein Platz im Netz des Lebens.", colors: [0,0,0,0,1]} ]},
-            { q: "Ein Drache greift an. Reaktion?", options: [ {text: "Verteidigung organisieren.", colors: [1,0,0,0,0]}, {text: "Schwachstellen analysieren.", colors: [0,1,0,0,0]}, {text: "Ihm einen Pakt anbieten.", colors: [0,0,1,0,0]}, {text: "Mit Sprengstoff draufstürzen!", colors: [0,0,0,1,0]}, {text: "Den Apex-Prädator akzeptieren.", colors: [0,0,0,0,1]} ]},
-            { q: "Die Inquisition klopft nachts an.", options: [ {text: "Ich habe nichts zu verbergen.", colors: [1,0,0,0,0]}, {text: "Logische Fehler in ihrer Magie suchen.", colors: [0,1,0,0,0]}, {text: "Wer hat mich verraten? Er stirbt.", colors: [0,0,1,0,0]}, {text: "Ab durchs Fenster!", colors: [0,0,0,1,0]}, {text: "Angriff ist die beste Verteidigung.", colors: [0,0,0,0,1]} ]},
-            { q: "Deine ideale Stadt?", options: [ {text: "Sauber, mit hohen Mauern.", colors: [1,0,0,0,0]}, {text: "Labore über den Wolken.", colors: [0,1,0,0,0]}, {text: "Unterirdisch und effizient.", colors: [0,0,1,0,0]}, {text: "Zelte, Feste und Musik.", colors: [0,0,0,1,0]}, {text: "In lebende Bäume gewachsen.", colors: [0,0,0,0,1]} ]},
-            { q: "Problem-Lösung?", options: [ {text: "Bewährte Protokolle nutzen.", colors: [1,0,0,0,0]}, {text: "In Einzelteile zerlegen.", colors: [0,1,0,0,0]}, {text: "Größten persönlichen Vorteil suchen.", colors: [0,0,1,0,0]}, {text: "Bauchgefühl und Improvisation.", colors: [0,0,0,1,0]}, {text: "Dinge natürlich laufen lassen.", colors: [0,0,0,0,1]} ]},
-            { q: "Krieg zweier Fraktionen. Deine Seite?", options: [ {text: "Die rechtmäßige Autorität.", colors: [1,0,0,0,0]}, {text: "Die technologisch Überlegene.", colors: [0,1,0,0,0]}, {text: "Wer am meisten zahlt.", colors: [0,0,1,0,0]}, {text: "Die Rebellen!", colors: [0,0,0,1,0]}, {text: "Neutralität; natürliche Auslese.", colors: [0,0,0,0,1]} ]},
-            { q: "Lieblingselement?", options: [ {text: "Licht und Stein.", colors: [1,0,0,0,0]}, {text: "Wasser und Wind.", colors: [0,1,0,0,0]}, {text: "Schatten und Verfall.", colors: [0,0,1,0,0]}, {text: "Feuer und Blitz.", colors: [0,0,0,1,0]}, {text: "Erde und Holz.", colors: [0,0,0,0,1]} ]},
-            { q: "Blick auf die Vergangenheit?", options: [ {text: "Fundament unserer Moral.", colors: [1,0,0,0,0]}, {text: "Datensatz zum Lernen.", colors: [0,1,0,0,0]}, {text: "Geschichte von Siegern.", colors: [0,0,1,0,0]}, {text: "Egal, nur das Jetzt zählt.", colors: [0,0,0,1,0]}, {text: "Ewiger Kreislauf.", colors: [0,0,0,0,1]} ]},
-            { q: "Freund ist sterbenskrank.", options: [ {text: "Beste legale Pflege.", colors: [1,0,0,0,0]}, {text: "Experimentelles Heilmittel bauen.", colors: [0,1,0,0,0]}, {text: "Pakt mit Dämon zur Rettung.", colors: [0,0,1,0,0]}, {text: "Jeden letzten Wunsch erfüllen.", colors: [0,0,0,1,0]}, {text: "Den Tod als Teil des Lebens akzeptieren.", colors: [0,0,0,0,1]} ]},
-            { q: "Wunsch-Artefakt mit hohem Preis.", options: [ {text: "Niemals riskieren.", colors: [1,0,0,0,0]}, {text: "Den Mechanismus untersuchen.", colors: [0,1,0,0,0]}, {text: "Nutzen. Macht braucht Opfer.", colors: [0,0,1,0,0]}, {text: "Ablehnen, ich schmiede mein Schicksal.", colors: [0,0,0,1,0]}, {text: "Stört das Gleichgewicht.", colors: [0,0,0,0,1]} ]},
-            { q: "Befehl zum Selbstmordangriff.", options: [ {text: "Gehorchen. Pflicht ist Ehre.", colors: [1,0,0,0,0]}, {text: "Alternativen vorschlagen.", colors: [0,1,0,0,0]}, {text: "General heimlich ermorden.", colors: [0,0,1,0,0]}, {text: "Sofort desertieren.", colors: [0,0,0,1,0]}, {text: "Nach Instinkt kämpfen.", colors: [0,0,0,0,1]} ]},
-            { q: "Geld und Reichtum?", options: [ {text: "Mittel für die Gemeinschaft.", colors: [1,0,0,0,0]}, {text: "Ressource für Studien.", colors: [0,1,0,0,0]}, {text: "Werkzeug für Einfluss.", colors: [0,0,1,0,0]}, {text: "Sofort für Spaß ausgeben.", colors: [0,0,0,1,0]}, {text: "Wertlos im Vergleich zur Natur.", colors: [0,0,0,0,1]} ]},
-            { q: "Welches Tier?", options: [ {text: "Wachhund oder Adler.", colors: [1,0,0,0,0]}, {text: "Rabe oder Oktopus.", colors: [0,1,0,0,0]}, {text: "Schlange oder Aasgeier.", colors: [0,0,1,0,0]}, {text: "Pavian oder wilder Hengst.", colors: [0,0,0,1,0]}, {text: "Bär oder einsamer Wolf.", colors: [0,0,0,0,1]} ]},
-            { q: "Lieblingszitat?", options: [ {text: "Die Stärke ist das Rudel.", colors: [1,0,0,0,0]}, {text: "Wissen ist Macht.", colors: [0,1,0,0,0]}, {text: "Der Zweck heiligt die Mittel.", colors: [0,0,1,0,0]}, {text: "Lieber brennen als verrosten.", colors: [0,0,0,1,0]}, {text: "Alles kehrt zur Erde zurück.", colors: [0,0,0,0,1]} ]},
-            { q: "Unsterblichkeit ohne Liebe?", options: [ {text: "Nein, Liebe hält uns zusammen.", colors: [1,0,0,0,0]}, {text: "Ja, Emotionen stören nur.", colors: [0,1,0,0,0]}, {text: "Ja, ewiges Leben ist Sieg.", colors: [0,0,1,0,0]}, {text: "Nein, ohne Leidenschaft ist man tot.", colors: [0,0,0,1,0]}, {text: "Nein, ist widernatürlich.", colors: [0,0,0,0,1]} ]},
-            { q: "Schloss stürmen. Plan?", options: [ {text: "Klassische Belagerung.", colors: [1,0,0,0,0]}, {text: "Sprengung der Schwachstellen.", colors: [0,1,0,0,0]}, {text: "Wachen bestechen, Brunnen vergiften.", colors: [0,0,1,0,0]}, {text: "Frontalangriff mit Gebrüll!", colors: [0,0,0,1,0]}, {text: "Aushungern lassen.", colors: [0,0,0,0,1]} ]},
-            { q: "Freizeit?", options: [ {text: "Ehrenamt für alle.", colors: [1,0,0,0,0]}, {text: "Lesen oder knobeln.", colors: [0,1,0,0,0]}, {text: "Netzwerken für Gefallen.", colors: [0,0,1,0,0]}, {text: "Kunst, Tanz oder Adrenalin.", colors: [0,0,0,1,0]}, {text: "Stille im Wald genießen.", colors: [0,0,0,0,1]} ]},
-            { q: "Dunkle Prophezeiung gegen dich.", options: [ {text: "Heroisch dem Schicksal stellen.", colors: [1,0,0,0,0]}, {text: "Schlupfloch in der Formulierung suchen.", colors: [0,1,0,0,0]}, {text: "Den Propheten töten.", colors: [0,0,1,0,0]}, {text: "Noch wilder leben als zuvor.", colors: [0,0,0,1,0]}, {text: "Akzeptieren. Alles hat seine Zeit.", colors: [0,0,0,0,1]} ]},
-            { q: "System-Korruption entdeckt.", options: [ {text: "Von innen reformieren.", colors: [1,0,0,0,0]}, {text: "Beweise sammeln und veröffentlichen.", colors: [0,1,0,0,0]}, {text: "Nutzen, um selbst aufzusteigen.", colors: [0,0,1,0,0]}, {text: "Den Palast anzünden!", colors: [0,0,0,1,0]}, {text: "In die Wildnis flüchten.", colors: [0,0,0,0,1]} ]},
-            { q: "Lügendes Kind bestrafen?", options: [ {text: "Harte Belehrung über Moral.", colors: [1,0,0,0,0]}, {text: "Logische Ineffizienz erklären.", colors: [0,1,0,0,0]}, {text: "Besser lügen lehren.", colors: [0,0,1,0,0]}, {text: "Egal, Regeln sind langweilig.", colors: [0,0,0,1,0]}, {text: "Harte Arbeit in der Natur.", colors: [0,0,0,0,1]} ]},
-            { q: "Deine größte Schwäche?", options: [ {text: "Zu dogmatisch.", colors: [1,0,0,0,0]}, {text: "Zu viel denken, zu wenig handeln.", colors: [0,1,0,0,0]}, {text: "Traue niemandem.", colors: [0,0,1,0,0]}, {text: "Unkontrollierte Wut.", colors: [0,0,0,1,0]}, {text: "Widerwille gegen Fortschritt.", colors: [0,0,0,0,1]} ]},
-            { q: "Fremder bittet um Hilfe.", options: [ {text: "Es ist meine Pflicht.", colors: [1,0,0,0,0]}, {text: "Ist das Problem lehrreich?", colors: [0,1,0,0,0]}, {text: "Was springt für mich raus?", colors: [0,0,1,0,0]}, {text: "Klar, Abenteuer!", colors: [0,0,0,1,0]}, {text: "Ist er von meiner Sippe? Wenn nicht, nein.", colors: [0,0,0,0,1]} ]}
-        ];
-        let activeQuiz = [];
-        let currentQuizIndex = 0;
-        let userScores = [0, 0, 0, 0, 0]; 
-        window.resetQuizUI = function() {
-            document.getElementById('quiz-start-area').classList.remove('hidden');
-            document.getElementById('quiz-question-area').classList.add('hidden');
-            document.getElementById('quiz-result-area').classList.add('hidden');
-            currentQuizIndex = 0;
-            userScores = [0, 0, 0, 0, 0];
-        }
-        window.startQuiz = function(mode) {
-            activeQuiz = (mode === 'deep') ? [...qDeep] : [...qQuick];
-            activeQuiz.sort(() => Math.random() - 0.5);
-            currentQuizIndex = 0;
-            userScores = [0, 0, 0, 0, 0];
-            document.getElementById('quiz-start-area').classList.add('hidden');
-            document.getElementById('quiz-question-area').classList.remove('hidden');
-            renderQuizQuestion();
-        }
-        function renderQuizQuestion() {
-            if (currentQuizIndex >= activeQuiz.length) { calculateQuizResult(); return; }
-            document.getElementById('quiz-progress').innerText = `Frage ${currentQuizIndex + 1} von ${activeQuiz.length}`;
-            const qObj = activeQuiz[currentQuizIndex];
-            document.getElementById('quiz-question').innerText = qObj.q;
-            const optionsDiv = document.getElementById('quiz-options');
-            optionsDiv.innerHTML = '';
-            [...qObj.options].sort(() => Math.random() - 0.5).forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "text-left w-full bg-stone-50 hover:bg-amber-50 border border-stone-200 hover:border-amber-400 text-stone-700 p-4 rounded-lg transition-all shadow-sm font-medium hover:shadow";
-                btn.innerText = opt.text;
-                btn.onclick = () => { opt.colors.forEach((c, i) => userScores[i] += c); currentQuizIndex++; renderQuizQuestion(); };
-                optionsDiv.appendChild(btn);
-            });
-        }
-resetQuizUI();
+
         let currentStoryIndex = 0;
         let isReading = false;
         let synth = window.speechSynthesis;
-        let currentUtterance = null;        
+        let currentUtterance = null;
+        
         function renderStoryPage() {
             const page = storyPages[currentStoryIndex];
             document.getElementById('story-chapter-title').innerText = page.title;
@@ -3372,6 +3350,7 @@ resetQuizUI();
             document.getElementById('btn-prev-page').disabled = currentStoryIndex === 0;
             document.getElementById('btn-next-page').disabled = currentStoryIndex === storyPages.length - 1;
         }
+
         function nextStoryPage() {
             if (currentStoryIndex < storyPages.length - 1) {
                 currentStoryIndex++;
@@ -3381,6 +3360,7 @@ resetQuizUI();
                 stopStoryPlayback();
             }
         }
+
         function prevStoryPage() {
             if (currentStoryIndex > 0) {
                 currentStoryIndex--;
@@ -3388,6 +3368,7 @@ resetQuizUI();
                 if (isReading) speakCurrentPage();
             }
         }
+
         function toggleStoryPlayback() {
             if (isReading) {
                 stopStoryPlayback();
@@ -3399,6 +3380,7 @@ resetQuizUI();
                 speakCurrentPage();
             }
         }
+
         function stopStoryPlayback() {
             isReading = false;
             synth.cancel();
@@ -3407,6 +3389,7 @@ resetQuizUI();
             const indicator = document.getElementById('reading-indicator');
             if(indicator) indicator.classList.add('hidden');
         }
+
         function speakCurrentPage() {
             synth.cancel();
             if (!isReading) return;
@@ -3440,6 +3423,7 @@ resetQuizUI();
             }
             speakNextSentence();
         }
+
         window.addEventListener('load', () => {
             setTimeout(() => { synth.getVoices(); }, 50);
             renderStoryPage();
