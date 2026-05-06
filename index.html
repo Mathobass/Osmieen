@@ -3147,44 +3147,182 @@
         }
 
         setTimeout(injectFeedbackButtons, 500);
-
-        const qQuick = [
-            { q: "In deiner Straße bricht ein Aufstand aus. Wie reagierst du?", options: [ { text: "Ich rufe die Wache. Ordnung muss gewahrt werden.", colors: [1,0,0,0,0] }, { text: "Ich analysiere die Taktiken beider Seiten.", colors: [0,1,0,0,0] }, { text: "Ich plündere das Geschäft meines Rivalen.", colors: [0,0,1,0,0] }, { text: "Ich stürze mich brüllend ins Getümmel!", colors: [0,0,0,1,0] }, { text: "Nur der Starke überlebt. Das ist natürlich.", colors: [0,0,0,0,1] } ] },
-            { q: "Du findest ein verbotenes Buch. Was tust du?", options: [ { text: "Verbrennen. Alte Regeln abwerfen ist Freiheit.", colors: [0,0,0,1,0] }, { text: "Vergraben. Es sollte im Kreislauf ruhen.", colors: [0,0,0,0,1] }, { text: "Der Inquisition übergeben. Sicherheit zuerst.", colors: [1,0,0,0,0] }, { text: "Studieren, um Wissen zu erlangen.", colors: [0,1,0,0,0] }, { text: "Behalten und jemanden damit erpressen.", colors: [0,0,1,0,0] } ] },
-            { q: "Ein Verbündeter hintergeht dich. Deine Rache?", options: [ { text: "Vernichtung mit bloßen Händen!", colors: [0,0,0,1,0] }, { text: "Ausstoßung aus dem Rudel.", colors: [0,0,0,0,1] }, { text: "Ich lerne aus dem Fehler in meinem System.", colors: [0,1,0,0,0] }, { text: "Ein fairer, unbarmherziger Prozess.", colors: [1,0,0,0,0] }, { text: "Ich ruiniere ihn finanziell restlos.", colors: [0,0,1,0,0] } ] },
-            { q: "Was ist die größte Belohnung?", options: [ { text: "Verstehen aller arkanen Mysterien.", colors: [0,1,0,0,0] }, { text: "Ewiges Leben und Autorität.", colors: [0,0,1,0,0] }, { text: "Einklang mit der Wildnis.", colors: [0,0,0,0,1] }, { text: "Totale Freiheit ohne Grenzen.", colors: [0,0,0,1,0] }, { text: "Frieden in der Gemeinschaft.", colors: [1,0,0,0,0] } ] },
-            { q: "Ein Kollege gefährdet die Quote. Was tust du?", options: [ { text: "Wir arbeiten solidarisch für ihn mit.", colors: [1,0,0,0,0] }, { text: "Ich automatisiere den Prozess.", colors: [0,1,0,0,0] }, { text: "Ich melde ihn, um befördert zu werden.", colors: [0,0,1,0,0] }, { text: "Ich stachle zum Aufstand auf!", colors: [0,0,0,1,0] }, { text: "Wer zu schwach ist, wird zurückgelassen.", colors: [0,0,0,0,1] } ] },
-            { q: "Größte Gefahr für die Welt?", options: [ { text: "Kälte und Willensverlust.", colors: [0,0,0,1,0] }, { text: "Ignoranz und Dummheit.", colors: [0,1,0,0,0] }, { text: "Zivilisation und Fabriken.", colors: [0,0,0,0,1] }, { text: "Chaos und fehlende Tradition.", colors: [1,0,0,0,0] }, { text: "Schwäche und unverdientes Mitleid.", colors: [0,0,1,0,0] } ] },
-            { q: "Wunsch-Magie?", options: [ { text: "Schilde und heilige Schwüre.", colors: [1,0,0,0,0] }, { text: "Telepathie und Illusion.", colors: [0,1,0,0,0] }, { text: "Totenbeschwörung.", colors: [0,0,1,0,0] }, { text: "Stürme und Feuer.", colors: [0,0,0,1,0] }, { text: "Wachstum und Bestien.", colors: [0,0,0,0,1] } ] }
+		const qQuick = [
+            { q: "Ein komplexes mechanisches Schloss blockiert deinen Weg. Was tust du?", options: [ 
+                { text: "Ich suche konzentriert nach dem Rhythmus und dem Muster der Zylinder.", colors: [0, 0.6, 0, 0, 0.4] }, 
+                { text: "Ich breche den Schließzylinder mit gezielter Gewalteinwirkung.", colors: [0, 0, 0.4, 0.6, 0] }, 
+                { text: "Ich überlege, wer es gebaut hat und warum, um das Motiv zu verstehen.", colors: [0.5, 0.5, 0, 0, 0] }, 
+                { text: "Ich warte im Schatten, bis jemand anderes es für mich öffnet.", colors: [0, 0, 0.7, 0, 0.3] } 
+            ] },
+            { q: "Jemand macht dir ein völlig unerwartetes, teures Geschenk.", options: [ 
+                { text: "Ich lehne höflich, aber bestimmt ab. Niemand gibt ohne Hintergedanken.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Ich nehme es an und freue mich über die ehrliche Geste.", colors: [0.5, 0, 0, 0.5, 0] }, 
+                { text: "Ich analysiere den Wert und frage mich, in was für eine Schuld ich mich begebe.", colors: [0, 0.6, 0.4, 0, 0] }
+            ] },
+            { q: "Du bist in einem Labyrinth gefangen. Wie entkommst du?", options: [ 
+                { text: "Immer an der rechten Wand entlang. Ein methodisches, sicheres System.", colors: [0.6, 0.4, 0, 0, 0] }, 
+                { text: "Ich folge dem subtilen Luftzug und dem Geruch von feuchtem Moos.", colors: [0, 0, 0, 0, 1] }, 
+                { text: "Ich renne einfach los. In Bewegung bleiben ist das Wichtigste.", colors: [0, 0, 0, 1, 0] }, 
+                { text: "Ich markiere falsche Wege, damit Verfolger sich verirren.", colors: [0, 0, 1, 0, 0] } 
+            ] },
+            { q: "Ein Kind weint, weil sein Holzspielzeug kaputt ist.", options: [ 
+                { text: "Ich schnitze ihm schnell ein neues, etwas rauer, aber stabiler.", colors: [0, 0, 0, 0.4, 0.6] }, 
+                { text: "Ich zeige ihm mit Leim, wie man die Bruchstellen logisch wieder zusammensetzt.", colors: [0.4, 0.6, 0, 0, 0] }, 
+                { text: "Ich sage ihm, dass Dinge kaputt gehen und es lernen muss, loszulassen.", colors: [0.5, 0, 0.5, 0, 0] }
+            ] },
+            { q: "Die Sonne geht unter und es wird kalt. Du hast nur ein Streichholz.", options: [ 
+                { text: "Ich zünde eine Laterne an, um die Schatten und Gefahren zu vertreiben.", colors: [0.6, 0.4, 0, 0, 0] }, 
+                { text: "Ich zünde ein loderndes Lagerfeuer an, um mich zu wärmen und zu leben.", colors: [0, 0, 0, 0.6, 0.4] }, 
+                { text: "Ich hebe das Streichholz auf. Vielleicht brauche ich es später dringender.", colors: [0, 0.4, 0.6, 0, 0] }, 
+                { text: "Ich zünde das trockene Gras an, um einen Schutzring aus Asche zu schaffen.", colors: [0, 0, 0.5, 0.5, 0] } 
+            ] },
+            { q: "Was würdest du opfern, um ein unglaublich wichtiges, persönliches Ziel zu erreichen?", options: [ 
+                { text: "Meine körperliche Gesundheit und Unversehrtheit.", colors: [0, 0, 0, 0.6, 0.4] }, 
+                { text: "Meinen moralischen Kompass.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Meine Ruhe, meine Zeit und meinen Komfort.", colors: [0.5, 0.5, 0, 0, 0] }
+            ] },
+            { q: "Du findest ein Amulett, das die Gedanken anderer für dich hörbar macht.", options: [ 
+                { text: "Ich studiere, wie die Magie funktioniert, setze es aber nicht bei Freunden ein.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Ich nutze es, um Verschwörungen gegen die Gemeinschaft aufzudecken.", colors: [0.6, 0, 0.4, 0, 0] }, 
+                { text: "Ich zerstöre es. Solche Eingriffe in den Geist sind unnatürlich.", colors: [0, 0, 0, 0.4, 0.6] }, 
+                { text: "Ich höre zu, wer mich hintergeht, und schlage präventiv zu.", colors: [0, 0, 0.6, 0.4, 0] } 
+            ] }
         ];
 
         const qDeep = [
             ...qQuick,
-            { q: "Ein Bettler stiehlt Brot. Strafe?", options: [ {text: "Harte Strafe nach dem Gesetz.", colors: [1,0,0,0,0]}, {text: "Umerziehung durch Studium.", colors: [0,1,0,0,0]}, {text: "Er wird mein Sklave.", colors: [0,0,1,0,0]}, {text: "Ich lasse ihn laufen; Freiheit zuerst.", colors: [0,0,0,1,0]}, {text: "Er muss jagen lernen oder verhungern.", colors: [0,0,0,0,1]} ]},
-            { q: "Was ist Erfolg?", options: [ {text: "Sicherheit für meine Familie.", colors: [1,0,0,0,0]}, {text: "Ein Rätsel gelöst zu haben.", colors: [0,1,0,0,0]}, {text: "Dass andere mich fürchten.", colors: [0,0,1,0,0]}, {text: "Momente purer Extase.", colors: [0,0,0,1,0]}, {text: "Mein Platz im Netz des Lebens.", colors: [0,0,0,0,1]} ]},
-            { q: "Ein Drache greift an. Reaktion?", options: [ {text: "Verteidigung organisieren.", colors: [1,0,0,0,0]}, {text: "Schwachstellen analysieren.", colors: [0,1,0,0,0]}, {text: "Ihm einen Pakt anbieten.", colors: [0,0,1,0,0]}, {text: "Mit Sprengstoff draufstürzen!", colors: [0,0,0,1,0]}, {text: "Den Apex-Prädator akzeptieren.", colors: [0,0,0,0,1]} ]},
-            { q: "Die Inquisition klopft nachts an.", options: [ {text: "Ich habe nichts zu verbergen.", colors: [1,0,0,0,0]}, {text: "Logische Fehler in ihrer Magie suchen.", colors: [0,1,0,0,0]}, {text: "Wer hat mich verraten? Er stirbt.", colors: [0,0,1,0,0]}, {text: "Ab durchs Fenster!", colors: [0,0,0,1,0]}, {text: "Angriff ist die beste Verteidigung.", colors: [0,0,0,0,1]} ]},
-            { q: "Deine ideale Stadt?", options: [ {text: "Sauber, mit hohen Mauern.", colors: [1,0,0,0,0]}, {text: "Labore über den Wolken.", colors: [0,1,0,0,0]}, {text: "Unterirdisch und effizient.", colors: [0,0,1,0,0]}, {text: "Zelte, Feste und Musik.", colors: [0,0,0,1,0]}, {text: "In lebende Bäume gewachsen.", colors: [0,0,0,0,1]} ]},
-            { q: "Problem-Lösung?", options: [ {text: "Bewährte Protokolle nutzen.", colors: [1,0,0,0,0]}, {text: "In Einzelteile zerlegen.", colors: [0,1,0,0,0]}, {text: "Größten persönlichen Vorteil suchen.", colors: [0,0,1,0,0]}, {text: "Bauchgefühl und Improvisation.", colors: [0,0,0,1,0]}, {text: "Dinge natürlich laufen lassen.", colors: [0,0,0,0,1]} ]},
-            { q: "Krieg zweier Fraktionen. Deine Seite?", options: [ {text: "Die rechtmäßige Autorität.", colors: [1,0,0,0,0]}, {text: "Die technologisch Überlegene.", colors: [0,1,0,0,0]}, {text: "Wer am meisten zahlt.", colors: [0,0,1,0,0]}, {text: "Die Rebellen!", colors: [0,0,0,1,0]}, {text: "Neutralität; natürliche Auslese.", colors: [0,0,0,0,1]} ]},
-            { q: "Lieblingselement?", options: [ {text: "Licht und Stein.", colors: [1,0,0,0,0]}, {text: "Wasser und Wind.", colors: [0,1,0,0,0]}, {text: "Schatten und Verfall.", colors: [0,0,1,0,0]}, {text: "Feuer und Blitz.", colors: [0,0,0,1,0]}, {text: "Erde und Holz.", colors: [0,0,0,0,1]} ]},
-            { q: "Blick auf die Vergangenheit?", options: [ {text: "Fundament unserer Moral.", colors: [1,0,0,0,0]}, {text: "Datensatz zum Lernen.", colors: [0,1,0,0,0]}, {text: "Geschichte von Siegern.", colors: [0,0,1,0,0]}, {text: "Egal, nur das Jetzt zählt.", colors: [0,0,0,1,0]}, {text: "Ewiger Kreislauf.", colors: [0,0,0,0,1]} ]},
-            { q: "Freund ist sterbenskrank.", options: [ {text: "Beste legale Pflege.", colors: [1,0,0,0,0]}, {text: "Experimentelles Heilmittel bauen.", colors: [0,1,0,0,0]}, {text: "Pakt mit Dämon zur Rettung.", colors: [0,0,1,0,0]}, {text: "Jeden letzten Wunsch erfüllen.", colors: [0,0,0,1,0]}, {text: "Den Tod als Teil des Lebens akzeptieren.", colors: [0,0,0,0,1]} ]},
-            { q: "Wunsch-Artefakt mit hohem Preis.", options: [ {text: "Niemals riskieren.", colors: [1,0,0,0,0]}, {text: "Den Mechanismus untersuchen.", colors: [0,1,0,0,0]}, {text: "Nutzen. Macht braucht Opfer.", colors: [0,0,1,0,0]}, {text: "Ablehnen, ich schmiede mein Schicksal.", colors: [0,0,0,1,0]}, {text: "Stört das Gleichgewicht.", colors: [0,0,0,0,1]} ]},
-            { q: "Befehl zum Selbstmordangriff.", options: [ {text: "Gehorchen. Pflicht ist Ehre.", colors: [1,0,0,0,0]}, {text: "Alternativen vorschlagen.", colors: [0,1,0,0,0]}, {text: "General heimlich ermorden.", colors: [0,0,1,0,0]}, {text: "Sofort desertieren.", colors: [0,0,0,1,0]}, {text: "Nach Instinkt kämpfen.", colors: [0,0,0,0,1]} ]},
-            { q: "Geld und Reichtum?", options: [ {text: "Mittel für die Gemeinschaft.", colors: [1,0,0,0,0]}, {text: "Ressource für Studien.", colors: [0,1,0,0,0]}, {text: "Werkzeug für Einfluss.", colors: [0,0,1,0,0]}, {text: "Sofort für Spaß ausgeben.", colors: [0,0,0,1,0]}, {text: "Wertlos im Vergleich zur Natur.", colors: [0,0,0,0,1]} ]},
-            { q: "Welches Tier?", options: [ {text: "Wachhund oder Adler.", colors: [1,0,0,0,0]}, {text: "Rabe oder Oktopus.", colors: [0,1,0,0,0]}, {text: "Schlange oder Aasgeier.", colors: [0,0,1,0,0]}, {text: "Pavian oder wilder Hengst.", colors: [0,0,0,1,0]}, {text: "Bär oder einsamer Wolf.", colors: [0,0,0,0,1]} ]},
-            { q: "Lieblingszitat?", options: [ {text: "Die Stärke ist das Rudel.", colors: [1,0,0,0,0]}, {text: "Wissen ist Macht.", colors: [0,1,0,0,0]}, {text: "Der Zweck heiligt die Mittel.", colors: [0,0,1,0,0]}, {text: "Lieber brennen als verrosten.", colors: [0,0,0,1,0]}, {text: "Alles kehrt zur Erde zurück.", colors: [0,0,0,0,1]} ]},
-            { q: "Unsterblichkeit ohne Liebe?", options: [ {text: "Nein, Liebe hält uns zusammen.", colors: [1,0,0,0,0]}, {text: "Ja, Emotionen stören nur.", colors: [0,1,0,0,0]}, {text: "Ja, ewiges Leben ist Sieg.", colors: [0,0,1,0,0]}, {text: "Nein, ohne Leidenschaft ist man tot.", colors: [0,0,0,1,0]}, {text: "Nein, ist widernatürlich.", colors: [0,0,0,0,1]} ]},
-            { q: "Schloss stürmen. Plan?", options: [ {text: "Klassische Belagerung.", colors: [1,0,0,0,0]}, {text: "Sprengung der Schwachstellen.", colors: [0,1,0,0,0]}, {text: "Wachen bestechen, Brunnen vergiften.", colors: [0,0,1,0,0]}, {text: "Frontalangriff mit Gebrüll!", colors: [0,0,0,1,0]}, {text: "Aushungern lassen.", colors: [0,0,0,0,1]} ]},
-            { q: "Freizeit?", options: [ {text: "Ehrenamt für alle.", colors: [1,0,0,0,0]}, {text: "Lesen oder knobeln.", colors: [0,1,0,0,0]}, {text: "Netzwerken für Gefallen.", colors: [0,0,1,0,0]}, {text: "Kunst, Tanz oder Adrenalin.", colors: [0,0,0,1,0]}, {text: "Stille im Wald genießen.", colors: [0,0,0,0,1]} ]},
-            { q: "Dunkle Prophezeiung gegen dich.", options: [ {text: "Heroisch dem Schicksal stellen.", colors: [1,0,0,0,0]}, {text: "Schlupfloch in der Formulierung suchen.", colors: [0,1,0,0,0]}, {text: "Den Propheten töten.", colors: [0,0,1,0,0]}, {text: "Noch wilder leben als zuvor.", colors: [0,0,0,1,0]}, {text: "Akzeptieren. Alles hat seine Zeit.", colors: [0,0,0,0,1]} ]},
-            { q: "System-Korruption entdeckt.", options: [ {text: "Von innen reformieren.", colors: [1,0,0,0,0]}, {text: "Beweise sammeln und veröffentlichen.", colors: [0,1,0,0,0]}, {text: "Nutzen, um selbst aufzusteigen.", colors: [0,0,1,0,0]}, {text: "Den Palast anzünden!", colors: [0,0,0,1,0]}, {text: "In die Wildnis flüchten.", colors: [0,0,0,0,1]} ]},
-            { q: "Lügendes Kind bestrafen?", options: [ {text: "Harte Belehrung über Moral.", colors: [1,0,0,0,0]}, {text: "Logische Ineffizienz erklären.", colors: [0,1,0,0,0]}, {text: "Besser lügen lehren.", colors: [0,0,1,0,0]}, {text: "Egal, Regeln sind langweilig.", colors: [0,0,0,1,0]}, {text: "Harte Arbeit in der Natur.", colors: [0,0,0,0,1]} ]},
-            { q: "Deine größte Schwäche?", options: [ {text: "Zu dogmatisch.", colors: [1,0,0,0,0]}, {text: "Zu viel denken, zu wenig handeln.", colors: [0,1,0,0,0]}, {text: "Traue niemandem.", colors: [0,0,1,0,0]}, {text: "Unkontrollierte Wut.", colors: [0,0,0,1,0]}, {text: "Widerwille gegen Fortschritt.", colors: [0,0,0,0,1]} ]},
-            { q: "Fremder bittet um Hilfe.", options: [ {text: "Es ist meine Pflicht.", colors: [1,0,0,0,0]}, {text: "Ist das Problem lehrreich?", colors: [0,1,0,0,0]}, {text: "Was springt für mich raus?", colors: [0,0,1,0,0]}, {text: "Klar, Abenteuer!", colors: [0,0,0,1,0]}, {text: "Ist er von meiner Sippe? Wenn nicht, nein.", colors: [0,0,0,0,1]} ]}
+            { q: "Jemand erzählt in einer Taverne eine Geschichte, die faktisch völlig falsch ist.", options: [ 
+                { text: "Ich korrigiere ihn sofort vor allen Leuten.", colors: [0.5, 0.5, 0, 0, 0] }, 
+                { text: "Ich lasse ihn reden. Wer weiß, wem diese Lüge am Ende nützt.", colors: [0, 0, 0.6, 0, 0.4] }, 
+                { text: "Ich spinne die Geschichte weiter und mache sie noch viel dramatischer.", colors: [0, 0, 0, 1, 0] } 
+            ]},
+            { q: "Du beobachtest, wie ein Raubtier ein kleineres Tier in die Enge treibt.", options: [ 
+                { text: "Ich greife ein, vertreibe das Raubtier und rette das Schwächere.", colors: [0.6, 0, 0, 0.4, 0] }, 
+                { text: "Ich schaue zu. So ist der Lauf der Dinge, Einmischen ist anmaßend.", colors: [0, 0, 0.4, 0, 0.6] }, 
+                { text: "Ich nutze die Gelegenheit, um die Jagdtaktik des Raubtiers zu studieren.", colors: [0, 1, 0, 0, 0] } 
+            ]},
+            { q: "Welche Art von Wetter spiegelt dein Inneres am besten wider?", options: [ 
+                { text: "Ein gleichmäßiger, stundenlanger Landregen.", colors: [0.5, 0.5, 0, 0, 0] }, 
+                { text: "Ein plötzliches, knisterndes und zerstörerisches Gewitter.", colors: [0, 0, 0.3, 0.7, 0] }, 
+                { text: "Ein absolut klarer, unendlich weiter und frostiger Sternenhimmel.", colors: [0, 0.5, 0, 0, 0.5] }, 
+                { text: "Ein dichter, undurchdringlicher Nebel, der alles verbirgt.", colors: [0, 0, 0.6, 0, 0.4] } 
+            ]},
+            { q: "Ein Händler verlangt für dringend benötigte Medizin einen unverschämten Preis.", options: [ 
+                { text: "Ich feilsche stundenlang mit harten Fakten und Logik, bis er nachgibt.", colors: [0.4, 0.6, 0, 0, 0] }, 
+                { text: "Ich schüchtere ihn ein oder nehme sie mir einfach.", colors: [0, 0, 0.6, 0.4, 0] }, 
+                { text: "Ich biete ihm einen langfristigen Gefallen an, der ihn abhängig macht.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Ich biete ihm einen Tauschhandel mit etwas Selbstgemachtem an.", colors: [0.3, 0, 0, 0, 0.7] } 
+            ]},
+            { q: "Du musst ein brisantes Geheimnis bewahren. Wo ist es am sichersten?", options: [ 
+                { text: "Verschlüsselt in einem Notizbuch, dessen Code nur ich kenne.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Bei einer Person, die ich mit meinem eigenen Leben beschützen würde.", colors: [0.6, 0, 0, 0.4, 0] }, 
+                { text: "Ich nutze das Geheimnis als Druckmittel, damit niemand es wagt, danach zu suchen.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Ich flüstere es tief im Wald in ein Erdloch und vergesse es.", colors: [0, 0, 0, 0, 1] } 
+            ]},
+            { q: "Zwei deiner engsten Verbündeten streiten sich unerbittlich.", options: [ 
+                { text: "Ich erzwinge ein klärendes Gespräch nach strengen Regeln.", colors: [0.6, 0.4, 0, 0, 0] }, 
+                { text: "Sollen sie es auskämpfen. Das reinigt die Luft.", colors: [0, 0, 0, 0.6, 0.4] }, 
+                { text: "Ich nutze die Ablenkung, um meine eigene Position in der Gruppe zu festigen.", colors: [0, 0, 1, 0, 0] } 
+            ]},
+            { q: "Welche Art von Ruine fasziniert dich am meisten?", options: [ 
+                { text: "Ein altes Archiv, dessen Schriften unter dem Staub intakt sein könnten.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Eine imposante Festung, deren Mauern Belagerungen standhielten.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Orte der reinen Macht, ganz egal, wer sie einst erbaut hat.", colors: [0, 0.3, 0.7, 0, 0] }, 
+                { text: "Ein Ort, der von wilden Bestien und der Natur zurückerobert wurde.", colors: [0, 0, 0, 0.4, 0.6] } 
+            ]},
+            { q: "Eine Lüge...", options: [ 
+                { text: "...ist ein Werkzeug, wenn die Wahrheit nur Schaden anrichtet.", colors: [0.4, 0, 0.6, 0, 0] }, 
+                { text: "...ist ein inakzeptables Verbrechen an der Realität.", colors: [0.5, 0.5, 0, 0, 0] }, 
+                { text: "...ist feige. Ich stehe zu meinen Taten, egal wie schlimm.", colors: [0, 0, 0, 1, 0] }, 
+                { text: "...existiert in der Natur nicht. Tiere lügen nicht.", colors: [0, 0, 0, 0, 1] } 
+            ]},
+            { q: "Du findest eine Tür, auf der steht: 'Betreten bedeutet den sicheren Tod.'", options: [ 
+                { text: "Ich respektiere die Warnung und melde die Tür der Wache.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Ich trete sie sofort ein! Niemand schreibt mir vor, was ich tun darf.", colors: [0, 0, 0, 1, 0] }, 
+                { text: "Ich nehme Proben von der Tür, um zu testen, ob es sich um eine Falle handelt.", colors: [0, 1, 0, 0, 0] },
+                { text: "Ich bezahle jemand anderen dafür, als Erster hindurchzugehen.", colors: [0, 0, 1, 0, 0] }
+            ]},
+            { q: "Du erwachst und hast keine Erinnerung an den gestrigen Tag. Deine Hände sind blutig.", options: [ 
+                { text: "Ich stelle mich sofort den Behörden, um Schlimmeres zu verhindern.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Ich wasche die Hände und vernichte alle Beweise, bevor jemand Fragen stellt.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Ich spüre dem Blutgeruch nach, um herauszufinden, was ich gejagt habe.", colors: [0, 0, 0, 0.4, 0.6] },
+                { text: "Ich deduziere anhand meiner Kleidung und Umgebung logisch meine letzten Schritte.", colors: [0, 1, 0, 0, 0] }
+            ]},
+            { q: "Ein Feind liegt wehrlos vor dir, nachdem er dich jahrelang gequält hat.", options: [ 
+                { text: "Ich töte ihn schnell und unkompliziert. Es ist vorbei.", colors: [0, 0.3, 0, 0.7, 0] }, 
+                { text: "Ich übergebe ihn einem ordentlichen Gericht für seine Taten.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Ich lasse ihn am Leben, aber nehme ihm alles, was ihm jemals wichtig war.", colors: [0, 0, 1, 0, 0] }
+            ]},
+            { q: "Wie strukturierst du deinen Alltag am liebsten?", options: [ 
+                { text: "Gar nicht. Ich tue das, worauf ich im Moment am meisten Lust habe.", colors: [0, 0, 0, 1, 0] }, 
+                { text: "Mit festen Routinen und klar verteilten Aufgaben.", colors: [1, 0.5, 0, 0, 0] }, 
+                { text: "Ich passe mich dem Rhythmus der Sonne und meiner Umgebung an.", colors: [0, 0, 0, 0, 1] },
+                { text: "Ich plane so, dass andere die harte Arbeit für mich erledigen.", colors: [0, 0, 1, 0, 0] }
+            ]},
+            { q: "Jemand bittet dich nach einem unverzeihlichen Fehler um Rat.", options: [ 
+                { text: "Ich erkläre ihm sachlich, was er falsch gemacht hat, ohne Mitleid.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Ich umarme ihn. Wir machen alle Fehler.", colors: [0.5, 0, 0, 0.5, 0] }, 
+                { text: "Ich sage ihm, wie er den Fehler vertuschen kann, erwarte aber einen Gefallen.", colors: [0, 0, 1, 0, 0] }
+            ]},
+            { q: "Du musst eine Brücke überqueren, aber ein Wächter verlangt einen immateriellen Zoll.", options: [ 
+                { text: "Ich erzähle ihm mein größtes Geheimnis.", colors: [0, 0, 0, 0.6, 0.4] }, 
+                { text: "Ich fordere ihn zu einem Rätselduell heraus.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Ich bedrohe ihn, bis er mich kostenlos passieren lässt.", colors: [0, 0, 1, 0.5, 0] },
+                { text: "Ich zeige ihm mein Abzeichen, das mir den Übertritt per Gesetz gewährt.", colors: [1, 0, 0, 0, 0] }
+            ]},
+            { q: "Ein Kunstwerk in einer Galerie löst tiefe Trauer in dir aus.", options: [ 
+                { text: "Ich kaufe es sofort, egal was es kostet.", colors: [0, 0, 0.5, 0.5, 0] }, 
+                { text: "Ich frage den Künstler, welche Techniken er verwendet hat.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Ich zerstöre es, weil ich den Schmerz nicht ertrage.", colors: [0, 0, 0, 1, 0] },
+                { text: "Ich meide den Raum in Zukunft, um meine Pflichten nicht zu vernachlässigen.", colors: [1, 0, 0, 0, 0] }
+            ]},
+            { q: "Du hast die Wahl zwischen zwei Pfaden im dunklen Wald:", options: [ 
+                { text: "Einer ist gut ausgetreten und mit steinernen Wegweisern markiert.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Einer ist überwuchert, aber ich höre Wasser und Tierstimmen.", colors: [0, 0, 0, 0, 1] }, 
+                { text: "Ich ignoriere beide und schlage mir meinen eigenen Weg durchs Dickicht.", colors: [0, 0, 0, 1, 0] },
+                { text: "Ich klettere auf einen Baum, um das Terrain von oben zu kartografieren.", colors: [0, 1, 0, 0, 0] }
+            ]},
+            { q: "Eine seltene Blume blüht nur einmal alle hundert Jahre. Du stehst davor.", options: [ 
+                { text: "Ich lasse sie unberührt und setze mich schweigend daneben.", colors: [0, 0, 0, 0, 1] }, 
+                { text: "Ich pflücke sie und verkaufe sie an den Meistbietenden.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Ich zerschneide sie, um ihre Alchemie im Labor zu extrahieren.", colors: [0, 1, 0, 0, 0] },
+                { text: "Ich baue einen Zaun darum, damit niemand sie beschädigt.", colors: [1, 0, 0, 0, 0] }
+            ]},
+            { q: "Was ist für dich die schlimmste Form der Gefangenschaft?", options: [ 
+                { text: "Keine neuen Dinge mehr lernen oder lesen zu dürfen.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Befehle von jemandem annehmen zu müssen, den ich verachte.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Nie wieder den Himmel sehen oder den Wind spüren zu können.", colors: [0, 0, 0, 0, 1] },
+                { text: "In einen Raum ohne Geräusche und Farben gesperrt zu sein.", colors: [0, 0, 0, 1, 0] }
+            ]},
+            { q: "Du hast die Chance, die Zukunft zu sehen. Was schaust du dir an?", options: [ 
+                { text: "Den Tag meines eigenen Todes.", colors: [0, 0, 0, 0, 1] }, 
+                { text: "Die technologischen Erfindungen in 500 Jahren.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Die Lottozahlen oder Sportergebnisse von morgen.", colors: [0, 0, 1, 0, 0] },
+                { text: "Ich will die Zukunft nicht wissen. Das nimmt dem Leben die Spannung.", colors: [0, 0, 0, 1, 0] }
+            ]},
+            { q: "Ein wertvolles, geliehenes Artefakt zerbricht in deinen Händen.", options: [ 
+                { text: "Ich beichte den Fehler sofort und biete Schadensersatz.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Ich untersuche die Bruchkanten, um den Fehler im Material zu finden.", colors: [0, 1, 0, 0, 0] }, 
+                { text: "Ich schiebe die Schuld auf einen unbeteiligten Diener.", colors: [0, 0, 1, 0, 0] }
+            ]},
+            { q: "Du musst eine unmotivierte Armee in die Schlacht führen. Deine Rede?", options: [ 
+                { text: "Ich verspreche ihnen Ruhm, Blut und die Plünderung der feindlichen Stadt!", colors: [0, 0, 0, 1, 0] }, 
+                { text: "Ich erinnere sie an ihre Pflicht gegenüber dem Gesetz und den Göttern.", colors: [1, 0, 0, 0, 0] }, 
+                { text: "Ich erkläre ihnen kalt die taktische Überlegenheit unseres Plans.", colors: [0, 1, 0, 0, 0] },
+                { text: "Ich erzähle ihnen, dass Feiglinge als Erste hingerichtet werden.", colors: [0, 0, 1, 0, 0] }
+            ]},
+            { q: "Jemand bietet dir an, deinen größten Schmerz für immer aus deinem Gedächtnis zu löschen.", options: [ 
+                { text: "Nein. Meine Narben und mein Schmerz haben mich zu dem gemacht, was ich bin.", colors: [0.5, 0, 0, 0.5, 0] }, 
+                { text: "Ja. Emotionale Altlasten machen mich nur schwach.", colors: [0, 0, 1, 0, 0] }, 
+                { text: "Nein. Schmerz ist eine wertvolle Datenbank an Lebenserfahrung.", colors: [0, 1, 0, 0, 0] }
+            ]},
+            { q: "Was ist dein letzter Gedanke, bevor du einschläfst?", options: [ 
+                { text: 'Morgen muss ich effizienter sein als heute.', colors: [0, 0.6, 0.4, 0, 0] }, 
+                { text: 'Ich hoffe, das Rudel ist sicher.', colors: [1, 0, 0, 0, 0.5] }, 
+                { text: 'Morgen hole ich mir, was mir zusteht.', colors: [0, 0, 1, 0, 0] },
+                { text: 'Ich erinnere mich an das Lachen von heute.', colors: [0, 0, 0, 1, 0] }
+            ]}
         ];
-
         let activeQuiz = [];
         let currentQuizIndex = 0;
         let userScores = [0, 0, 0, 0, 0]; 
