@@ -3378,15 +3378,11 @@ function calculateQuizResult() {
             if (totalScore === 0) totalScore = 1;
             let pcts = userScores.map(v => Math.round((v / totalScore) * 100));
 
-            // 1. Den absoluten Spitzenwert finden
+            // 1. Platz 1 bestimmen (Relative Gap-Analyse)
             let maxPct = Math.max(...pcts);
-            
-            // 2. Dynamische Schwelle: Wer mindestens 80% des Bestwertes erreicht, gehört zum Kern.
-            // Das sorgt dafür, dass 28/28/26 dreifarbig wird, aber 28/28/15 zweifarbig bleibt.
             let threshold = maxPct * 0.8;
             let dominantPattern = pcts.map(p => p >= threshold ? 1 : 0);
 
-            // 3. Den Kult finden, der exakt dieses Muster bedient
             let finalCult = null;
             let finalCat = '';
             let finalIdx = 0;
@@ -3401,26 +3397,13 @@ function calculateQuizResult() {
                 });
             });
 
-            // Fallback: Falls für eine exotische 4er-Kombi kein Text da ist, nimm den punktbesten Kult
+            // Fallback für Platz 1
             if (!finalCult) {
-                let bestFallbackScore = -1000;
-                Object.keys(appData.data).forEach(cat => {
-                    appData.data[cat].forEach((cult, index) => {
-                        let score = 0;
-                        for (let i = 0; i < 5; i++) {
-                            score += pcts[i] * (cult.colors[i] ? 1 : -0.5);
-                        }
-                        if (score > bestFallbackScore) {
-                            bestFallbackScore = score;
-                            finalCult = cult;
-                            finalCat = cat;
-                            finalIdx = index;
-                        }
-                    });
-                });
+                finalCult = appData.data['mono'][pcts.indexOf(Math.max(...pcts))];
+                finalCat = 'mono';
             }
 
-            // UI befüllen
+            // UI für Platz 1 befüllen
             document.getElementById('quiz-result-title').innerText = finalCult.name;
             document.getElementById('quiz-result-subtitle').innerText = finalCult.subtitle;
             document.getElementById('quiz-result-essence').innerText = finalCult.sections[0].essence;
@@ -3437,32 +3420,46 @@ function calculateQuizResult() {
                         </span>
                     `).join('')}
                 </div>
-                Da diese Aspekte in deinem Wesen dominieren, bist du ein idealer Vertreter von <strong>${finalCult.name}</strong>.`;
+                Diese Dominanz macht dich zu einem Vertreter von <strong>${finalCult.name}</strong>.`;
 
             document.getElementById('quiz-result-link-container').innerHTML = `
                 <button onclick="jumpToCult('${finalCat}', ${finalIdx})" class="mt-4 text-sm bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition hover:bg-amber-700 shadow-md flex items-center gap-2 mx-auto">
                     <span>➔ Details im Kompendium</span>
                 </button>`;
 
-            // Platz 2 & 3: Mathematische Ähnlichkeit (Vektor-Distanz-Prinzip)
+            // 2. Platz 2 & 3: Mathematische Präzisions-Logik
             let otherResults = [];
             Object.keys(appData.data).forEach(cat => {
                 appData.data[cat].forEach((cult, index) => {
                     if (cult.name === finalCult.name) return;
                     
-                    let score = 0;
+                    let matchScore = 0;
+                    let cultColorCount = cult.colors.reduce((a,b) => a+b, 0);
+
                     for (let i = 0; i < 5; i++) {
-                        // Belohnung für Übereinstimmung, Malus für Abweichung
-                        if (cult.colors[i] === 1) score += pcts[i];
-                        else score -= (pcts[i] * 0.6);
+                        if (cult.colors[i] === 1) {
+                            // Wenn der Kult eine Farbe hat, die du kaum hast (unter 15%), 
+                            // bekommt er einen massiven Malus.
+                            if (pcts[i] < 15) {
+                                matchScore -= 50; 
+                            } else {
+                                matchScore += pcts[i];
+                            }
+                        } else {
+                            // Strafe für Farben, die du hast, aber der Kult NICHT bedient
+                            // (Verhindert, dass zu kleine Kulte gewinnen, wenn du breit aufgestellt bist)
+                            if (pcts[i] > 20) matchScore -= 10;
+                        }
                     }
-                    // Bonus für "Dichte": Weniger Farben im Kult = klarerer Fokus
-                    let colorCount = cult.colors.reduce((a,b) => a+b, 0);
-                    let finalScore = score / Math.sqrt(colorCount);
+                    
+                    // "Fokus-Faktor": Bevorzugt Kulte, deren Farbanzahl näher an deiner 
+                    // tatsächlichen Treffer-Anzahl liegt.
+                    let finalScore = matchScore / (1 + Math.abs(cultColorCount - dominantPattern.reduce((a,b)=>a+b,0)));
                     
                     otherResults.push({cult, finalScore, cat, index});
                 });
             });
+
             otherResults.sort((a, b) => b.finalScore - a.finalScore);
 
             const getColorLabels = (colors) => {
