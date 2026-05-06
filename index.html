@@ -2240,74 +2240,6 @@ window.addEventListener('load', () => {
             document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
             document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
         }
-        resetQuizUI();
-						<section id="tab-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
-                <h1>Welcher Kult passt zu dir?</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Ein psychologischer Test, um deinen wahren Platz in der Theokratie von Osmieen zu finden.</p>
-                
-                <div id="quiz-container" class="bg-white border border-stone-200 rounded-xl p-8 shadow-sm">
-                    
-                    <div id="quiz-start-area" class="text-center py-6">
-                        <h2 class="text-2xl font-bold text-stone-800 mb-4">Wähle deine Analyse</h2>
-                        <p class="text-stone-600 mb-8 max-w-lg mx-auto">Möchtest du nur eine grobe Einschätzung oder eine tiefgreifende, psychologische Auswertung deiner Seele?</p>
-                        <div class="flex flex-col sm:flex-row justify-center gap-4">
-                            <button onclick="startQuiz('quick')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-800 font-bold py-4 px-6 rounded-lg transition shadow-sm">
-                                ⏱️ Schnellquiz<br><span class="text-xs font-normal text-stone-500">7 Fragen (Dauer: 1 Min)</span>
-                            </button>
-                            <button onclick="startQuiz('deep')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-6 rounded-lg transition shadow-md">
-                                🔮 Tiefen-Analyse<br><span class="text-xs font-normal text-amber-200">30 Fragen (Dauer: 5 Min)</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="quiz-question-area" class="hidden">
-                        <div class="mb-6 flex justify-between items-center text-xs font-bold text-stone-400 uppercase tracking-widest border-b border-stone-100 pb-4">
-                            <span id="quiz-progress">Frage 1 von X</span>
-                            <button onclick="resetQuizUI()" class="hover:text-amber-600 transition">Abbrechen ✖</button>
-                        </div>
-                        <h2 id="quiz-question" class="text-2xl font-bold text-stone-800 mb-6 mt-0">Frage lädt...</h2>
-                        <div id="quiz-options" class="flex flex-col gap-3"></div>
-                    </div>
-
-                    <div id="quiz-result-area" class="hidden text-center py-6">
-                        <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Die Götter haben geurteilt</h3>
-                        <h2 id="quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
-                        <p id="quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
-                        
-                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
-                            <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Warum dieser Kult?</h4>
-                            <p id="quiz-result-explanation" class="text-sm text-stone-700 leading-relaxed mb-4"></p>
-                            <div class="pt-4 border-t border-stone-200">
-                                <span class="text-xs font-bold text-stone-500 uppercase">Kern-Essenz:</span>
-                                <p id="quiz-result-essence" class="text-sm font-medium text-stone-800 mt-1"></p>
-                            </div>
-                        </div>
-
-                        <div class="max-w-2xl mx-auto text-left mb-8">
-                            <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend (Alternative Pfade)</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
-                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
-                                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 2</div>
-                                    <div id="quiz-runnerup-1-title" class="font-bold text-stone-800"></div>
-                                    <div id="quiz-runnerup-1-sub" class="text-xs text-stone-500 italic"></div>
-                                </div>
-                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
-                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
-                                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 3</div>
-                                    <div id="quiz-runnerup-2-title" class="font-bold text-stone-800"></div>
-                                    <div id="quiz-runnerup-2-sub" class="text-xs text-stone-500 italic"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-center gap-4">
-                            <button onclick="resetQuizUI()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold py-3 px-6 rounded-lg transition">Neues Quiz</button>
-                            <button onclick="switchTab('tab-cults')" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 px-6 rounded-lg transition shadow-md">Zum Kult-Kompendium</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
             <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Dein Feedback-Zettel</h1>
                 <p class="text-lg text-stone-500 font-medium mb-8">Hier sind alle deine gesammelten Anmerkungen. Überprüfe sie und schicke sie gesammelt an mich ab. Mach das am besten nicht nach jedem Ding einzeln, sondern sammel die Sachen erst hier</p>
@@ -3357,7 +3289,6 @@ function updateDynamicMap(vals) {
             { q: "Größte Gefahr für die Welt?", options: [ { text: "Kälte und Willensverlust.", colors: [0,0,0,1,0] }, { text: "Ignoranz und Dummheit.", colors: [0,1,0,0,0] }, { text: "Zivilisation und Fabriken.", colors: [0,0,0,0,1] }, { text: "Chaos und fehlende Tradition.", colors: [1,0,0,0,0] }, { text: "Schwäche und unverdientes Mitleid.", colors: [0,0,1,0,0] } ] },
             { q: "Wunsch-Magie?", options: [ { text: "Schilde und heilige Schwüre.", colors: [1,0,0,0,0] }, { text: "Telepathie und Illusion.", colors: [0,1,0,0,0] }, { text: "Totenbeschwörung.", colors: [0,0,1,0,0] }, { text: "Stürme und Feuer.", colors: [0,0,0,1,0] }, { text: "Wachstum und Bestien.", colors: [0,0,0,0,1] } ] }
         ];
-
         const qDeep = [
             ...qQuick,
             { q: "Ein Bettler stiehlt Brot. Strafe?", options: [ {text: "Harte Strafe nach dem Gesetz.", colors: [1,0,0,0,0]}, {text: "Umerziehung durch Studium.", colors: [0,1,0,0,0]}, {text: "Er wird mein Sklave.", colors: [0,0,1,0,0]}, {text: "Ich lasse ihn laufen; Freiheit zuerst.", colors: [0,0,0,1,0]}, {text: "Er muss jagen lernen oder verhungern.", colors: [0,0,0,0,1]} ]},
@@ -3384,11 +3315,9 @@ function updateDynamicMap(vals) {
             { q: "Deine größte Schwäche?", options: [ {text: "Zu dogmatisch.", colors: [1,0,0,0,0]}, {text: "Zu viel denken, zu wenig handeln.", colors: [0,1,0,0,0]}, {text: "Traue niemandem.", colors: [0,0,1,0,0]}, {text: "Unkontrollierte Wut.", colors: [0,0,0,1,0]}, {text: "Widerwille gegen Fortschritt.", colors: [0,0,0,0,1]} ]},
             { q: "Fremder bittet um Hilfe.", options: [ {text: "Es ist meine Pflicht.", colors: [1,0,0,0,0]}, {text: "Ist das Problem lehrreich?", colors: [0,1,0,0,0]}, {text: "Was springt für mich raus?", colors: [0,0,1,0,0]}, {text: "Klar, Abenteuer!", colors: [0,0,0,1,0]}, {text: "Ist er von meiner Sippe? Wenn nicht, nein.", colors: [0,0,0,0,1]} ]}
         ];
-
         let activeQuiz = [];
         let currentQuizIndex = 0;
         let userScores = [0, 0, 0, 0, 0]; 
-
         window.resetQuizUI = function() {
             document.getElementById('quiz-start-area').classList.remove('hidden');
             document.getElementById('quiz-question-area').classList.add('hidden');
@@ -3396,7 +3325,6 @@ function updateDynamicMap(vals) {
             currentQuizIndex = 0;
             userScores = [0, 0, 0, 0, 0];
         }
-
         window.startQuiz = function(mode) {
             activeQuiz = (mode === 'deep') ? [...qDeep] : [...qQuick];
             activeQuiz.sort(() => Math.random() - 0.5);
@@ -3406,7 +3334,6 @@ function updateDynamicMap(vals) {
             document.getElementById('quiz-question-area').classList.remove('hidden');
             renderQuizQuestion();
         }
-
         function renderQuizQuestion() {
             if (currentQuizIndex >= activeQuiz.length) { calculateQuizResult(); return; }
             document.getElementById('quiz-progress').innerText = `Frage ${currentQuizIndex + 1} von ${activeQuiz.length}`;
@@ -3422,46 +3349,11 @@ function updateDynamicMap(vals) {
                 optionsDiv.appendChild(btn);
             });
         }
-
-        function calculateQuizResult() {
-            document.getElementById('quiz-question-area').classList.add('hidden');
-            document.getElementById('quiz-result-area').classList.remove('hidden');
-            let results = [];
-            Object.keys(appData.data).forEach(cat => {
-                if (cat === 'five' || cat === 'four') return;
-                appData.data[cat].forEach(cult => {
-                    let score = 0, matchCount = 0;
-                    for (let i = 0; i < 5; i++) {
-                        if (cult.colors[i] === 1) { score += userScores[i]; matchCount++; }
-                        else { score -= userScores[i] * 0.7; }
-                    }
-                    results.push({cult: cult, score: score / Math.sqrt(matchCount)});
-                });
-            });
-            results.sort((a, b) => b.score - a.score);
-            const top = results[0].cult;
-            document.getElementById('quiz-result-title').innerText = top.name;
-            document.getElementById('quiz-result-subtitle').innerText = top.subtitle;
-            document.getElementById('quiz-result-essence').innerText = top.sections[0].essence;
-            const colorNames = ["Ordnung", "Wissen", "Macht", "Leidenschaft", "Natur"];
-            let sorted = userScores.map((v, i) => ({v, n: colorNames[i]})).sort((a,b) => b.v - a.v);
-            let explanation = `Deine Seele strebt nach ${sorted[0].n}. Du triffst Entscheidungen basierend auf diesen Werten. `;
-            if(sorted[1].v > (sorted[0].v * 0.6)) {
-                explanation += `Auch ${sorted[1].n} spielt eine große Rolle in deinem Denken. `;
-            }
-            explanation += `Dies macht dich zu einem idealen Mitglied für ${top.name}.`;
-            document.getElementById('quiz-result-explanation').innerText = explanation;
-            
-            document.getElementById('quiz-runnerup-1-title').innerText = results[1].cult.name;
-            document.getElementById('quiz-runnerup-1-sub').innerText = results[1].cult.subtitle;
-            document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
-            document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
-        }
-        resetQuizUI();
+resetQuizUI();
         let currentStoryIndex = 0;
         let isReading = false;
         let synth = window.speechSynthesis;
-        let currentUtterance = null;
+        let currentUtterance = null;        
         function renderStoryPage() {
             const page = storyPages[currentStoryIndex];
             document.getElementById('story-chapter-title').innerText = page.title;
