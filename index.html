@@ -2082,7 +2082,7 @@
                         <div id="quiz-options" class="flex flex-col gap-3">
                             </div>
                     </div>
-                    <div id="quiz-result-area" class="hidden text-center py-6">
+					<div id="quiz-result-area" class="hidden text-center py-6">
                         <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Die Götter haben geurteilt</h3>
                         <h2 id="quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
                         <p id="quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
@@ -2094,34 +2094,32 @@
                                 <span class="text-xs font-bold text-stone-500 uppercase">Kern-Essenz:</span>
                                 <p id="quiz-result-essence" class="text-sm font-medium text-stone-800 mt-1"></p>
                             </div>
+                            <div id="quiz-result-link-container"></div>
                         </div>
+
                         <div class="max-w-2xl mx-auto text-left mb-8">
                             <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend (Alternative Pfade)</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
+                                <div id="quiz-runnerup-1-card" class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden cursor-pointer hover:border-amber-400 hover:shadow-md transition group">
                                     <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
                                     <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 2</div>
-                                    <div id="quiz-runnerup-1-title" class="font-bold text-stone-800"></div>
-                                    <div id="quiz-runnerup-1-sub" class="text-xs text-stone-500 italic"></div>
+                                    <div id="quiz-runnerup-1-title" class="font-bold text-stone-800 group-hover:text-amber-700 transition"></div>
+                                    <div id="quiz-runnerup-1-sub" class="text-xs text-stone-500 italic mb-2"></div>
+                                    <div class="text-[10px] text-amber-600 font-bold">➔ Ansehen</div>
                                 </div>
-                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
+                                <div id="quiz-runnerup-2-card" class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden cursor-pointer hover:border-amber-400 hover:shadow-md transition group">
                                     <div class="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
                                     <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 3</div>
-                                    <div id="quiz-runnerup-2-title" class="font-bold text-stone-800"></div>
-                                    <div id="quiz-runnerup-2-sub" class="text-xs text-stone-500 italic"></div>
+                                    <div id="quiz-runnerup-2-title" class="font-bold text-stone-800 group-hover:text-amber-700 transition"></div>
+                                    <div id="quiz-runnerup-2-sub" class="text-xs text-stone-500 italic mb-2"></div>
+                                    <div class="text-[10px] text-amber-600 font-bold">➔ Ansehen</div>
                                 </div>
                             </div>
                         </div>       
                         <div class="flex justify-center gap-4">
-                            <button onclick="resetQuizUI()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold py-3 px-6 rounded-lg transition">
-                                Neues Quiz
-                            </button>
-                            <button onclick="switchTab('tab-cults')" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 px-6 rounded-lg transition shadow-md">
-                                Zum Kult-Kompendium
-                            </button>
+                            <button onclick="resetQuizUI()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold py-3 px-6 rounded-lg transition">Quiz wiederholen</button>
                         </div>
                     </div>
-                </div>
             </section>
 <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Dein Feedback-Zettel</h1>
@@ -3361,39 +3359,75 @@
             });
         }
 
+window.jumpToCult = function(catId, itemIdx) {
+            // Erst zum Kult-Tab wechseln
+            switchTab('tab-cults');
+            // Dann die Kategorie und den spezifischen Kult laden
+            currentCategory = catId;
+            currentItemIndex = itemIdx;
+            renderCategoryNav();
+            document.getElementById('introText').innerText = appData.introTexts[catId];
+            renderItemNav();
+            updateContent();
+            window.scrollTo(0,0);
+        };
+
         function calculateQuizResult() {
             document.getElementById('quiz-question-area').classList.add('hidden');
             document.getElementById('quiz-result-area').classList.remove('hidden');
+            
             let results = [];
             Object.keys(appData.data).forEach(cat => {
                 if (cat === 'five' || cat === 'four') return;
-                appData.data[cat].forEach(cult => {
+                appData.data[cat].forEach((cult, index) => {
                     let score = 0, matchCount = 0;
                     for (let i = 0; i < 5; i++) {
                         if (cult.colors[i] === 1) { score += userScores[i]; matchCount++; }
                         else { score -= userScores[i] * 0.7; }
                     }
-                    results.push({cult: cult, score: score / Math.sqrt(matchCount)});
+                    // Wir speichern catId und itemIdx mit, um später verlinken zu können
+                    results.push({cult: cult, score: score / Math.sqrt(matchCount), catId: cat, itemIdx: index});
                 });
             });
             results.sort((a, b) => b.score - a.score);
-            const top = results[0].cult;
-            document.getElementById('quiz-result-title').innerText = top.name;
-            document.getElementById('quiz-result-subtitle').innerText = top.subtitle;
-            document.getElementById('quiz-result-essence').innerText = top.sections[0].essence;
-            const colorNames = ["Ordnung", "Wissen", "Macht", "Leidenschaft", "Natur"];
-            let sorted = userScores.map((v, i) => ({v, n: colorNames[i]})).sort((a,b) => b.v - a.v);
-            let explanation = `Deine Seele strebt nach ${sorted[0].n}. Du triffst Entscheidungen basierend auf diesen Werten. `;
-            if(sorted[1].v > (sorted[0].v * 0.6)) {
-                explanation += `Auch ${sorted[1].n} spielt eine große Rolle in deinem Denken. `;
-            }
-            explanation += `Dies macht dich zu einem idealen Mitglied für ${top.name}.`;
-            document.getElementById('quiz-result-explanation').innerText = explanation;
+            const top = results[0]; 
             
+            document.getElementById('quiz-result-title').innerText = top.cult.name;
+            document.getElementById('quiz-result-subtitle').innerText = top.cult.subtitle;
+            document.getElementById('quiz-result-essence').innerText = top.cult.sections[0].essence;
+            
+            // Prozent-Berechnung der 5 Kernfarben
+            const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
+            let totalScore = userScores.reduce((a, b) => a + b, 0);
+            if (totalScore === 0) totalScore = 1; // Fallback, falls jemand überall null hat
+            
+            // Wir berechnen die % und sortieren sie absteigend
+            let sortedColors = userScores.map((v, i) => ({v, pct: Math.round((v / totalScore) * 100), n: colorNames[i]})).sort((a,b) => b.v - a.v);
+            
+            // Begründung inkl. der Prozentwerte zusammensetzen
+            let explanation = `Deine innere Einstellung weist folgende Zusammensetzung auf: <br>
+            <span class="inline-block mt-3 mb-1 px-2 py-1 bg-stone-200 rounded font-mono text-xs text-stone-800"><b>${sortedColors[0].pct}%</b> ${sortedColors[0].n}</span>
+            <span class="inline-block mt-3 mb-1 px-2 py-1 bg-stone-200 rounded font-mono text-xs text-stone-800"><b>${sortedColors[1].pct}%</b> ${sortedColors[1].n}</span>
+            <span class="inline-block mt-3 mb-1 px-2 py-1 bg-stone-200 rounded font-mono text-xs text-stone-800"><b>${sortedColors[2].pct}%</b> ${sortedColors[2].n}</span><br><br>
+            Da du deine Entscheidungen primär auf diese Grundwerte stützt, bist du ein perfektes Mitglied für <strong>${top.cult.name}</strong>.`;
+            
+            document.getElementById('quiz-result-explanation').innerHTML = explanation;
+            
+            // Verlinkung für den Sieger-Kult
+            const linkContainer = document.getElementById('quiz-result-link-container');
+            if(linkContainer) {
+                linkContainer.innerHTML = `<button onclick="jumpToCult('${top.catId}', ${top.itemIdx})" class="mt-4 text-sm bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold py-2 px-4 rounded transition flex items-center gap-2 shadow-sm"><span>➔ ${top.cult.name} im Kompendium ansehen</span></button>`;
+            }
+            
+            // Platz 2 befüllen und klickbar machen
             document.getElementById('quiz-runnerup-1-title').innerText = results[1].cult.name;
             document.getElementById('quiz-runnerup-1-sub').innerText = results[1].cult.subtitle;
+            document.getElementById('quiz-runnerup-1-card').onclick = () => jumpToCult(results[1].catId, results[1].itemIdx);
+            
+            // Platz 3 befüllen und klickbar machen
             document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
             document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
+            document.getElementById('quiz-runnerup-2-card').onclick = () => jumpToCult(results[2].catId, results[2].itemIdx);
         }
         resetQuizUI();
 
