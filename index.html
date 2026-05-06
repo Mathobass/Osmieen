@@ -220,6 +220,10 @@
                         <span>Vampirkulte</span>
                         <span>🩸</span>
                     </button></li>
+				 <li><button onclick="switchTab('tab-quiz')" id="btn-quiz" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Kult-Zuordnungs-Quiz</span>
+                        <span>🔮</span>
+                    </button></li>
                     <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                         <span>Kompaktes Dashboard</span>
                         <span>📱</span>
@@ -2053,6 +2057,257 @@
     </div>
 </section>
 <!-- === DER FEEDBACK TAB (DER "WARENKORB") === -->
+			<section id="tab-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <h1>Welcher Kult passt zu dir?</h1>
+                <p class="text-lg text-stone-500 font-medium mb-8">Ein psychologischer Test, um deinen wahren Platz in der Theokratie von Osmieen zu finden.</p>
+                <div id="quiz-container" class="bg-white border border-stone-200 rounded-xl p-8 shadow-sm">       
+                    <div id="quiz-start-area" class="text-center py-6">
+                        <h2 class="text-2xl font-bold text-stone-800 mb-4">Wähle deine Analyse</h2>
+                        <p class="text-stone-600 mb-8 max-w-lg mx-auto">Möchtest du nur eine grobe Einschätzung oder eine tiefgreifende, psychologische Auswertung deiner Seele?</p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <button onclick="startQuiz('quick')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-800 font-bold py-4 px-6 rounded-lg transition shadow-sm">
+                                ⏱️ Schnellquiz<br><span class="text-xs font-normal text-stone-500">7 Fragen (Dauer: 1 Min)</span>
+                            </button>
+                            <button onclick="startQuiz('deep')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-6 rounded-lg transition shadow-md">
+                                🔮 Tiefen-Analyse<br><span class="text-xs font-normal text-amber-200">30 Fragen (Dauer: 5 Min)</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="quiz-question-area" class="hidden">
+                        <div class="mb-6 flex justify-between items-center text-xs font-bold text-stone-400 uppercase tracking-widest border-b border-stone-100 pb-4">
+                            <span id="quiz-progress">Frage 1 von X</span>
+                            <button onclick="resetQuizUI()" class="hover:text-amber-600 transition">Abbrechen ✖</button>
+                        </div>
+                        <h2 id="quiz-question" class="text-2xl font-bold text-stone-800 mb-6 mt-0">Frage lädt...</h2>
+                        <div id="quiz-options" class="flex flex-col gap-3">
+                            </div>
+                    </div>
+                    <div id="quiz-result-area" class="hidden text-center py-6">
+                        <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Die Götter haben geurteilt</h3>
+                        <h2 id="quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
+                        <p id="quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
+                        
+                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
+                            <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Warum dieser Kult?</h4>
+                            <p id="quiz-result-explanation" class="text-sm text-stone-700 leading-relaxed mb-4"></p>
+                            <div class="pt-4 border-t border-stone-200">
+                                <span class="text-xs font-bold text-stone-500 uppercase">Kern-Essenz:</span>
+                                <p id="quiz-result-essence" class="text-sm font-medium text-stone-800 mt-1"></p>
+                            </div>
+                        </div>
+                        <div class="max-w-2xl mx-auto text-left mb-8">
+                            <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend (Alternative Pfade)</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
+                                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 2</div>
+                                    <div id="quiz-runnerup-1-title" class="font-bold text-stone-800"></div>
+                                    <div id="quiz-runnerup-1-sub" class="text-xs text-stone-500 italic"></div>
+                                </div>
+                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
+                                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 3</div>
+                                    <div id="quiz-runnerup-2-title" class="font-bold text-stone-800"></div>
+                                    <div id="quiz-runnerup-2-sub" class="text-xs text-stone-500 italic"></div>
+                                </div>
+                            </div>
+                        </div>       
+                        <div class="flex justify-center gap-4">
+                            <button onclick="resetQuizUI()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold py-3 px-6 rounded-lg transition">
+                                Neues Quiz
+                            </button>
+                            <button onclick="switchTab('tab-cults')" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 px-6 rounded-lg transition shadow-md">
+                                Zum Kult-Kompendium
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            ```
+---
+### Schritt 2: Die Intelligenz (JavaScript) einbauen
+Scrolle nun in deinem Code **ganz nach unten**, fast bis ans Ende der Datei.
+Suche mit **STRG + F** nach exakt diesem Text:
+```javascript
+window.addEventListener('load', () => {
+			// --- 6. QUIZ LOGIK (ERWEITERT) ---
+        const qQuick = [
+            { q: "In deiner Straße bricht ein Aufstand aus. Wie reagierst du?", options: [ { text: "Ich rufe die Wache. Ordnung muss gewahrt werden.", colors: [1,0,0,0,0] }, { text: "Ich analysiere die Taktiken beider Seiten.", colors: [0,1,0,0,0] }, { text: "Ich plündere das Geschäft meines Rivalen.", colors: [0,0,1,0,0] }, { text: "Ich stürze mich brüllend ins Getümmel!", colors: [0,0,0,1,0] }, { text: "Nur der Starke überlebt. Das ist natürlich.", colors: [0,0,0,0,1] } ] },
+            { q: "Du findest ein verbotenes Buch. Was tust du?", options: [ { text: "Verbrennen. Alte Regeln abwerfen ist Freiheit.", colors: [0,0,0,1,0] }, { text: "Vergraben. Es sollte im Kreislauf ruhen.", colors: [0,0,0,0,1] }, { text: "Der Inquisition übergeben. Sicherheit zuerst.", colors: [1,0,0,0,0] }, { text: "Studieren, um Wissen zu erlangen.", colors: [0,1,0,0,0] }, { text: "Behalten und jemanden damit erpressen.", colors: [0,0,1,0,0] } ] },
+            { q: "Ein Verbündeter hintergeht dich. Deine Rache?", options: [ { text: "Vernichtung mit bloßen Händen!", colors: [0,0,0,1,0] }, { text: "Ausstoßung aus dem Rudel.", colors: [0,0,0,0,1] }, { text: "Ich lerne aus dem Fehler in meinem System.", colors: [0,1,0,0,0] }, { text: "Ein fairer, unbarmherziger Prozess.", colors: [1,0,0,0,0] }, { text: "Ich ruiniere ihn finanziell restlos.", colors: [0,0,1,0,0] } ] },
+            { q: "Was ist die größte Belohnung?", options: [ { text: "Verstehen aller arkanen Mysterien.", colors: [0,1,0,0,0] }, { text: "Ewiges Leben und Autorität.", colors: [0,0,1,0,0] }, { text: "Einklang mit der Wildnis.", colors: [0,0,0,0,1] }, { text: "Totale Freiheit ohne Grenzen.", colors: [0,0,0,1,0] }, { text: "Frieden in der Gemeinschaft.", colors: [1,0,0,0,0] } ] },
+            { q: "Ein Kollege gefährdet die Quote. Was tust du?", options: [ { text: "Wir arbeiten solidarisch für ihn mit.", colors: [1,0,0,0,0] }, { text: "Ich automatisiere den Prozess.", colors: [0,1,0,0,0] }, { text: "Ich melde ihn, um befördert zu werden.", colors: [0,0,1,0,0] }, { text: "Ich stachle zum Aufstand auf!", colors: [0,0,0,1,0] }, { text: "Wer zu schwach ist, wird zurückgelassen.", colors: [0,0,0,0,1] } ] },
+            { q: "Größte Gefahr für die Welt?", options: [ { text: "Kälte und Willensverlust.", colors: [0,0,0,1,0] }, { text: "Ignoranz und Dummheit.", colors: [0,1,0,0,0] }, { text: "Zivilisation und Fabriken.", colors: [0,0,0,0,1] }, { text: "Chaos und fehlende Tradition.", colors: [1,0,0,0,0] }, { text: "Schwäche und unverdientes Mitleid.", colors: [0,0,1,0,0] } ] },
+            { q: "Wunsch-Magie?", options: [ { text: "Schilde und heilige Schwüre.", colors: [1,0,0,0,0] }, { text: "Telepathie und Illusion.", colors: [0,1,0,0,0] }, { text: "Totenbeschwörung.", colors: [0,0,1,0,0] }, { text: "Stürme und Feuer.", colors: [0,0,0,1,0] }, { text: "Wachstum und Bestien.", colors: [0,0,0,0,1] } ] }
+        ];
+
+        const qDeep = [
+            ...qQuick,
+            { q: "Ein Bettler stiehlt Brot. Strafe?", options: [ {text: "Harte Strafe nach dem Gesetz.", colors: [1,0,0,0,0]}, {text: "Umerziehung durch Studium.", colors: [0,1,0,0,0]}, {text: "Er wird mein Sklave.", colors: [0,0,1,0,0]}, {text: "Ich lasse ihn laufen; Freiheit zuerst.", colors: [0,0,0,1,0]}, {text: "Er muss jagen lernen oder verhungern.", colors: [0,0,0,0,1]} ]},
+            { q: "Was ist Erfolg?", options: [ {text: "Sicherheit für meine Familie.", colors: [1,0,0,0,0]}, {text: "Ein Rätsel gelöst zu haben.", colors: [0,1,0,0,0]}, {text: "Dass andere mich fürchten.", colors: [0,0,1,0,0]}, {text: "Momente purer Extase.", colors: [0,0,0,1,0]}, {text: "Mein Platz im Netz des Lebens.", colors: [0,0,0,0,1]} ]},
+            { q: "Ein Drache greift an. Reaktion?", options: [ {text: "Verteidigung organisieren.", colors: [1,0,0,0,0]}, {text: "Schwachstellen analysieren.", colors: [0,1,0,0,0]}, {text: "Ihm einen Pakt anbieten.", colors: [0,0,1,0,0]}, {text: "Mit Sprengstoff draufstürzen!", colors: [0,0,0,1,0]}, {text: "Den Apex-Prädator akzeptieren.", colors: [0,0,0,0,1]} ]},
+            { q: "Die Inquisition klopft nachts an.", options: [ {text: "Ich habe nichts zu verbergen.", colors: [1,0,0,0,0]}, {text: "Logische Fehler in ihrer Magie suchen.", colors: [0,1,0,0,0]}, {text: "Wer hat mich verraten? Er stirbt.", colors: [0,0,1,0,0]}, {text: "Ab durchs Fenster!", colors: [0,0,0,1,0]}, {text: "Angriff ist die beste Verteidigung.", colors: [0,0,0,0,1]} ]},
+            { q: "Deine ideale Stadt?", options: [ {text: "Sauber, mit hohen Mauern.", colors: [1,0,0,0,0]}, {text: "Labore über den Wolken.", colors: [0,1,0,0,0]}, {text: "Unterirdisch und effizient.", colors: [0,0,1,0,0]}, {text: "Zelte, Feste und Musik.", colors: [0,0,0,1,0]}, {text: "In lebende Bäume gewachsen.", colors: [0,0,0,0,1]} ]},
+            { q: "Problem-Lösung?", options: [ {text: "Bewährte Protokolle nutzen.", colors: [1,0,0,0,0]}, {text: "In Einzelteile zerlegen.", colors: [0,1,0,0,0]}, {text: "Größten persönlichen Vorteil suchen.", colors: [0,0,1,0,0]}, {text: "Bauchgefühl und Improvisation.", colors: [0,0,0,1,0]}, {text: "Dinge natürlich laufen lassen.", colors: [0,0,0,0,1]} ]},
+            { q: "Krieg zweier Fraktionen. Deine Seite?", options: [ {text: "Die rechtmäßige Autorität.", colors: [1,0,0,0,0]}, {text: "Die technologisch Überlegene.", colors: [0,1,0,0,0]}, {text: "Wer am meisten zahlt.", colors: [0,0,1,0,0]}, {text: "Die Rebellen!", colors: [0,0,0,1,0]}, {text: "Neutralität; natürliche Auslese.", colors: [0,0,0,0,1]} ]},
+            { q: "Lieblingselement?", options: [ {text: "Licht und Stein.", colors: [1,0,0,0,0]}, {text: "Wasser und Wind.", colors: [0,1,0,0,0]}, {text: "Schatten und Verfall.", colors: [0,0,1,0,0]}, {text: "Feuer und Blitz.", colors: [0,0,0,1,0]}, {text: "Erde und Holz.", colors: [0,0,0,0,1]} ]},
+            { q: "Blick auf die Vergangenheit?", options: [ {text: "Fundament unserer Moral.", colors: [1,0,0,0,0]}, {text: "Datensatz zum Lernen.", colors: [0,1,0,0,0]}, {text: "Geschichte von Siegern.", colors: [0,0,1,0,0]}, {text: "Egal, nur das Jetzt zählt.", colors: [0,0,0,1,0]}, {text: "Ewiger Kreislauf.", colors: [0,0,0,0,1]} ]},
+            { q: "Freund ist sterbenskrank.", options: [ {text: "Beste legale Pflege.", colors: [1,0,0,0,0]}, {text: "Experimentelles Heilmittel bauen.", colors: [0,1,0,0,0]}, {text: "Pakt mit Dämon zur Rettung.", colors: [0,0,1,0,0]}, {text: "Jeden letzten Wunsch erfüllen.", colors: [0,0,0,1,0]}, {text: "Den Tod als Teil des Lebens akzeptieren.", colors: [0,0,0,0,1]} ]},
+            { q: "Wunsch-Artefakt mit hohem Preis.", options: [ {text: "Niemals riskieren.", colors: [1,0,0,0,0]}, {text: "Den Mechanismus untersuchen.", colors: [0,1,0,0,0]}, {text: "Nutzen. Macht braucht Opfer.", colors: [0,0,1,0,0]}, {text: "Ablehnen, ich schmiede mein Schicksal.", colors: [0,0,0,1,0]}, {text: "Stört das Gleichgewicht.", colors: [0,0,0,0,1]} ]},
+            { q: "Befehl zum Selbstmordangriff.", options: [ {text: "Gehorchen. Pflicht ist Ehre.", colors: [1,0,0,0,0]}, {text: "Alternativen vorschlagen.", colors: [0,1,0,0,0]}, {text: "General heimlich ermorden.", colors: [0,0,1,0,0]}, {text: "Sofort desertieren.", colors: [0,0,0,1,0]}, {text: "Nach Instinkt kämpfen.", colors: [0,0,0,0,1]} ]},
+            { q: "Geld und Reichtum?", options: [ {text: "Mittel für die Gemeinschaft.", colors: [1,0,0,0,0]}, {text: "Ressource für Studien.", colors: [0,1,0,0,0]}, {text: "Werkzeug für Einfluss.", colors: [0,0,1,0,0]}, {text: "Sofort für Spaß ausgeben.", colors: [0,0,0,1,0]}, {text: "Wertlos im Vergleich zur Natur.", colors: [0,0,0,0,1]} ]},
+            { q: "Welches Tier?", options: [ {text: "Wachhund oder Adler.", colors: [1,0,0,0,0]}, {text: "Rabe oder Oktopus.", colors: [0,1,0,0,0]}, {text: "Schlange oder Aasgeier.", colors: [0,0,1,0,0]}, {text: "Pavian oder wilder Hengst.", colors: [0,0,0,1,0]}, {text: "Bär oder einsamer Wolf.", colors: [0,0,0,0,1]} ]},
+            { q: "Lieblingszitat?", options: [ {text: "Die Stärke ist das Rudel.", colors: [1,0,0,0,0]}, {text: "Wissen ist Macht.", colors: [0,1,0,0,0]}, {text: "Der Zweck heiligt die Mittel.", colors: [0,0,1,0,0]}, {text: "Lieber brennen als verrosten.", colors: [0,0,0,1,0]}, {text: "Alles kehrt zur Erde zurück.", colors: [0,0,0,0,1]} ]},
+            { q: "Unsterblichkeit ohne Liebe?", options: [ {text: "Nein, Liebe hält uns zusammen.", colors: [1,0,0,0,0]}, {text: "Ja, Emotionen stören nur.", colors: [0,1,0,0,0]}, {text: "Ja, ewiges Leben ist Sieg.", colors: [0,0,1,0,0]}, {text: "Nein, ohne Leidenschaft ist man tot.", colors: [0,0,0,1,0]}, {text: "Nein, ist widernatürlich.", colors: [0,0,0,0,1]} ]},
+            { q: "Schloss stürmen. Plan?", options: [ {text: "Klassische Belagerung.", colors: [1,0,0,0,0]}, {text: "Sprengung der Schwachstellen.", colors: [0,1,0,0,0]}, {text: "Wachen bestechen, Brunnen vergiften.", colors: [0,0,1,0,0]}, {text: "Frontalangriff mit Gebrüll!", colors: [0,0,0,1,0]}, {text: "Aushungern lassen.", colors: [0,0,0,0,1]} ]},
+            { q: "Freizeit?", options: [ {text: "Ehrenamt für alle.", colors: [1,0,0,0,0]}, {text: "Lesen oder knobeln.", colors: [0,1,0,0,0]}, {text: "Netzwerken für Gefallen.", colors: [0,0,1,0,0]}, {text: "Kunst, Tanz oder Adrenalin.", colors: [0,0,0,1,0]}, {text: "Stille im Wald genießen.", colors: [0,0,0,0,1]} ]},
+            { q: "Dunkle Prophezeiung gegen dich.", options: [ {text: "Heroisch dem Schicksal stellen.", colors: [1,0,0,0,0]}, {text: "Schlupfloch in der Formulierung suchen.", colors: [0,1,0,0,0]}, {text: "Den Propheten töten.", colors: [0,0,1,0,0]}, {text: "Noch wilder leben als zuvor.", colors: [0,0,0,1,0]}, {text: "Akzeptieren. Alles hat seine Zeit.", colors: [0,0,0,0,1]} ]},
+            { q: "System-Korruption entdeckt.", options: [ {text: "Von innen reformieren.", colors: [1,0,0,0,0]}, {text: "Beweise sammeln und veröffentlichen.", colors: [0,1,0,0,0]}, {text: "Nutzen, um selbst aufzusteigen.", colors: [0,0,1,0,0]}, {text: "Den Palast anzünden!", colors: [0,0,0,1,0]}, {text: "In die Wildnis flüchten.", colors: [0,0,0,0,1]} ]},
+            { q: "Lügendes Kind bestrafen?", options: [ {text: "Harte Belehrung über Moral.", colors: [1,0,0,0,0]}, {text: "Logische Ineffizienz erklären.", colors: [0,1,0,0,0]}, {text: "Besser lügen lehren.", colors: [0,0,1,0,0]}, {text: "Egal, Regeln sind langweilig.", colors: [0,0,0,1,0]}, {text: "Harte Arbeit in der Natur.", colors: [0,0,0,0,1]} ]},
+            { q: "Deine größte Schwäche?", options: [ {text: "Zu dogmatisch.", colors: [1,0,0,0,0]}, {text: "Zu viel denken, zu wenig handeln.", colors: [0,1,0,0,0]}, {text: "Traue niemandem.", colors: [0,0,1,0,0]}, {text: "Unkontrollierte Wut.", colors: [0,0,0,1,0]}, {text: "Widerwille gegen Fortschritt.", colors: [0,0,0,0,1]} ]},
+            { q: "Fremder bittet um Hilfe.", options: [ {text: "Es ist meine Pflicht.", colors: [1,0,0,0,0]}, {text: "Ist das Problem lehrreich?", colors: [0,1,0,0,0]}, {text: "Was springt für mich raus?", colors: [0,0,1,0,0]}, {text: "Klar, Abenteuer!", colors: [0,0,0,1,0]}, {text: "Ist er von meiner Sippe? Wenn nicht, nein.", colors: [0,0,0,0,1]} ]}
+        ];
+
+        let activeQuiz = [];
+        let currentQuizIndex = 0;
+        let userScores = [0, 0, 0, 0, 0]; 
+
+        window.resetQuizUI = function() {
+            document.getElementById('quiz-start-area').classList.remove('hidden');
+            document.getElementById('quiz-question-area').classList.add('hidden');
+            document.getElementById('quiz-result-area').classList.add('hidden');
+            currentQuizIndex = 0;
+            userScores = [0, 0, 0, 0, 0];
+        }
+
+        window.startQuiz = function(mode) {
+            activeQuiz = (mode === 'deep') ? [...qDeep] : [...qQuick];
+            activeQuiz.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            userScores = [0, 0, 0, 0, 0];
+            document.getElementById('quiz-start-area').classList.add('hidden');
+            document.getElementById('quiz-question-area').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            if (currentQuizIndex >= activeQuiz.length) { calculateQuizResult(); return; }
+            document.getElementById('quiz-progress').innerText = `Frage ${currentQuizIndex + 1} von ${activeQuiz.length}`;
+            const qObj = activeQuiz[currentQuizIndex];
+            document.getElementById('quiz-question').innerText = qObj.q;
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            [...qObj.options].sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "text-left w-full bg-stone-50 hover:bg-amber-50 border border-stone-200 hover:border-amber-400 text-stone-700 p-4 rounded-lg transition-all shadow-sm font-medium hover:shadow";
+                btn.innerText = opt.text;
+                btn.onclick = () => { opt.colors.forEach((c, i) => userScores[i] += c); currentQuizIndex++; renderQuizQuestion(); };
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function calculateQuizResult() {
+            document.getElementById('quiz-question-area').classList.add('hidden');
+            document.getElementById('quiz-result-area').classList.remove('hidden');
+            let results = [];
+            Object.keys(appData.data).forEach(cat => {
+                if (cat === 'five' || cat === 'four') return;
+                appData.data[cat].forEach(cult => {
+                    let score = 0, matchCount = 0;
+                    for (let i = 0; i < 5; i++) {
+                        if (cult.colors[i] === 1) { score += userScores[i]; matchCount++; }
+                        else { score -= userScores[i] * 0.7; }
+                    }
+                    results.push({cult: cult, score: score / Math.sqrt(matchCount)});
+                });
+            });
+            results.sort((a, b) => b.score - a.score);
+            const top = results[0].cult;
+            document.getElementById('quiz-result-title').innerText = top.name;
+            document.getElementById('quiz-result-subtitle').innerText = top.subtitle;
+            document.getElementById('quiz-result-essence').innerText = top.sections[0].essence;
+            const colorNames = ["Ordnung", "Wissen", "Macht", "Leidenschaft", "Natur"];
+            let sorted = userScores.map((v, i) => ({v, n: colorNames[i]})).sort((a,b) => b.v - a.v);
+            let explanation = `Deine Seele strebt nach ${sorted[0].n}. Du triffst Entscheidungen basierend auf diesen Werten. `;
+            if(sorted[1].v > (sorted[0].v * 0.6)) {
+                explanation += `Auch ${sorted[1].n} spielt eine große Rolle in deinem Denken. `;
+            }
+            explanation += `Dies macht dich zu einem idealen Mitglied für ${top.name}.`;
+            document.getElementById('quiz-result-explanation').innerText = explanation;
+            
+            document.getElementById('quiz-runnerup-1-title').innerText = results[1].cult.name;
+            document.getElementById('quiz-runnerup-1-sub').innerText = results[1].cult.subtitle;
+            document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
+            document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
+        }
+        resetQuizUI();
+						<section id="tab-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <h1>Welcher Kult passt zu dir?</h1>
+                <p class="text-lg text-stone-500 font-medium mb-8">Ein psychologischer Test, um deinen wahren Platz in der Theokratie von Osmieen zu finden.</p>
+                
+                <div id="quiz-container" class="bg-white border border-stone-200 rounded-xl p-8 shadow-sm">
+                    
+                    <div id="quiz-start-area" class="text-center py-6">
+                        <h2 class="text-2xl font-bold text-stone-800 mb-4">Wähle deine Analyse</h2>
+                        <p class="text-stone-600 mb-8 max-w-lg mx-auto">Möchtest du nur eine grobe Einschätzung oder eine tiefgreifende, psychologische Auswertung deiner Seele?</p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <button onclick="startQuiz('quick')" class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-800 font-bold py-4 px-6 rounded-lg transition shadow-sm">
+                                ⏱️ Schnellquiz<br><span class="text-xs font-normal text-stone-500">7 Fragen (Dauer: 1 Min)</span>
+                            </button>
+                            <button onclick="startQuiz('deep')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-6 rounded-lg transition shadow-md">
+                                🔮 Tiefen-Analyse<br><span class="text-xs font-normal text-amber-200">30 Fragen (Dauer: 5 Min)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="quiz-question-area" class="hidden">
+                        <div class="mb-6 flex justify-between items-center text-xs font-bold text-stone-400 uppercase tracking-widest border-b border-stone-100 pb-4">
+                            <span id="quiz-progress">Frage 1 von X</span>
+                            <button onclick="resetQuizUI()" class="hover:text-amber-600 transition">Abbrechen ✖</button>
+                        </div>
+                        <h2 id="quiz-question" class="text-2xl font-bold text-stone-800 mb-6 mt-0">Frage lädt...</h2>
+                        <div id="quiz-options" class="flex flex-col gap-3"></div>
+                    </div>
+
+                    <div id="quiz-result-area" class="hidden text-center py-6">
+                        <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Die Götter haben geurteilt</h3>
+                        <h2 id="quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
+                        <p id="quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
+                        
+                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
+                            <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Warum dieser Kult?</h4>
+                            <p id="quiz-result-explanation" class="text-sm text-stone-700 leading-relaxed mb-4"></p>
+                            <div class="pt-4 border-t border-stone-200">
+                                <span class="text-xs font-bold text-stone-500 uppercase">Kern-Essenz:</span>
+                                <p id="quiz-result-essence" class="text-sm font-medium text-stone-800 mt-1"></p>
+                            </div>
+                        </div>
+
+                        <div class="max-w-2xl mx-auto text-left mb-8">
+                            <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend (Alternative Pfade)</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
+                                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 2</div>
+                                    <div id="quiz-runnerup-1-title" class="font-bold text-stone-800"></div>
+                                    <div id="quiz-runnerup-1-sub" class="text-xs text-stone-500 italic"></div>
+                                </div>
+                                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
+                                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 3</div>
+                                    <div id="quiz-runnerup-2-title" class="font-bold text-stone-800"></div>
+                                    <div id="quiz-runnerup-2-sub" class="text-xs text-stone-500 italic"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center gap-4">
+                            <button onclick="resetQuizUI()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold py-3 px-6 rounded-lg transition">Neues Quiz</button>
+                            <button onclick="switchTab('tab-cults')" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 px-6 rounded-lg transition shadow-md">Zum Kult-Kompendium</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Dein Feedback-Zettel</h1>
                 <p class="text-lg text-stone-500 font-medium mb-8">Hier sind alle deine gesammelten Anmerkungen. Überprüfe sie und schicke sie gesammelt an mich ab. Mach das am besten nicht nach jedem Ding einzeln, sondern sammel die Sachen erst hier</p>
@@ -3093,6 +3348,116 @@ function updateDynamicMap(vals) {
                 text: "Der Galapa schritt langsam über die Fluchtspur der Gruppe hinweg. Wo seine gewaltigen Füße den Boden berührten, spross augenblicklich dickes Moos und weißer Klee hervor, der den Geruch von Schweiß und vergossenem Blut unter einer Schicht aus Natur begrub. Vespera beobachtete fasziniert, wie Beryl die magischen Rückstände ihrer Flucht mit einer Geste in das grüne Herz des Waldes zog. Ihre Spuren waren ausgelöscht, verloren im ewigen Kreislauf des Wachstums. Für heute waren sie Geister in einer Welt, die nur an Fleisch und Eisen glaubte."
             }
         ];
+		const qQuick = [
+            { q: "In deiner Straße bricht ein Aufstand aus. Wie reagierst du?", options: [ { text: "Ich rufe die Wache. Ordnung muss gewahrt werden.", colors: [1,0,0,0,0] }, { text: "Ich analysiere die Taktiken beider Seiten.", colors: [0,1,0,0,0] }, { text: "Ich plündere das Geschäft meines Rivalen.", colors: [0,0,1,0,0] }, { text: "Ich stürze mich brüllend ins Getümmel!", colors: [0,0,0,1,0] }, { text: "Nur der Starke überlebt. Das ist natürlich.", colors: [0,0,0,0,1] } ] },
+            { q: "Du findest ein verbotenes Buch. Was tust du?", options: [ { text: "Verbrennen. Alte Regeln abwerfen ist Freiheit.", colors: [0,0,0,1,0] }, { text: "Vergraben. Es sollte im Kreislauf ruhen.", colors: [0,0,0,0,1] }, { text: "Der Inquisition übergeben. Sicherheit zuerst.", colors: [1,0,0,0,0] }, { text: "Studieren, um Wissen zu erlangen.", colors: [0,1,0,0,0] }, { text: "Behalten und jemanden damit erpressen.", colors: [0,0,1,0,0] } ] },
+            { q: "Ein Verbündeter hintergeht dich. Deine Rache?", options: [ { text: "Vernichtung mit bloßen Händen!", colors: [0,0,0,1,0] }, { text: "Ausstoßung aus dem Rudel.", colors: [0,0,0,0,1] }, { text: "Ich lerne aus dem Fehler in meinem System.", colors: [0,1,0,0,0] }, { text: "Ein fairer, unbarmherziger Prozess.", colors: [1,0,0,0,0] }, { text: "Ich ruiniere ihn finanziell restlos.", colors: [0,0,1,0,0] } ] },
+            { q: "Was ist die größte Belohnung?", options: [ { text: "Verstehen aller arkanen Mysterien.", colors: [0,1,0,0,0] }, { text: "Ewiges Leben und Autorität.", colors: [0,0,1,0,0] }, { text: "Einklang mit der Wildnis.", colors: [0,0,0,0,1] }, { text: "Totale Freiheit ohne Grenzen.", colors: [0,0,0,1,0] }, { text: "Frieden in der Gemeinschaft.", colors: [1,0,0,0,0] } ] },
+            { q: "Ein Kollege gefährdet die Quote. Was tust du?", options: [ { text: "Wir arbeiten solidarisch für ihn mit.", colors: [1,0,0,0,0] }, { text: "Ich automatisiere den Prozess.", colors: [0,1,0,0,0] }, { text: "Ich melde ihn, um befördert zu werden.", colors: [0,0,1,0,0] }, { text: "Ich stachle zum Aufstand auf!", colors: [0,0,0,1,0] }, { text: "Wer zu schwach ist, wird zurückgelassen.", colors: [0,0,0,0,1] } ] },
+            { q: "Größte Gefahr für die Welt?", options: [ { text: "Kälte und Willensverlust.", colors: [0,0,0,1,0] }, { text: "Ignoranz und Dummheit.", colors: [0,1,0,0,0] }, { text: "Zivilisation und Fabriken.", colors: [0,0,0,0,1] }, { text: "Chaos und fehlende Tradition.", colors: [1,0,0,0,0] }, { text: "Schwäche und unverdientes Mitleid.", colors: [0,0,1,0,0] } ] },
+            { q: "Wunsch-Magie?", options: [ { text: "Schilde und heilige Schwüre.", colors: [1,0,0,0,0] }, { text: "Telepathie und Illusion.", colors: [0,1,0,0,0] }, { text: "Totenbeschwörung.", colors: [0,0,1,0,0] }, { text: "Stürme und Feuer.", colors: [0,0,0,1,0] }, { text: "Wachstum und Bestien.", colors: [0,0,0,0,1] } ] }
+        ];
+
+        const qDeep = [
+            ...qQuick,
+            { q: "Ein Bettler stiehlt Brot. Strafe?", options: [ {text: "Harte Strafe nach dem Gesetz.", colors: [1,0,0,0,0]}, {text: "Umerziehung durch Studium.", colors: [0,1,0,0,0]}, {text: "Er wird mein Sklave.", colors: [0,0,1,0,0]}, {text: "Ich lasse ihn laufen; Freiheit zuerst.", colors: [0,0,0,1,0]}, {text: "Er muss jagen lernen oder verhungern.", colors: [0,0,0,0,1]} ]},
+            { q: "Was ist Erfolg?", options: [ {text: "Sicherheit für meine Familie.", colors: [1,0,0,0,0]}, {text: "Ein Rätsel gelöst zu haben.", colors: [0,1,0,0,0]}, {text: "Dass andere mich fürchten.", colors: [0,0,1,0,0]}, {text: "Momente purer Extase.", colors: [0,0,0,1,0]}, {text: "Mein Platz im Netz des Lebens.", colors: [0,0,0,0,1]} ]},
+            { q: "Ein Drache greift an. Reaktion?", options: [ {text: "Verteidigung organisieren.", colors: [1,0,0,0,0]}, {text: "Schwachstellen analysieren.", colors: [0,1,0,0,0]}, {text: "Ihm einen Pakt anbieten.", colors: [0,0,1,0,0]}, {text: "Mit Sprengstoff draufstürzen!", colors: [0,0,0,1,0]}, {text: "Den Apex-Prädator akzeptieren.", colors: [0,0,0,0,1]} ]},
+            { q: "Die Inquisition klopft nachts an.", options: [ {text: "Ich habe nichts zu verbergen.", colors: [1,0,0,0,0]}, {text: "Logische Fehler in ihrer Magie suchen.", colors: [0,1,0,0,0]}, {text: "Wer hat mich verraten? Er stirbt.", colors: [0,0,1,0,0]}, {text: "Ab durchs Fenster!", colors: [0,0,0,1,0]}, {text: "Angriff ist die beste Verteidigung.", colors: [0,0,0,0,1]} ]},
+            { q: "Deine ideale Stadt?", options: [ {text: "Sauber, mit hohen Mauern.", colors: [1,0,0,0,0]}, {text: "Labore über den Wolken.", colors: [0,1,0,0,0]}, {text: "Unterirdisch und effizient.", colors: [0,0,1,0,0]}, {text: "Zelte, Feste und Musik.", colors: [0,0,0,1,0]}, {text: "In lebende Bäume gewachsen.", colors: [0,0,0,0,1]} ]},
+            { q: "Problem-Lösung?", options: [ {text: "Bewährte Protokolle nutzen.", colors: [1,0,0,0,0]}, {text: "In Einzelteile zerlegen.", colors: [0,1,0,0,0]}, {text: "Größten persönlichen Vorteil suchen.", colors: [0,0,1,0,0]}, {text: "Bauchgefühl und Improvisation.", colors: [0,0,0,1,0]}, {text: "Dinge natürlich laufen lassen.", colors: [0,0,0,0,1]} ]},
+            { q: "Krieg zweier Fraktionen. Deine Seite?", options: [ {text: "Die rechtmäßige Autorität.", colors: [1,0,0,0,0]}, {text: "Die technologisch Überlegene.", colors: [0,1,0,0,0]}, {text: "Wer am meisten zahlt.", colors: [0,0,1,0,0]}, {text: "Die Rebellen!", colors: [0,0,0,1,0]}, {text: "Neutralität; natürliche Auslese.", colors: [0,0,0,0,1]} ]},
+            { q: "Lieblingselement?", options: [ {text: "Licht und Stein.", colors: [1,0,0,0,0]}, {text: "Wasser und Wind.", colors: [0,1,0,0,0]}, {text: "Schatten und Verfall.", colors: [0,0,1,0,0]}, {text: "Feuer und Blitz.", colors: [0,0,0,1,0]}, {text: "Erde und Holz.", colors: [0,0,0,0,1]} ]},
+            { q: "Blick auf die Vergangenheit?", options: [ {text: "Fundament unserer Moral.", colors: [1,0,0,0,0]}, {text: "Datensatz zum Lernen.", colors: [0,1,0,0,0]}, {text: "Geschichte von Siegern.", colors: [0,0,1,0,0]}, {text: "Egal, nur das Jetzt zählt.", colors: [0,0,0,1,0]}, {text: "Ewiger Kreislauf.", colors: [0,0,0,0,1]} ]},
+            { q: "Freund ist sterbenskrank.", options: [ {text: "Beste legale Pflege.", colors: [1,0,0,0,0]}, {text: "Experimentelles Heilmittel bauen.", colors: [0,1,0,0,0]}, {text: "Pakt mit Dämon zur Rettung.", colors: [0,0,1,0,0]}, {text: "Jeden letzten Wunsch erfüllen.", colors: [0,0,0,1,0]}, {text: "Den Tod als Teil des Lebens akzeptieren.", colors: [0,0,0,0,1]} ]},
+            { q: "Wunsch-Artefakt mit hohem Preis.", options: [ {text: "Niemals riskieren.", colors: [1,0,0,0,0]}, {text: "Den Mechanismus untersuchen.", colors: [0,1,0,0,0]}, {text: "Nutzen. Macht braucht Opfer.", colors: [0,0,1,0,0]}, {text: "Ablehnen, ich schmiede mein Schicksal.", colors: [0,0,0,1,0]}, {text: "Stört das Gleichgewicht.", colors: [0,0,0,0,1]} ]},
+            { q: "Befehl zum Selbstmordangriff.", options: [ {text: "Gehorchen. Pflicht ist Ehre.", colors: [1,0,0,0,0]}, {text: "Alternativen vorschlagen.", colors: [0,1,0,0,0]}, {text: "General heimlich ermorden.", colors: [0,0,1,0,0]}, {text: "Sofort desertieren.", colors: [0,0,0,1,0]}, {text: "Nach Instinkt kämpfen.", colors: [0,0,0,0,1]} ]},
+            { q: "Geld und Reichtum?", options: [ {text: "Mittel für die Gemeinschaft.", colors: [1,0,0,0,0]}, {text: "Ressource für Studien.", colors: [0,1,0,0,0]}, {text: "Werkzeug für Einfluss.", colors: [0,0,1,0,0]}, {text: "Sofort für Spaß ausgeben.", colors: [0,0,0,1,0]}, {text: "Wertlos im Vergleich zur Natur.", colors: [0,0,0,0,1]} ]},
+            { q: "Welches Tier?", options: [ {text: "Wachhund oder Adler.", colors: [1,0,0,0,0]}, {text: "Rabe oder Oktopus.", colors: [0,1,0,0,0]}, {text: "Schlange oder Aasgeier.", colors: [0,0,1,0,0]}, {text: "Pavian oder wilder Hengst.", colors: [0,0,0,1,0]}, {text: "Bär oder einsamer Wolf.", colors: [0,0,0,0,1]} ]},
+            { q: "Lieblingszitat?", options: [ {text: "Die Stärke ist das Rudel.", colors: [1,0,0,0,0]}, {text: "Wissen ist Macht.", colors: [0,1,0,0,0]}, {text: "Der Zweck heiligt die Mittel.", colors: [0,0,1,0,0]}, {text: "Lieber brennen als verrosten.", colors: [0,0,0,1,0]}, {text: "Alles kehrt zur Erde zurück.", colors: [0,0,0,0,1]} ]},
+            { q: "Unsterblichkeit ohne Liebe?", options: [ {text: "Nein, Liebe hält uns zusammen.", colors: [1,0,0,0,0]}, {text: "Ja, Emotionen stören nur.", colors: [0,1,0,0,0]}, {text: "Ja, ewiges Leben ist Sieg.", colors: [0,0,1,0,0]}, {text: "Nein, ohne Leidenschaft ist man tot.", colors: [0,0,0,1,0]}, {text: "Nein, ist widernatürlich.", colors: [0,0,0,0,1]} ]},
+            { q: "Schloss stürmen. Plan?", options: [ {text: "Klassische Belagerung.", colors: [1,0,0,0,0]}, {text: "Sprengung der Schwachstellen.", colors: [0,1,0,0,0]}, {text: "Wachen bestechen, Brunnen vergiften.", colors: [0,0,1,0,0]}, {text: "Frontalangriff mit Gebrüll!", colors: [0,0,0,1,0]}, {text: "Aushungern lassen.", colors: [0,0,0,0,1]} ]},
+            { q: "Freizeit?", options: [ {text: "Ehrenamt für alle.", colors: [1,0,0,0,0]}, {text: "Lesen oder knobeln.", colors: [0,1,0,0,0]}, {text: "Netzwerken für Gefallen.", colors: [0,0,1,0,0]}, {text: "Kunst, Tanz oder Adrenalin.", colors: [0,0,0,1,0]}, {text: "Stille im Wald genießen.", colors: [0,0,0,0,1]} ]},
+            { q: "Dunkle Prophezeiung gegen dich.", options: [ {text: "Heroisch dem Schicksal stellen.", colors: [1,0,0,0,0]}, {text: "Schlupfloch in der Formulierung suchen.", colors: [0,1,0,0,0]}, {text: "Den Propheten töten.", colors: [0,0,1,0,0]}, {text: "Noch wilder leben als zuvor.", colors: [0,0,0,1,0]}, {text: "Akzeptieren. Alles hat seine Zeit.", colors: [0,0,0,0,1]} ]},
+            { q: "System-Korruption entdeckt.", options: [ {text: "Von innen reformieren.", colors: [1,0,0,0,0]}, {text: "Beweise sammeln und veröffentlichen.", colors: [0,1,0,0,0]}, {text: "Nutzen, um selbst aufzusteigen.", colors: [0,0,1,0,0]}, {text: "Den Palast anzünden!", colors: [0,0,0,1,0]}, {text: "In die Wildnis flüchten.", colors: [0,0,0,0,1]} ]},
+            { q: "Lügendes Kind bestrafen?", options: [ {text: "Harte Belehrung über Moral.", colors: [1,0,0,0,0]}, {text: "Logische Ineffizienz erklären.", colors: [0,1,0,0,0]}, {text: "Besser lügen lehren.", colors: [0,0,1,0,0]}, {text: "Egal, Regeln sind langweilig.", colors: [0,0,0,1,0]}, {text: "Harte Arbeit in der Natur.", colors: [0,0,0,0,1]} ]},
+            { q: "Deine größte Schwäche?", options: [ {text: "Zu dogmatisch.", colors: [1,0,0,0,0]}, {text: "Zu viel denken, zu wenig handeln.", colors: [0,1,0,0,0]}, {text: "Traue niemandem.", colors: [0,0,1,0,0]}, {text: "Unkontrollierte Wut.", colors: [0,0,0,1,0]}, {text: "Widerwille gegen Fortschritt.", colors: [0,0,0,0,1]} ]},
+            { q: "Fremder bittet um Hilfe.", options: [ {text: "Es ist meine Pflicht.", colors: [1,0,0,0,0]}, {text: "Ist das Problem lehrreich?", colors: [0,1,0,0,0]}, {text: "Was springt für mich raus?", colors: [0,0,1,0,0]}, {text: "Klar, Abenteuer!", colors: [0,0,0,1,0]}, {text: "Ist er von meiner Sippe? Wenn nicht, nein.", colors: [0,0,0,0,1]} ]}
+        ];
+
+        let activeQuiz = [];
+        let currentQuizIndex = 0;
+        let userScores = [0, 0, 0, 0, 0]; 
+
+        window.resetQuizUI = function() {
+            document.getElementById('quiz-start-area').classList.remove('hidden');
+            document.getElementById('quiz-question-area').classList.add('hidden');
+            document.getElementById('quiz-result-area').classList.add('hidden');
+            currentQuizIndex = 0;
+            userScores = [0, 0, 0, 0, 0];
+        }
+
+        window.startQuiz = function(mode) {
+            activeQuiz = (mode === 'deep') ? [...qDeep] : [...qQuick];
+            activeQuiz.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            userScores = [0, 0, 0, 0, 0];
+            document.getElementById('quiz-start-area').classList.add('hidden');
+            document.getElementById('quiz-question-area').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            if (currentQuizIndex >= activeQuiz.length) { calculateQuizResult(); return; }
+            document.getElementById('quiz-progress').innerText = `Frage ${currentQuizIndex + 1} von ${activeQuiz.length}`;
+            const qObj = activeQuiz[currentQuizIndex];
+            document.getElementById('quiz-question').innerText = qObj.q;
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            [...qObj.options].sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "text-left w-full bg-stone-50 hover:bg-amber-50 border border-stone-200 hover:border-amber-400 text-stone-700 p-4 rounded-lg transition-all shadow-sm font-medium hover:shadow";
+                btn.innerText = opt.text;
+                btn.onclick = () => { opt.colors.forEach((c, i) => userScores[i] += c); currentQuizIndex++; renderQuizQuestion(); };
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function calculateQuizResult() {
+            document.getElementById('quiz-question-area').classList.add('hidden');
+            document.getElementById('quiz-result-area').classList.remove('hidden');
+            let results = [];
+            Object.keys(appData.data).forEach(cat => {
+                if (cat === 'five' || cat === 'four') return;
+                appData.data[cat].forEach(cult => {
+                    let score = 0, matchCount = 0;
+                    for (let i = 0; i < 5; i++) {
+                        if (cult.colors[i] === 1) { score += userScores[i]; matchCount++; }
+                        else { score -= userScores[i] * 0.7; }
+                    }
+                    results.push({cult: cult, score: score / Math.sqrt(matchCount)});
+                });
+            });
+            results.sort((a, b) => b.score - a.score);
+            const top = results[0].cult;
+            document.getElementById('quiz-result-title').innerText = top.name;
+            document.getElementById('quiz-result-subtitle').innerText = top.subtitle;
+            document.getElementById('quiz-result-essence').innerText = top.sections[0].essence;
+            const colorNames = ["Ordnung", "Wissen", "Macht", "Leidenschaft", "Natur"];
+            let sorted = userScores.map((v, i) => ({v, n: colorNames[i]})).sort((a,b) => b.v - a.v);
+            let explanation = `Deine Seele strebt nach ${sorted[0].n}. Du triffst Entscheidungen basierend auf diesen Werten. `;
+            if(sorted[1].v > (sorted[0].v * 0.6)) {
+                explanation += `Auch ${sorted[1].n} spielt eine große Rolle in deinem Denken. `;
+            }
+            explanation += `Dies macht dich zu einem idealen Mitglied für ${top.name}.`;
+            document.getElementById('quiz-result-explanation').innerText = explanation;
+            
+            document.getElementById('quiz-runnerup-1-title').innerText = results[1].cult.name;
+            document.getElementById('quiz-runnerup-1-sub').innerText = results[1].cult.subtitle;
+            document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
+            document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
+        }
+        resetQuizUI();
         let currentStoryIndex = 0;
         let isReading = false;
         let synth = window.speechSynthesis;
