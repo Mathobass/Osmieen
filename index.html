@@ -1962,7 +1962,7 @@
                     <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
 						<button id="fs-btn-focus" onclick="const vp = document.getElementById('map-viewport'); vp.classList.toggle('map-fullscreen'); this.innerText = vp.classList.contains('map-fullscreen') ? '✖ Schließen' : '⛶ Vollbild';" class="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-lg border border-slate-600 shadow-xl z-[100] text-xs font-bold uppercase tracking-widest transition backdrop-blur-sm">⛶ Vollbild</button>
                         <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
-                             style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(0.7);">
+                             style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
                             <div id="map-markers-focus" class="absolute inset-0"></div>     
 							<div id="map-tooltip"></div>
                             <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
@@ -2874,7 +2874,7 @@ function updateDynamicMap(vals) {
             updateFocusMap(vals); 
         }
 	// --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
-        let currentZoom = 0.7; // Startet weiter rausgezoomt
+        let currentZoom = 1; // Startet weiter rausgezoomt
         let panX = 0;
         let panY = 0;
         let isPanning = false;
@@ -2903,7 +2903,7 @@ function updateDynamicMap(vals) {
             applyTransform();
         }
         window.resetMapZoom = function() {
-             currentZoom = 0.7; panX = 0; panY = 0; applyTransform(); // Reset geht jetzt auch auf 0.7 zurück
+             currentZoom = 1; panX = 0; panY = 0; applyTransform(); // Reset geht jetzt auch auf 0.7 zurück
         }
         if (viewport && mapContainer) {
             viewport.addEventListener('wheel', (e) => {
