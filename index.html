@@ -3419,14 +3419,30 @@ window.jumpToCult = function(catId, itemIdx) {
                 linkContainer.innerHTML = `<button onclick="jumpToCult('${top.catId}', ${top.itemIdx})" class="mt-4 text-sm bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold py-2 px-4 rounded transition flex items-center gap-2 shadow-sm"><span>➔ ${top.cult.name} im Kompendium ansehen</span></button>`;
             }
             
+// Hilfsfunktion für die Farbanzeige
+            const getColorLabels = (colors) => {
+                const names = ["Weiß", "Blau", "Schwarz", "Rot", "Grün"];
+                return colors.map((val, i) => val === 1 ? names[i] : null).filter(n => n).join(' / ');
+            };
+
             // Platz 2 befüllen und klickbar machen
             document.getElementById('quiz-runnerup-1-title').innerText = results[1].cult.name;
-            document.getElementById('quiz-runnerup-1-sub').innerText = results[1].cult.subtitle;
+            document.getElementById('quiz-runnerup-1-sub').innerHTML = `
+                <span class="block mb-1">${results[1].cult.subtitle}</span>
+                <span class="text-[9px] font-bold text-amber-800 uppercase tracking-tighter bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                    Fokus: ${getColorLabels(results[1].cult.colors)}
+                </span>
+            `;
             document.getElementById('quiz-runnerup-1-card').onclick = () => jumpToCult(results[1].catId, results[1].itemIdx);
             
             // Platz 3 befüllen und klickbar machen
             document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
-            document.getElementById('quiz-runnerup-2-sub').innerText = results[2].cult.subtitle;
+            document.getElementById('quiz-runnerup-2-sub').innerHTML = `
+                <span class="block mb-1">${results[2].cult.subtitle}</span>
+                <span class="text-[9px] font-bold text-amber-800 uppercase tracking-tighter bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                    Fokus: ${getColorLabels(results[2].cult.colors)}
+                </span>
+            `;
             document.getElementById('quiz-runnerup-2-card').onclick = () => jumpToCult(results[2].catId, results[2].itemIdx);
         }
         resetQuizUI();
