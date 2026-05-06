@@ -1848,7 +1848,7 @@
                             <!-- NEUE LEGENDE MIT CHECKBOXEN -->
                             <div class="flex flex-wrap gap-x-4 gap-y-2 mt-4 justify-center text-[10px] text-slate-400 uppercase font-bold tracking-widest relative">
                                 <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('metropole', this.checked)" class="chk-metropole accent-red-500"><span class="w-2.5 h-2.5 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</label>
-                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-slate-400"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Provinzen</label>
+                            	<label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-fuchsia-500"><span class="w-2 h-2 rounded-full bg-fuchsia-500 shadow-[0_0_4px_rgba(217,70,239,0.8)]"></span> Provinzen</label>
                                 <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('markt', this.checked)" class="chk-markt accent-teal-500"><span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Märkte</label>
                                 <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('dorf', this.checked)" class="chk-dorf accent-green-500"><span class="w-1 h-1 rounded-full bg-green-500"></span> Dörfer</label>
                                 <button onclick="rerollMap()" class="absolute right-0 text-slate-500 hover:text-white transition text-lg leading-none" title="Neue Dorfverteilung würfeln">🎲</button>
@@ -1946,7 +1946,7 @@
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-4">Ebenen Ein/Ausblenden</h3>
                             <div class="flex flex-col gap-3 text-xs text-slate-400 uppercase font-bold tracking-widest">
                                 <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('metropole', this.checked)" class="chk-metropole accent-red-500"><span class="w-3 h-3 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</label>
-                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Provinzen</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-fuchsia-500"><span class="w-2.5 h-2.5 rounded-full bg-fuchsia-500 shadow-[0_0_4px_rgba(217,70,239,0.8)]"></span> Provinzen</label>
                                 <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('markt', this.checked)" class="chk-markt accent-teal-500"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Märkte</label>
                                 <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('dorf', this.checked)" class="chk-dorf accent-green-500"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Dörfer</label>
                             </div>
@@ -2446,46 +2446,54 @@ function initApp() {
             }
             return null;
         }
-	function updateDynamicMap(vals) {
+function updateDynamicMap(vals) {
             const markerContainer = document.getElementById('map-markers');
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
+            
             const visualProvinz = Math.floor(vals.provinzCount / 20); 
             const visualMarkt = Math.floor(vals.marktCount / 20); 
             const visualDorf = Math.floor(vals.weilerCount / 20); 
-            const placed = [];
+            
+            const placedProvinz = [];
+            const placedMarkt = [];
+
             for(let i=0; i<visualProvinz; i++) {
                 let pos = findValidPos(currentMapSeed + i + 10000); 
-                if(pos && !placed.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5)) {
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 2.0)) {
                     const dot = document.createElement('div');
-                    dot.className = "marker-provinz absolute rounded-full bg-blue-500 border border-blue-200 w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-20 shadow-[0_0_4px_rgba(59,130,246,0.8)]";
+                    dot.className = "marker-provinz absolute rounded-full bg-fuchsia-500 border border-fuchsia-200 w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-20 shadow-[0_0_5px_rgba(217,70,239,0.8)]";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
                     markerContainer.appendChild(dot);
-                    placed.push(pos);
+                    placedProvinz.push(pos);
                 }
             }
+            
             for(let i=0; i<visualMarkt; i++) {
                 let pos = findValidPos(currentMapSeed + i + 20000); 
-                if(pos) {
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5) && !placedMarkt.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.8)) {
                     const dot = document.createElement('div');
                     dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
                     markerContainer.appendChild(dot);
+                    placedMarkt.push(pos);
                 }
             }
+            
             for(let i=0; i<visualDorf; i++) {
                 let pos = findValidPos(currentMapSeed + i + 30000);
-                if(pos) {
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.0)) {
                     const dot = document.createElement('div');
                     dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2 z-0";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
                     markerContainer.appendChild(dot);
                 }
             }
+            
             dashboardState.cities.forEach(city => {
                 if (city.pct > 0) {
                     const bigDot = document.createElement('div');
-                    bigDot.className = "marker-metropole absolute rounded-full w-3 h-3 transform -translate-x-1/2 -translate-y-1/2 z-30";
+                    bigDot.className = "marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-30";
                     bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
                     bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
                     bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
@@ -2493,36 +2501,53 @@ function initApp() {
                 }
             });
         }
+
         function updateFocusMap(vals) {
             const markerContainer = document.getElementById('map-markers-focus');
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
+            
             const visualProvinz = Math.floor(vals.provinzCount / 10); 
             const visualMarkt = Math.floor(vals.marktCount / 10); 
             const visualDorf = Math.floor(vals.weilerCount / 10); 
+            
             const allPlaced = [];
             const sets = [
-                {count: visualProvinz, dist: 2.0, color: 'bg-blue-500 border border-blue-200 shadow-[0_0_6px_rgba(59,130,246,0.8)]', size: 'w-4 h-4', offset: 100000, markerClass: 'marker-provinz z-20'},
-                {count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2.5 h-2.5', offset: 200000, markerClass: 'marker-markt z-10'},
-                {count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf z-0'}
+                {type: 'provinz', count: visualProvinz, dist: 2.5, color: 'bg-fuchsia-500 border border-fuchsia-200 shadow-[0_0_6px_rgba(217,70,239,0.8)]', size: 'w-4 h-4', offset: 100000, markerClass: 'marker-provinz z-20'},
+                {type: 'markt', count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2.5 h-2.5', offset: 200000, markerClass: 'marker-markt z-10'},
+                {type: 'dorf', count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf z-0'}
             ];
+            
             sets.forEach(set => {
                 for(let i = 0; i < set.count; i++) {
                     let pos = findValidPos(currentMapSeed + i + set.offset); 
-                    if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
-                        const dot = document.createElement('div');
-                        dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
-                        dot.style.left = pos.x + '%'; 
-                        dot.style.top = pos.y + '%';
-                        markerContainer.appendChild(dot);
-                        allPlaced.push(pos);
+                    if (pos) {
+                        let tooClose = allPlaced.some(p => {
+                            let reqDist = set.dist; 
+                            if (p.type === 'provinz') {
+                                if (set.type === 'provinz') reqDist = 2.5; 
+                                if (set.type === 'markt') reqDist = 1.8;   
+                                if (set.type === 'dorf') reqDist = 1.2;    
+                            }
+                            return getDistance(pos.x, pos.y, p.x, p.y) < reqDist;
+                        });
+
+                        if (!tooClose) {
+                            const dot = document.createElement('div');
+                            dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
+                            dot.style.left = pos.x + '%'; 
+                            dot.style.top = pos.y + '%';
+                            markerContainer.appendChild(dot);
+                            allPlaced.push({x: pos.x, y: pos.y, type: set.type});
+                        }
                     }
                 }
             });
+            
             dashboardState.cities.forEach(city => {
                 if (city.pct > 0) {
                     const bigDot = document.createElement('div');
-                    bigDot.className = `marker-metropole absolute rounded-full w-5 h-5 transform -translate-x-1/2 -translate-y-1/2 z-30`;
+                    bigDot.className = `marker-metropole absolute rounded-full w-7 h-7 transform -translate-x-1/2 -translate-y-1/2 z-30`;
                     bigDot.style.left = city.x + '%'; 
                     bigDot.style.top = city.y + '%';
                     if (city.name === 'Schwarze Stadt') {
