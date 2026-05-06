@@ -2505,7 +2505,7 @@ function updateDynamicMap(vals) {
             
             for(let i=0; i<visualDorf; i++) {
                 let pos = findValidPos(currentMapSeed + i + 30000);
-                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.0)) {
+                if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.2)) {
                     const dot = document.createElement('div');
                     dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2 z-0";
                     dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
@@ -2550,7 +2550,7 @@ function updateDynamicMap(vals) {
                             if (p.type === 'provinz') {
                                 if (set.type === 'provinz') reqDist = 2.5; 
                                 if (set.type === 'markt') reqDist = 1.8;   
-                                if (set.type === 'dorf') reqDist = 1.2;    
+                                if (set.type === 'dorf') reqDist = 0.3;    
                             }
                             return getDistance(pos.x, pos.y, p.x, p.y) < reqDist;
                         });
