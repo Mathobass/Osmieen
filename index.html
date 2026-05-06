@@ -138,6 +138,24 @@
         #map-tooltip.visible {
             opacity: 1;
         }
+/* --- IPAD / MOBILE SCROLLING FIXES --- */
+        body {
+            height: 100vh; 
+            height: 100dvh; /* Passt sich exakt an die Safari-Menüleiste an */
+            overscroll-behavior: none; /* Stoppt das lästige Gummi-Band-Zurückschnappen der gesamten Seite */
+        }
+        main, aside, .custom-scrollbar {
+            -webkit-overflow-scrolling: touch; /* Erzwingt flüssiges Scrollen auf Touch-Geräten */
+            overscroll-behavior-y: contain; /* Verhindert, dass das Scrollen auf den Hintergrund überspringt */
+        }
+        /* Großzügiges, unsichtbares Polster unten, damit die Leisten nicht die Tasten verdecken */
+        .content-tab, #dashboard-root {
+            padding-bottom: 120px !important;
+        }
+        /* Spezielles Polster für die rechte Spalte in der großen Karte (Checkboxen) */
+        #tab-map-focus aside.w-64 {
+            padding-bottom: 100px !important;
+        }
     </style>
 </head>
 <body class="flex h-screen w-full bg-stone-50 overflow-hidden">
