@@ -111,7 +111,12 @@
             background: rgba(15, 23, 42, 0.9); 
             border-bottom: 1px solid #334155; 
         }
-        #tab-dashboard input[type=range] { height: 8px; border-radius: 5px; background: #334155; appearance: none; }
+     #tab-dashboard input[type=range] { height: 8px; border-radius: 5px; background: #334155; appearance: none; }
+        /* --- NEU: KARTEN-LAYER AUSBLENDEN --- */
+        body.hide-metropole .marker-metropole { display: none !important; }
+        body.hide-provinz .marker-provinz { display: none !important; }
+        body.hide-markt .marker-markt { display: none !important; }
+        body.hide-dorf .marker-dorf { display: none !important; }
     </style>
 </head>
 <body class="flex h-screen w-full bg-stone-50 overflow-hidden">
@@ -148,20 +153,37 @@
             </div>
              <div>
                 <h2 class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Anhänge</h2>
-                <ul class="space-y-1">
+             <ul class="space-y-1">
                     <li><button onclick="switchTab('tab-ancestries')" id="btn-ancestries" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                         <span>Abstammungs-Archiv</span>
                         <span>🧬</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-agrarsystem')" id="btn-agrarsystem" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Agrarsystem (Idee)</span>
+                        <span>🌾</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-blutprozession')" id="btn-blutprozession" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Blutprozession (Idee)</span>
+                        <span>🩸</span>
                     </button></li>
                     <li><button onclick="switchTab('tab-cults')" id="btn-cults" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
                         <span>Vampirkulte (Interaktiv)</span>
                         <span>🩸</span>
                     </button></li>
-                    <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
-                        <span>Mobiles Dashboard</span>
+                    <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Kompaktes Dashboard</span>
                         <span>📱</span>
                     </button></li>
-<!-- KOMMENTARFUNKTION BUTTON START -->
+                    <li><button onclick="switchTab('tab-map-focus')" id="btn-map-focus" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+                        <span>Große Karten-Ansicht</span>
+                        <span>🗺️</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-amber-500 hover:text-amber-400 hover:bg-stone-800 font-medium transition flex items-center justify-between">
+                     <span>Storybook: Geschichte (Test)</span>
+                    <span>📖</span>
+                    </button></li>
+
+                    <!-- KOMMENTARFUNKTION BUTTON START -->
                     <li><button onclick="switchTab('tab-feedback')" id="btn-feedback" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                         <span>Feedback Zettel</span>
                         <span class="relative">💬 <span id="feedback-badge" class="absolute -top-1 -right-2 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span></span>
@@ -682,7 +704,7 @@
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-5')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏰</span> 5. Siedlungsstruktur & Stadtgrößen</a></li>
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-6')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚙️</span> 6. Binnenwirtschaft, Spezial-Bestien & Der Metall-Boom</a></li>
                         <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-7')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>📜</span> 7. Die Handelsdynastien (Lizenzierte Monopole)</a></li>
-			<li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-8')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌾</span> 8. Das Agrarsystem & Die Ländliche Ökonomie</a></li>
+			 			<li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-8')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌾</span> 8. Das Agrarsystem & Die Ländliche Ökonomie</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -1696,6 +1718,7 @@
                     </div>
                 </div>
             </section>
+<!-- === KOMPAKTES DASHBOARD START === -->
             <section id="tab-dashboard" class="content-tab w-full h-full hidden overflow-y-auto custom-scrollbar relative">
                 <div id="dashboard-root" class="pb-10 min-h-full">
                     <header class="sticky-header mb-4 shadow-xl">
@@ -1733,28 +1756,28 @@
                                     <div class="space-y-2">
                                         <div class="flex justify-between items-center">
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Population (Mio.)</label>
-                                            <input type="number" id="input-pop-mio" step="0.5" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-white text-sm">
+                                            <input type="number" id="input-pop-mio" step="0.5" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-white text-sm focus:outline-none focus:border-amber-500">
                                         </div>
                                         <input type="range" id="range-pop-mio" min="1" max="50" step="0.5" class="w-full accent-red-600">
                                     </div>
                                     <div class="space-y-2">
                                         <div class="flex justify-between items-center">
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Urbanisierung (%)</label>
-                                            <input type="number" id="input-urban-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-blue-400 text-sm">
+                                            <input type="number" id="input-urban-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-blue-400 text-sm focus:outline-none focus:border-amber-500">
                                         </div>
                                         <input type="range" id="range-urban-rate" min="1" max="100" class="w-full accent-blue-600">
                                     </div>
                                     <div class="space-y-2">
                                         <div class="flex justify-between items-center">
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Metropolen-Fokus (%)</label>
-                                            <input type="number" id="input-big5-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-slate-300 text-sm">
+                                            <input type="number" id="input-big5-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-slate-300 text-sm focus:outline-none focus:border-amber-500">
                                         </div>
                                         <input type="range" id="range-big5-rate" min="0" max="100" class="w-full accent-slate-500">
                                     </div>
                                     <div class="space-y-2">
                                         <div class="flex justify-between items-center">
                                             <label class="text-xs font-semibold text-slate-400 uppercase">Marktflecken-Anteil (%)</label>
-                                            <input type="number" id="input-markt-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-teal-400 text-sm">
+                                            <input type="number" id="input-markt-rate" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 w-20 text-right font-mono text-teal-400 text-sm focus:outline-none focus:border-amber-500">
                                         </div>
                                         <input type="range" id="range-markt-rate" min="0" max="100" class="w-full accent-teal-600">
                                     </div>
@@ -1775,15 +1798,203 @@
                                             <div class="text-sm font-bold text-green-500" id="display-weiler-count">0</div>
                                         </div>
                                     </div>
+                                    <!-- === SNAPSHOT MENÜ START === -->
+                                    <section class="bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700 mt-4">
+                                        <h2 class="text-sm font-bold border-b border-slate-700 pb-2 mb-3">Speicherstände</h2>
+                                        <div class="flex gap-2 mb-3">
+                                            <input type="text" id="snapshot-name" placeholder="Name (z.B. Jahr 12)" class="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                                            <button onclick="saveSnapshot()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 px-3 rounded text-xs transition shadow">Speichern</button>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <select id="snapshot-select" class="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none">
+                                                <option value="">-- Zustand laden --</option>
+                                            </select>
+                                            <button onclick="loadSnapshot()" class="bg-stone-600 hover:bg-stone-500 text-white font-bold py-1.5 px-3 rounded text-xs transition shadow">Laden</button>
+                                            <button onclick="deleteSnapshot()" class="bg-red-900 hover:bg-red-800 text-red-200 font-bold py-1.5 px-2.5 rounded text-xs transition shadow" title="Löschen">🗑️</button>
+                                        </div>
+                                    </section>
+                                    <!-- === SNAPSHOT MENÜ ENDE === -->
                                 </section>
-                            </div>
+                            </div> <!-- ENDE LINKE SPALTE -->
+                            <!-- RECHTE SPALTE (STÄDTE) -->
                             <div class="lg:col-span-7 space-y-4" id="city-cards-container">
                                 <!-- Wird per JS befüllt -->
                             </div>
-                        </div>
+                        </div> <!-- ENDE DES 12-SPALTEN-GRIDS -->
+                        <!-- === DYNAMISCHE KARTE START === -->
+                        <section class="bg-slate-900/40 rounded-2xl p-5 border border-slate-700 shadow-inner mt-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                                <h3 class="text-slate-500 font-bold uppercase text-[9px] tracking-widest m-0">Aktivitäts-Karte</h3>                            
+                                <!-- Chaos-Kippschalter -->
+                                <label class="relative inline-flex items-center cursor-pointer" title="Wenn an: Jeder Regler-Schub würfelt die Dörfer neu. Wenn aus: Dörfer bleiben an festen Orten.">
+                                    <input type="checkbox" id="auto-reroll-toggle" class="sr-only peer" onchange="toggleAutoReroll(this.checked)" checked>
+                                    <div class="w-7 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:border-slate-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-600 peer-checked:after:bg-white"></div>
+                                    <span class="ml-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Chaos-Modus</span>
+                                </label>
+                            </div>                            
+                            <div id="dynamic-map" class="relative w-full aspect-[1778/1334] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.jpg');">
+                                <canvas id="map-mask-canvas" style="display: none;"></canvas>
+                                <div id="map-markers" class="absolute inset-0"></div>
+                                <!-- MAßSTAB -->
+                                <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]">
+                                    <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
+                                    <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
+                                        <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div> 
+                                    </div>
+                                    <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
+                                        <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
+                                    </div>
+                                    <div class="mt-2 text-[8px] text-white/30 italic">1 Pixel = 2,5 Kilometer</div>
+                                </div>
+                            </div>                            
+                            <!-- NEUE LEGENDE MIT CHECKBOXEN -->
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 mt-4 justify-center text-[10px] text-slate-400 uppercase font-bold tracking-widest relative">
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('metropole', this.checked)" class="chk-metropole accent-red-500"><span class="w-2.5 h-2.5 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-slate-400"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Provinzen</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('markt', this.checked)" class="chk-markt accent-teal-500"><span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Märkte</label>
+                                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('dorf', this.checked)" class="chk-dorf accent-green-500"><span class="w-1 h-1 rounded-full bg-green-500"></span> Dörfer</label>
+                                <button onclick="rerollMap()" class="absolute right-0 text-slate-500 hover:text-white transition text-lg leading-none" title="Neue Dorfverteilung würfeln">🎲</button>
+                            </div>
+                        </section>
+                        <!-- === DYNAMISCHE KARTE ENDE === -->
                     </main>
                 </div>
             </section>
+            <!-- === KARTEN FOKUS TAB START === -->
+            <section id="tab-map-focus" class="content-tab w-full h-full hidden bg-slate-950 flex-col overflow-hidden">
+                <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center z-10 shadow-lg shrink-0">
+                    <h2 class="text-xl font-black text-amber-600 uppercase italic tracking-tighter m-0">Kommandozentrale</h2>
+                    <div class="text-[10px] text-slate-500 font-mono">HD-Rendering: Erhöhte Siedlungsdichte</div>
+                </div>
+                <div class="flex-1 flex overflow-hidden relative">
+                    <!-- LINKE SPALTE: REGLER -->
+                    <aside class="w-72 bg-slate-900/80 border-r border-slate-800 p-5 flex flex-col gap-6 overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0">Parameter</h3>               
+                        <!-- Synchronisierte Regler & EINGABEFELDER -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Population (Mio.)</label>
+                                <input type="number" id="f-input-pop" step="0.5" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-white text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-pop" min="1" max="50" step="0.5" class="w-full accent-red-600">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Urbanisierung (%)</label>
+                                <input type="number" id="f-input-urban" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-blue-400 text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-urban" min="1" max="100" class="w-full accent-blue-600">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Metropolen-Fokus (%)</label>
+                                <input type="number" id="f-input-big5" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-slate-300 text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-big5" min="0" max="100" class="w-full accent-slate-500">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Marktflecken (%)</label>
+                                <input type="number" id="f-input-markt" class="bg-slate-950 border border-slate-700 rounded px-1.5 py-0.5 w-16 text-right font-mono text-teal-400 text-xs focus:outline-none focus:border-amber-500">
+                            </div>
+                            <input type="range" id="f-range-markt" min="0" max="100" class="w-full accent-teal-600">
+                        </div>          
+                        <button onclick="rerollMap()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 py-2 rounded shadow transition text-sm flex items-center justify-center gap-2 mt-4">
+                            <span>🎲</span> Neue Verteilung würfeln
+                        </button>
+                    </aside>
+                    <!-- MITTE: DIE RIESIGE KARTE -->
+                    <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
+                        <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
+                             style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
+                            <div id="map-markers-focus" class="absolute inset-0"></div>       
+                            <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]" style="transform: scale(1); transform-origin: bottom left;">
+                                <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
+                                <div class="relative h-3 border-b-2 border-l-2 border-r-2 border-white/70" style="width: 180px;">
+                                    <div class="absolute inset-y-0 left-1/2 w-0.5 bg-white/30"></div>
+                                </div>
+                                <div class="flex justify-between w-[180px] text-[10px] text-white/80 font-mono mt-1.5 px-0.5">
+                                    <span class="font-bold">0</span><span class="text-white/40 text-[8px] translate-y-0.5">225 km</span><span class="font-bold">450 km</span>
+                                </div>
+                                <div class="mt-2 text-[8px] text-white/30 italic" id="scale-hint">1 Pixel = 2,5 Kilometer</div>
+                            </div>
+                        </div>             
+                        <div class="absolute bottom-8 flex gap-2 bg-slate-900/80 p-2 rounded-full border border-slate-700 backdrop-blur-md z-30">
+                            <button onclick="zoomMap(-0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">-</button>
+                            <button onclick="resetMapZoom()" class="px-4 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-widest transition flex items-center justify-center border border-slate-600 shadow">Reset</button>
+                            <button onclick="zoomMap(0.2)" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-amber-600 text-white font-bold transition flex items-center justify-center border border-slate-600 shadow">+</button>
+                        </div>
+                    </main>
+                    <!-- RECHTE SPALTE: ZAHLEN & LEGENDE -->
+                    <aside class="w-64 bg-slate-900/80 border-l border-slate-800 p-5 flex flex-col justify-between overflow-y-auto z-10 shadow-xl shrink-0 backdrop-blur-md">
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-6">Bestand</h3>
+                            <div class="space-y-4">
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                                    <div class="text-[9px] text-slate-500 uppercase">Provinzen</div>
+                                    <div class="text-lg font-bold text-slate-300" id="f-val-provinz">0</div>
+                                </div>
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                                    <div class="text-[9px] text-teal-600 uppercase">Märkte</div>
+                                    <div class="text-lg font-bold text-teal-500" id="f-val-markt">0</div>
+                                </div>
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center">
+                                    <div class="text-[9px] text-green-600 uppercase">Dörfer & Weiler</div>
+                                    <div class="text-lg font-bold text-green-500" id="f-val-weiler">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-700 pb-2 m-0 mb-4">Ebenen Ein/Ausblenden</h3>
+                            <div class="flex flex-col gap-3 text-xs text-slate-400 uppercase font-bold tracking-widest">
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('metropole', this.checked)" class="chk-metropole accent-red-500"><span class="w-3 h-3 rounded-full border border-red-500 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span> Metropolen</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('provinz', this.checked)" class="chk-provinz accent-slate-400"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Provinzen</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('markt', this.checked)" class="chk-markt accent-teal-500"><span class="w-2 h-2 rounded-full bg-teal-500"></span> Märkte</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-white transition"><input type="checkbox" checked onchange="toggleLayer('dorf', this.checked)" class="chk-dorf accent-green-500"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Dörfer</label>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+            <!-- === KARTEN FOKUS TAB ENDE === -->
+
+<section id="tab-storybook" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+    <h1>Osmieen Storybook</h1>
+    <p class="text-lg text-stone-500 font-medium mb-8">Erlebe die Welt und die Konflikte der Kulte in einer einfachen von Gemini erstellten Geschichte</p>
+
+    <div class="bg-stone-100 border border-stone-200 rounded-xl p-4 mb-6 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-2">
+            <button id="btn-play-story" onclick="toggleStoryPlayback()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded shadow transition flex items-center gap-2">
+                <span id="play-icon">▶️</span> <span id="play-text">Vorlesen starten</span>
+            </button>
+            <button onclick="stopStoryPlayback()" class="bg-stone-300 hover:bg-stone-400 text-stone-800 font-bold py-2 px-3 rounded shadow transition" title="Stoppen">
+                ⏹️
+            </button>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <button onclick="prevStoryPage()" class="text-stone-600 hover:text-amber-600 font-bold text-xl px-2 transition disabled:opacity-30" id="btn-prev-page">«</button>
+            <span class="text-sm font-bold text-stone-500 uppercase tracking-widest">Seite <span id="current-page-num">1</span> / <span id="total-page-num">?</span></span>
+            <button onclick="nextStoryPage()" class="text-stone-600 hover:text-amber-600 font-bold text-xl px-2 transition disabled:opacity-30" id="btn-next-page">»</button>
+        </div>
+    </div>
+
+    <div class="bg-white border border-stone-200 rounded-xl p-8 shadow-md min-h-[400px] relative">
+        <h2 id="story-chapter-title" class="text-2xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-2 mt-0">Kapitel Titel</h2>
+        
+        <div id="story-image-container" class="mb-6 hidden">
+            <img id="story-image" src="" alt="Szenenbild" class="w-full sm:w-2/3 md:w-1/2 mx-auto h-auto rounded-xl shadow-md border border-stone-200">
+        </div>
+
+        <div id="story-content" class="text-stone-700 leading-relaxed text-lg whitespace-pre-wrap">
+            Hier erscheint gleich der Text...
+        </div>
+        
+        <div id="reading-indicator" class="absolute top-4 right-4 text-xs font-bold text-amber-500 uppercase tracking-widest hidden animate-pulse">
+            🔊 Wird vorgelesen...
+        </div>
+    </div>
+</section>
 <!-- === DER FEEDBACK TAB (DER "WARENKORB") === -->
             <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Dein Feedback-Zettel</h1>
@@ -1897,7 +2108,7 @@
             }
         });
         // --- 2. TAB NAVIGATION LOGIK ---
-        function switchTab(tabId) {
+function switchTab(tabId) {
             if (window.innerWidth < 1024) { toggleSidebar(false); }
             document.querySelectorAll('.content-tab').forEach(tab => {
                 tab.classList.remove('block', 'flex');
@@ -1918,6 +2129,9 @@
                 activeTab.classList.add('block');
                 if(!dashboardInitialized) { initDashboard(); } 
                 else { refreshDashboardCharts(); }
+            } else if(tabId === 'tab-map-focus') {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('flex'); // <--- WICHTIG: flex statt block!
             } else {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('block');
@@ -2149,25 +2363,234 @@ function initApp() {
             radarChartInstance.data.datasets[0].pointHoverBorderColor = pointBgColors;
             radarChartInstance.update();
         }
-        // --- 4. DASHBOARD LOGIK ---
+// --- 4. DASHBOARD & KARTEN LOGIK ---
         let dashboardInitialized = false;
         const dashboardState = {
-            totalPopMio: 19,
+            totalPopMio: 19, // START-POPULATION AUF 19 GESETZT
             urbanRate: 13,
-            big5Rate: 58,
+            big5Rate: 63,
             marktRate: 15,
             cities: [
-                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865' },
-                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193' },
-                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158' },
-                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747' },
-                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780' }
+                { name: 'Weiße Hauptstadt', pct: 35.00, color: '#f8fafc', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/9617536914857502865', x: 49, y: 50 },
+                { name: 'Schwarze Stadt', pct: 25.00, color: '#94a3b8', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/1919965118976851193', x: 58, y: 23 },
+                { name: 'Rote Stadt', pct: 20, color: '#ef4444', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/3595718606296641158', x: 69, y: 50 },
+                { name: 'Blaue Stadt', pct: 10.00, color: '#3b82f6', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/23469989062991747', x: 27, y: 22 },
+                { name: 'Grüne Stadt', pct: 10.00, color: '#22c55e', locked: false, img: 'http://googleusercontent.com/image_collection/image_retrieval/16359539252339516780', x: 37, y: 38 }
             ]
         };
         let dashboardCharts = {};
         function formatNum(n) { 
             return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
         }
+        // --- LAYER-TOGGLE FUNKTION ---
+        window.toggleLayer = function(layer, isVisible) {
+            if (isVisible) { document.body.classList.remove('hide-' + layer); } 
+            else { document.body.classList.add('hide-' + layer); }   
+            document.querySelectorAll('.chk-' + layer).forEach(cb => { cb.checked = isVisible; });
+        }
+        // --- DYNAMISCHE KARTEN LOGIK START ---
+        const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
+        let mapMaskData = null;
+        let maskWidth = 0;
+        let maskHeight = 0;
+        let currentMapSeed = Math.floor(Math.random() * 1000000);
+        let prngState = currentMapSeed;
+        let autoRerollMap = true; 
+        window.toggleAutoReroll = function(isChecked) { autoRerollMap = isChecked; };
+        function seededRandom() {
+            let t = prngState += 0x6D2B79F5;
+            t = Math.imul(t ^ t >>> 15, t | 1);
+            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+        window.rerollMap = function() {
+            currentMapSeed = Math.floor(Math.random() * 1000000);
+            refreshDashboardCharts();
+        };
+        function loadMapMask(callback) {
+            if (!MASK_IMAGE_URL) { if(callback) callback(); return; }
+            const img = new Image();
+            img.crossOrigin = "Anonymous"; 
+            img.onload = function() {
+                const canvas = document.getElementById('map-mask-canvas');
+                if(!canvas) { if(callback) callback(); return; }
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                canvas.width = img.width; canvas.height = img.height;
+                maskWidth = img.width; maskHeight = img.height;
+                ctx.drawImage(img, 0, 0);
+                mapMaskData = ctx.getImageData(0, 0, maskWidth, maskHeight).data;
+                if(callback) callback();
+            };
+            img.src = MASK_IMAGE_URL;
+        }
+        loadMapMask(() => { refreshDashboardCharts(); });
+        function getDistance(x1, y1, x2, y2) {
+            const aspect = 1778 / 1334;
+            return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
+        }
+        function findValidPos(seedBase, attemptsLimit = 500) {
+            let x, y, attempts = 0;
+            prngState = seedBase; 
+            while (attempts < attemptsLimit) {
+                x = 5 + seededRandom() * 90;
+                y = 5 + seededRandom() * 90;
+                attempts++;
+                if (mapMaskData && maskWidth > 0) {
+                    const pixelX = Math.floor((x / 100) * maskWidth);
+                    const pixelY = Math.floor((y / 100) * maskHeight);
+                    const val = mapMaskData[(pixelY * maskWidth + pixelX) * 4];
+                    if (val < 50 || seededRandom() > (val / 255)) continue;
+                }
+                return {x, y};
+            }
+            return null;
+        }
+        function updateDynamicMap(vals) {
+            const markerContainer = document.getElementById('map-markers');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+            const visualProvinz = Math.floor(vals.provinzCount / 20); 
+            const visualMarkt = Math.floor(vals.marktCount / 20); 
+            const visualDorf = Math.floor(vals.weilerCount / 20); 
+            const placed = [];
+            for(let i=0; i<visualProvinz; i++) {
+                let pos = findValidPos(currentMapSeed + i + 10000); 
+                if(pos && !placed.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5)) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-provinz absolute rounded-full bg-slate-400 w-1.5 h-1.5 transform -translate-x-1/2 -translate-y-1/2";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                    placed.push(pos);
+                }
+            }
+            for(let i=0; i<visualMarkt; i++) {
+                let pos = findValidPos(currentMapSeed + i + 20000); 
+                if(pos) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-markt absolute rounded-full bg-teal-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                }
+            }
+            for(let i=0; i<visualDorf; i++) {
+                let pos = findValidPos(currentMapSeed + i + 30000);
+                if(pos) {
+                    const dot = document.createElement('div');
+                    dot.className = "marker-dorf absolute rounded-full bg-green-500/80 w-1 h-1 transform -translate-x-1/2 -translate-y-1/2";
+                    dot.style.left = pos.x + '%'; dot.style.top = pos.y + '%';
+                    markerContainer.appendChild(dot);
+                }
+            }
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    bigDot.className = "marker-metropole absolute rounded-full w-2.5 h-2.5 transform -translate-x-1/2 -translate-y-1/2 z-10";
+                    bigDot.style.left = city.x + '%'; bigDot.style.top = city.y + '%';
+                    bigDot.style.backgroundColor = city.name === 'Weiße Hauptstadt' ? '#ffffff' : city.color;
+                    bigDot.style.border = city.name === 'Weiße Hauptstadt' ? '1.5px solid #fbbf24' : '1px solid white';
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
+        function updateFocusMap(vals) {
+            const markerContainer = document.getElementById('map-markers-focus');
+            if (!markerContainer) return;
+            markerContainer.innerHTML = '';
+            const visualProvinz = Math.floor(vals.provinzCount / 10); 
+            const visualMarkt = Math.floor(vals.marktCount / 10); 
+            const visualDorf = Math.floor(vals.weilerCount / 10); 
+            const allPlaced = [];
+            const sets = [
+                {count: visualProvinz, dist: 2.0, color: 'bg-slate-400', size: 'w-2.5 h-2.5', offset: 100000, markerClass: 'marker-provinz'},
+                {count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2 h-2', offset: 200000, markerClass: 'marker-markt'},
+                {count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf'}
+            ];
+            sets.forEach(set => {
+                for(let i = 0; i < set.count; i++) {
+                    let pos = findValidPos(currentMapSeed + i + set.offset); 
+                    if (pos && !allPlaced.some(p => getDistance(pos.x, pos.y, p.x, p.y) < set.dist)) {
+                        const dot = document.createElement('div');
+                        dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
+                        dot.style.left = pos.x + '%'; 
+                        dot.style.top = pos.y + '%';
+                        markerContainer.appendChild(dot);
+                        allPlaced.push(pos);
+                    }
+                }
+            });
+            dashboardState.cities.forEach(city => {
+                if (city.pct > 0) {
+                    const bigDot = document.createElement('div');
+                    bigDot.className = `marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-20`;
+                    bigDot.style.left = city.x + '%'; 
+                    bigDot.style.top = city.y + '%';
+                    if (city.name === 'Schwarze Stadt') {
+                        bigDot.style.backgroundColor = '#000000'; 
+                        bigDot.style.border = '3px solid #94a3b8'; 
+                        bigDot.style.boxShadow = '0 0 16px rgba(148, 163, 184, 0.8)'; 
+                    } else if (city.name === 'Weiße Hauptstadt') {
+                        bigDot.style.backgroundColor = '#ffffff'; 
+                        bigDot.style.border = '2.5px solid #f59e0b'; 
+                        bigDot.style.boxShadow = '0 0 24px rgba(251, 191, 36, 1)'; 
+                    } else {
+                        bigDot.style.backgroundColor = city.color; 
+                        bigDot.style.border = '1.5px solid rgba(255, 255, 255, 0.6)'; 
+                        bigDot.style.boxShadow = `0 0 16px ${city.color}`; 
+                    }
+                    markerContainer.appendChild(bigDot);
+                }
+            });
+        }
+        // --- SNAPSHOT LOGIK START ---
+        let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
+        function updateSnapshotSelect() {
+            const sel = document.getElementById('snapshot-select');
+            if(!sel) return;
+            sel.innerHTML = '<option value="">-- Zustand laden --</option>';
+            snapshots.forEach((snap, idx) => { sel.innerHTML += `<option value="${idx}">${snap.name}</option>`; });
+        }
+        window.saveSnapshot = function() {
+            const nameInput = document.getElementById('snapshot-name');
+            const name = nameInput.value.trim();
+            if(!name) { alert("Bitte gib dem Speicherstand einen Namen."); return; }
+            const snap = { name: name, seed: currentMapSeed, state: JSON.parse(JSON.stringify(dashboardState)) };
+            snapshots.push(snap);
+            localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
+            nameInput.value = '';
+            updateSnapshotSelect();
+            alert(`Speicherstand "${name}" wurde gesichert!`);
+        };
+        window.loadSnapshot = function() {
+            const sel = document.getElementById('snapshot-select');
+            const idx = sel.value;
+            if(idx === "") return;
+            const snap = snapshots[idx];
+            const toggle = document.getElementById('auto-reroll-toggle');
+            if (toggle) toggle.checked = false;
+            autoRerollMap = false;
+            currentMapSeed = snap.seed;
+            dashboardState.totalPopMio = snap.state.totalPopMio;
+            dashboardState.urbanRate = snap.state.urbanRate;
+            dashboardState.big5Rate = snap.state.big5Rate;
+            dashboardState.marktRate = snap.state.marktRate;
+            snap.state.cities.forEach((c, i) => {
+                dashboardState.cities[i].pct = c.pct;
+                dashboardState.cities[i].locked = c.locked;
+            });
+            updateDashboardUI();
+        };
+        window.deleteSnapshot = function() {
+            const sel = document.getElementById('snapshot-select');
+            const idx = sel.value;
+            if(idx === "") return;
+            if(confirm(`Möchtest du den Speicherstand "${snapshots[idx].name}" wirklich löschen?`)) {
+                snapshots.splice(idx, 1);
+                localStorage.setItem('osmieen_snapshots', JSON.stringify(snapshots));
+                updateSnapshotSelect();
+            }
+        };
+        setTimeout(updateSnapshotSelect, 500);
+        // --- WERTE & BERECHNUNG ---
         function getCalculatedValues() {
             const totalPop = dashboardState.totalPopMio * 1000000;
             const urbanPop = Math.round(totalPop * (dashboardState.urbanRate / 100));
@@ -2186,9 +2609,7 @@ function initApp() {
         function balance(idx, newPct) {
             const vals = getCalculatedValues();
             let lockedSum = 0;
-            dashboardState.cities.forEach((c, i) => { 
-                if(c.locked && i !== idx) lockedSum += c.pct; 
-            });
+            dashboardState.cities.forEach((c, i) => { if(c.locked && i !== idx) lockedSum += c.pct; });
             if(newPct + lockedSum > 100) newPct = 100 - lockedSum;
             dashboardState.cities[idx].pct = Math.max(0, newPct);
             let remainder = 100 - dashboardState.cities[idx].pct - lockedSum;
@@ -2197,29 +2618,43 @@ function initApp() {
             if(unlocked.length > 0) {
                 unlocked.forEach(c => {
                     const indexInState = c.originalIndex;
-                    dashboardState.cities[indexInState].pct = oldSum > 0 
-                        ? (c.pct / oldSum) * remainder 
-                        : remainder / unlocked.length;
+                    dashboardState.cities[indexInState].pct = oldSum > 0 ? (c.pct / oldSum) * remainder : remainder / unlocked.length;
                 });
             } else {
                 dashboardState.cities[idx].pct = 100 - lockedSum;
             }
             updateDashboardUI();
         }
+        // --- OBERFLÄCHE AKTUALISIEREN & SYNC ---
         function updateDashboardUI() {
             const vals = getCalculatedValues();
             document.getElementById('display-total-pop').innerText = formatNum(vals.totalPop);
-            document.getElementById('display-provinz-count').innerText = vals.provinzCount;
-            document.getElementById('display-markt-count').innerText = vals.marktCount;
+            document.getElementById('display-provinz-count').innerText = formatNum(vals.provinzCount);
+            document.getElementById('display-markt-count').innerText = formatNum(vals.marktCount);
             document.getElementById('display-weiler-count').innerText = formatNum(vals.weilerCount);
-            document.getElementById('input-pop-mio').value = dashboardState.totalPopMio;
-            document.getElementById('range-pop-mio').value = dashboardState.totalPopMio;
-            document.getElementById('input-urban-rate').value = dashboardState.urbanRate;
-            document.getElementById('range-urban-rate').value = dashboardState.urbanRate;
-            document.getElementById('input-big5-rate').value = dashboardState.big5Rate;
-            document.getElementById('range-big5-rate').value = dashboardState.big5Rate;
-            document.getElementById('input-markt-rate').value = dashboardState.marktRate;
-            document.getElementById('range-markt-rate').value = dashboardState.marktRate;
+            const fProv = document.getElementById('f-val-provinz');
+            if(fProv) {
+                fProv.innerText = formatNum(vals.provinzCount);
+                document.getElementById('f-val-markt').innerText = formatNum(vals.marktCount);
+                document.getElementById('f-val-weiler').innerText = formatNum(vals.weilerCount);
+            }
+            const mappings = [
+                { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+                { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+                { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+                { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+            ];
+            mappings.forEach(m => {
+                const input = document.getElementById(`input-${m.id}`);
+                const range = document.getElementById(`range-${m.id}`);
+                const fInput = document.getElementById(`f-input-${m.fId}`);
+                const fRange = document.getElementById(`f-range-${m.fId}`);
+                const val = dashboardState[m.stateKey];
+                if(input && document.activeElement !== input) input.value = val;
+                if(range) range.value = val;
+                if(fInput && document.activeElement !== fInput) fInput.value = val;
+                if(fRange) fRange.value = val;
+            });
             const container = document.getElementById('city-cards-container');
             container.innerHTML = `<h2 class="text-lg font-bold px-1">Machtbalance der Fünf</h2>`;
             dashboardState.cities.forEach((city, index) => {
@@ -2271,22 +2706,31 @@ function initApp() {
             dashboardState.cities[index].locked = !dashboardState.cities[index].locked;
             updateDashboardUI();
         };
-        window.updateCityByPct = (index, val) => {
-            balance(index, parseFloat(val) || 0);
-        };
+        window.updateCityByPct = (index, val) => { balance(index, parseFloat(val) || 0); };
         window.updateCityByAbs = (index, val) => {
             const vals = getCalculatedValues();
-            const pct = ((parseFloat(val) || 0) / vals.big5Pop) * 100;
-            balance(index, pct);
+            balance(index, ((parseFloat(val) || 0) / vals.big5Pop) * 100);
         };
-        document.getElementById('input-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value) || 1; updateDashboardUI(); });
-        document.getElementById('range-pop-mio').addEventListener('input', (e) => { dashboardState.totalPopMio = parseFloat(e.target.value); updateDashboardUI(); });
-        document.getElementById('input-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value) || 1; updateDashboardUI(); });
-        document.getElementById('range-urban-rate').addEventListener('input', (e) => { dashboardState.urbanRate = parseFloat(e.target.value); updateDashboardUI(); });
-        document.getElementById('input-big5-rate').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value) || 0; updateDashboardUI(); });
-        document.getElementById('range-big5-rate').addEventListener('input', (e) => { dashboardState.big5Rate = parseFloat(e.target.value); updateDashboardUI(); });
-        document.getElementById('input-markt-rate').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value) || 0; updateDashboardUI(); });
-        document.getElementById('range-markt-rate').addEventListener('input', (e) => { dashboardState.marktRate = parseFloat(e.target.value); updateDashboardUI(); });
+        // EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
+        const mappings = [
+            { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
+            { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
+            { id: 'big5-rate', fId: 'big5', stateKey: 'big5Rate' },
+            { id: 'markt-rate', fId: 'markt', stateKey: 'marktRate' }
+        ];
+        mappings.forEach(m => {
+            const updateState = (e) => {
+                dashboardState[m.stateKey] = parseFloat(e.target.value) || 0;
+                updateDashboardUI();
+            };
+            document.getElementById(`input-${m.id}`).addEventListener('input', updateState);
+            document.getElementById(`range-${m.id}`).addEventListener('input', updateState); 
+            const fInput = document.getElementById(`f-input-${m.fId}`);
+            if(fInput) {
+                fInput.addEventListener('input', updateState);
+                document.getElementById(`f-range-${m.fId}`).addEventListener('input', updateState);
+            }
+        });
         function initDashboard() {
             const tooltips = { 
                 callbacks: { label: (ctx) => `${ctx.label}: ${formatNum(ctx.raw)} Ew.` },
@@ -2307,7 +2751,7 @@ function initApp() {
                 type: 'pie',
                 data: { labels: dashboardState.cities.map(c => c.name), datasets: [{ data: [0,0,0,0,0], backgroundColor: dashboardState.cities.map(c => c.color), borderWidth: 2, borderColor: '#0f172a' }] },
                 options: options
-            });
+            });   
             updateDashboardUI();
             dashboardInitialized = true;
         }
@@ -2319,8 +2763,70 @@ function initApp() {
             dashboardCharts.siedlung.data.datasets[0].data = [vals.big5Pop, vals.provinzPop, vals.marktPop, vals.weilerPop];
             dashboardCharts.siedlung.update('none');
             dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
-            dashboardCharts.big5.update('none');
+            dashboardCharts.big5.update('none');   
+            if (autoRerollMap) {
+                currentMapSeed = Math.floor(Math.random() * 1000000); 
+            }
+            updateDynamicMap(vals);
+            updateFocusMap(vals); 
         }
+        // --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
+        let currentZoom = 1;
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let startX = 0;
+        let startY = 0;
+        const viewport = document.getElementById('map-viewport');
+        const mapContainer = document.getElementById('map-transform-container');
+        function applyTransform() {
+            if (!mapContainer) return;
+            mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;   
+            const scaleHint = document.getElementById('scale-hint');
+            if(scaleHint) {
+                if(currentZoom !== 1) {
+                    scaleHint.innerText = `1 px = ${(2.5 / currentZoom).toFixed(2)} km (Zoom x${currentZoom.toFixed(1)})`;
+                    scaleHint.classList.add('text-amber-500');
+                } else {
+                    scaleHint.innerText = `1 Pixel = 2,5 Kilometer`;
+                    scaleHint.classList.remove('text-amber-500');
+                }
+            }
+        }
+        window.zoomMap = function(delta) {
+            currentZoom += delta;
+            if (currentZoom < 0.5) currentZoom = 0.5;
+            if (currentZoom > 5.0) currentZoom = 5.0;
+            applyTransform();
+        }
+        window.resetMapZoom = function() {
+        	   currentZoom = 1; panX = 0; panY = 0; applyTransform();
+        }
+        if (viewport && mapContainer) {
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                window.zoomMap(e.deltaY > 0 ? -0.1 : 0.1);
+            }, { passive: false });
+            mapContainer.addEventListener('mousedown', (e) => {
+                isPanning = true;
+                startX = e.clientX - panX;
+                startY = e.clientY - panY;
+                mapContainer.style.transition = 'none';
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+                panX = e.clientX - startX;
+                panY = e.clientY - startY;
+                applyTransform();
+            });
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    mapContainer.style.transition = 'transform 0.1s ease-out';
+                }
+            });
+        }
+        // --- ZOOM & PAN ENDE ---
         // --- 5. KOMMENTAR-FUNKTION LOGIK ---
         // Lädt Kommentare aus dem LocalStorage beim Start
         let comments = JSON.parse(localStorage.getItem('osmieen_comments') || '[]');
@@ -2376,9 +2882,13 @@ function initApp() {
                 alert("Alle Vorschläge wurden in die Zwischenablage kopiert!");
             });
         };
-        // Init Cults App by default & Comments
+// Init Cults App by default & Comments
         window.onload = () => {
             renderComments();
+            // INIT: Beide Dashboards & Karten berechnen, egal welcher Tab aktiv ist
+            initDashboard(); 
+            const initialVals = getCalculatedValues();
+            updateFocusMap(initialVals); 
         };
 // --- ZWEISTUFIGE FEEDBACK LOGIK ---
         let feedbackCart = JSON.parse(localStorage.getItem('osmieen_feedback_cart') || '[]');
@@ -2478,6 +2988,173 @@ function initApp() {
             }
             if(tabId === 'tab-feedback') { renderFeedbackCart(); }
         };
+		const storyPages = [
+            {
+                title: "Die Venen von Osmieen: Der Sektor 4",
+                img: "0.png", 
+                text: "Das ist eine Beispiel-Kurzgeschichte."
+            },
+            {
+                title: "",
+                img: "1.png",
+                text: "Der Himmel über Sektor 4 war kein Firmament, sondern ein schwelendes Leichentuch aus Ruß und geronnenem Eisen. Hier, im industriellen Schlund der Vampir-Theokratie, roch die Luft nach verbranntem Blut-Substrat und dem herben Aroma sterbender Träume. Der gepanzerte Blutmagie-Zug, eine monströse Schlange aus vernietetem Stahl, hockte auf den Schienen und wartete darauf, die Lebenskraft von Tausenden in die Paläste der Vampirgötter zu pumpen. Vespera stand im Schatten eines rostigen Krans, ihre Haut so blass wie der Mond von Osmieen, während ihr Blick die kinetische Unruhe des Bahnhofs sezierte. Die Welt war ein Mechanismus aus Gewalt und Gier, und sie war gekommen, um eine Feder in das Getriebe zu werfen."
+            },
+            {
+                title: "",
+                img: "2.png",
+                text: "Mit der Präzision eines Skalpells trat Vespera in das kalte Licht des Kontrollpunkts. Vor ihr ragte ein Inquisitor auf, eine groteske Statue aus poliertem Plattenpanzer, dessen Helmvisier nur die Leere des religiösen Wahns widerspiegelte. Vespera entfaltete die gefälschten Dokumente mit einer Geste, die so schneidend war wie das Eis in ihrer Stimme. „Sonderinspektion für thermodynamische Blutzellen-Effizienz im Namen von Erebia“, zischte sie. Die Kälte, die sie ausstrahlte, war keine bloße Maske; sie war die Waffe einer Frau, die gelernt hatte, dass in Osmieen Papier oft schärfer war als Stahl. Der Inquisitor zögerte, die magische Tätowierung auf seinem Handgelenk pulsierte in einem unsicheren Violett."
+            },
+            {
+                title: "",
+                img: "3.png",
+                text: "Während Vespera die theokratische Bestie mit Bürokratie fesselte, glitt Kaelen in den Schatten der Verladekonsole. Seine Finger, gezeichnet von den Brandmalen unzähliger Experimente, tanzten über die Hebel. Er war kein Kämpfer der Klingen, sondern ein Meister der instabilen Logik. Vor ihm pulsierte das Blut-Substrat in gläsernen Leitungen, ein hypnotisches Rubinrot, das die Energie für ein ganzes Viertel lieferte. Kaelen spürte das Flüstern der roten Magie, ein hungriges Echo der Vampire, die diesen Kontinent knechteten. Er begann, die energetische Signatur der Zellen zu verändern, indem er ein korruptes Muster in den Fluss webte."
+            },
+            {
+                title: "",
+                img: "4.png",
+                text: "„Noch sechzig Sekunden bis zur Überlastung“, murmelte Kaelen, als er die Weichen für den Untergrund-Waggon manipulierte. Neben ihm tauchte Aris aus der Dunkelheit auf, ihre Augen funkelten vor unterdrückter Gewalt. Sie war die kinetische Antwort auf die Unterdrückung, eine Kriegerin, die in der weißen und roten Tracht der Geächteten gekleidet war. Aris legte eine Hand auf den Griff ihres massiven Brecher-Schwerts. Sie beobachtete, wie die schweren Blutzellen mit einem metallischen Mahlen in den falschen Waggon glitten. Die Tarnung war dünn wie Pergament, und das Reißen der Stille kündigte sich bereits an."
+            },
+            {
+                title: "",
+                img: "5.png",
+                text: "Plötzlich zerriss ein Alarm die morbide Ruhe von Sektor 4. Die Inquisition hatte den Betrug gewittert. Aris wartete nicht auf Befehle; sie wurde zu einem Wirbelwind aus weißem Tuch und rotem Blut. Mit einem animalischen Brüllen stürzte sie sich auf die herbeieilenden Wachen. Ihr Schwert grub sich mit viszeraler Wucht in das Fleisch des ersten Angreifers, ein nasser Laut, der in der metallischen Halle widerhallte. Blut spritzte gegen die rostigen Rohrleitungen, während Aris die rohe Gewalt der Umgebung nutzte, um sich einen Weg durch die Phalanx aus Speeren zu bahnen."
+            },
+            {
+                title: "",
+                img: "6.png",
+                text: "Die Halle verwandelte sich in ein Schlachthaus der industriellen Dekadenz. Aris griff nach einer glühenden Zuleitung für Blut-Substrat, die durch den Kampf von der Decke gerissen worden war. Mit übermenschlicher Kraft schwang sie das heiße Rohr wie eine Peitsche. Dampf und kochendes Blut zischten, als sie die Rüstungen der Inquisitoren wie Papier auf riss. Jeder Schlag war ein Statement gegen die fünf Götter, eine kinetische Entladung von Jahren angestauter Wut. Sie war kein Mensch mehr; sie war die personifizierte Entgleisung der göttlichen Ordnung."
+            },
+            {
+                title: "",
+                img: "7.png",
+                text: "„Der Zug fährt an! Los, jetzt!“, schrie Vespera über den Lärm der Kämpfe hinweg. Sie war bereits auf die flache Plattform des letzten Waggons gesprungen, ihre blaue Kleidung flatterte im Fahrtwind. Kaelen rannte mit der Agilität eines Mannes, die nichts mehr zu verlieren hatte, auf den abfahrenden Zug zu. Vespera streckte ihm die Hand entgegen, ihre Finger fest und unnachgiebig. Kaelen griff zu, und mit einem Ruck wurde er auf das vibrierende Metall gezogen, während die Räder des Zuges auf den Schienen zu schreien begannen."
+            },
+            {
+                title: "",
+                img: "8.png",
+                text: "Aris war die Letzte. Sie sprintete über den Bahnsteig, während hinter ihr die von Kaelen manipulierte Energiezelle am Kran kritisch zu glühen begann. Mit einem gewaltigen Satz katapultierte sie sich durch die Luft, gerade als Vespera sie am Gürtel packte und auf den Waggon riss. In diesem Moment explodierte das Dock hinter ihnen. Eine Säule aus reinem, magischem Feuer schoss in den Nachthimmel von Sektor 4, ein viszerales Feuerwerk, das die theokratische Ordnung in Stücke riss und brennende Formulare wie glühende Asche regnen ließ."
+            },
+            {
+                title: "",
+                img: "9.png",
+                text: "Der Zug raste in die endlose Nacht von Osmieen, weg von den brennenden Ruinen des Sektors. Kaelen und Aris saßen erschöpft auf den geraubten Blutzellen, deren sanftes Pulsieren nun ihnen gehörte. Hinter ihnen schrumpfte das Feuer zu einem glimmenden Punkt in der Dunkelheit. Sie hatten den Göttern Blut gestohlen und der Inquisition den Gehorsam verweigert. Während die kalte Luft des Kontinents ihre Gesichter peitschte, wussten sie, dass dies erst der Anfang war. Die Venen von Osmieen waren angezapft, und das Herz der Theokratie begann zu flackern."
+            },
+            {
+                title: "",
+                img: "10.png",
+                text: "Stunden später entgleiste der Zug planmäßig am Rande der Knochensteppe. Die Gruppe schleppte sich durch das graue Unterholz, verfolgt von den fernen Schatten der vampirischen Sucher-Falken. Vespera stützte Aris, deren Wunden das weiße Tuch ihrer Tracht in ein tiefes Scharlachrot getaucht hatten. Die Wildnis von Osmieen war kein Ort der Zuflucht, sondern ein anderes Schlachtfeld, auf dem Hunger und Kälte die Herrscher waren. Doch in der Ferne, zwischen den knorrigen Bäumen, leuchtete ein unnatürliches, sanftes Grün auf – ein krasser Kontrast zur industriellen Hölle, die sie hinter sich gelassen hatten."
+            },
+            {
+                title: "",
+                img: "11.png",
+                text: "Aus dem dichten Farn schälte sich eine Gestalt in den Farben des Frühlings und der Reinheit. Es war Beryl, ein Priester des grün-weißen Kults. Hinter ihm bewegte sich ein gewaltiger Schatten – ein Galapa, eine riesige Landschildkröte, deren Panzer mit Moos und heiligen Runen bedeckt war. Das Wesen atmete mit einem tiefen Grollen, das den Boden erzittern ließ. Beryl hob die Hand zum Gruß, seine Augen strahlten eine Ruhe aus, die in dieser blutgetränkten Welt fast wie eine Beleidigung wirkte. „Die Götter des Blutes haben hier keine Macht“, flüsterte er."
+            },
+            {
+                title: "",
+                img: "12.png",
+                text: "Der Galapa schritt langsam über die Fluchtspur der Gruppe hinweg. Wo seine gewaltigen Füße den Boden berührten, spross augenblicklich dickes Moos und weißer Klee hervor, der den Geruch von Schweiß und vergossenem Blut unter einer Schicht aus Natur begrub. Vespera beobachtete fasziniert, wie Beryl die magischen Rückstände ihrer Flucht mit einer Geste in das grüne Herz des Waldes zog. Ihre Spuren waren ausgelöscht, verloren im ewigen Kreislauf des Wachstums. Für heute waren sie Geister in einer Welt, die nur an Fleisch und Eisen glaubte."
+            }
+        ];
+        let currentStoryIndex = 0;
+        let isReading = false;
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        function renderStoryPage() {
+            const page = storyPages[currentStoryIndex];
+            document.getElementById('story-chapter-title').innerText = page.title;
+            document.getElementById('story-content').innerText = page.text;
+            const imgContainer = document.getElementById('story-image-container');
+            const imgElement = document.getElementById('story-image');
+            if (page.img && page.img.trim() !== "") {
+                imgElement.src = page.img;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+                imgElement.src = "";
+            }
+            document.getElementById('current-page-num').innerText = currentStoryIndex + 1;
+            document.getElementById('total-page-num').innerText = storyPages.length;   
+            document.getElementById('btn-prev-page').disabled = currentStoryIndex === 0;
+            document.getElementById('btn-next-page').disabled = currentStoryIndex === storyPages.length - 1;
+        }
+        function nextStoryPage() {
+            if (currentStoryIndex < storyPages.length - 1) {
+                currentStoryIndex++;
+                renderStoryPage();
+                if (isReading) speakCurrentPage();
+            } else {
+                stopStoryPlayback();
+            }
+        }
+        function prevStoryPage() {
+            if (currentStoryIndex > 0) {
+                currentStoryIndex--;
+                renderStoryPage();
+                if (isReading) speakCurrentPage();
+            }
+        }
+        function toggleStoryPlayback() {
+            if (isReading) {
+                stopStoryPlayback();
+            } else {
+                isReading = true;
+                document.getElementById('play-icon').innerText = '⏸️';
+                document.getElementById('play-text').innerText = 'Pausieren';
+                document.getElementById('reading-indicator').classList.remove('hidden');
+                speakCurrentPage();
+            }
+        }
+        function stopStoryPlayback() {
+            isReading = false;
+            synth.cancel();
+            document.getElementById('play-icon').innerText = '▶️';
+            document.getElementById('play-text').innerText = 'Vorlesen starten';   
+            const indicator = document.getElementById('reading-indicator');
+            if(indicator) indicator.classList.add('hidden');
+        }
+        function speakCurrentPage() {
+            synth.cancel();
+            if (!isReading) return;
+            let fullText = storyPages[currentStoryIndex].title + ". " + storyPages[currentStoryIndex].text;
+            let sentences = fullText.match(/[^.!?]+[.!?]+/g) || [fullText];
+            let sentenceIndex = 0;
+            function speakNextSentence() {
+                if (!isReading) return;
+                if (sentenceIndex >= sentences.length) {
+                    nextStoryPage();
+                    return;
+                }
+                currentUtterance = new SpeechSynthesisUtterance(sentences[sentenceIndex].trim());      
+                const voices = synth.getVoices();
+                let bestVoice = voices.find(v => v.lang.includes('de') && (v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Natural')));
+                if (!bestVoice) {
+                    bestVoice = voices.find(v => v.lang.includes('de'));
+                }
+                if (bestVoice) currentUtterance.voice = bestVoice;
+                currentUtterance.rate = 0.95; 
+                currentUtterance.pitch = 1.0;
+                currentUtterance.onend = function() {
+                    sentenceIndex++;
+                    speakNextSentence();
+                };
+                currentUtterance.onerror = function(event) {
+                    console.error("Sprachausgabe Fehler: ", event);
+                    stopStoryPlayback();
+                };
+                synth.speak(currentUtterance);
+            }
+            speakNextSentence();
+        }
+        const originalStorySwitchTab = window.switchTab;
+        window.switchTab = function(tabId) {
+            if (tabId !== 'tab-storybook') stopStoryPlayback();
+            originalStorySwitchTab(tabId);
+            if (tabId === 'tab-storybook') renderStoryPage();
+        };
+        window.addEventListener('load', () => {
+            setTimeout(() => { synth.getVoices(); }, 50);
+            renderStoryPage();
+        });
     </script>
 </body>
 </html>
