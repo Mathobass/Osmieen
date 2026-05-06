@@ -3360,9 +3360,7 @@
         }
 
 window.jumpToCult = function(catId, itemIdx) {
-            // Erst zum Kult-Tab wechseln
             switchTab('tab-cults');
-            // Dann die Kategorie und den spezifischen Kult laden
             currentCategory = catId;
             currentItemIndex = itemIdx;
             renderCategoryNav();
@@ -3376,74 +3374,99 @@ window.jumpToCult = function(catId, itemIdx) {
             document.getElementById('quiz-question-area').classList.add('hidden');
             document.getElementById('quiz-result-area').classList.remove('hidden');
             
-            let results = [];
+            // 1. Deine Gesamtpunkte summieren
+            let totalScore = userScores.reduce((a, b) => a + b, 0);
+            if (totalScore === 0) totalScore = 1;
+
+            // 2. Deine Prozentanteile pro Farbe (0-100%)
+            let pcts = userScores.map(v => Math.round((v / totalScore) * 100));
+
+            // 3. Dominanz-Schwelle festlegen
+            // Wir schauen: In welchen Farben hast du mehr als 20% erreicht?
+            // (Dieser Wert sorgt dafür, dass auch 1- oder 2-farbige Ergebnisse möglich sind)
+            let dominantColors = pcts.map(p => p >= 20 ? 1 : 0);
+            
+            // Sonderfall: Falls du extrem ausgeglichen gewählt hast und nichts über 20% liegt,
+            // nehmen wir einfach die höchste Farbe.
+            if (!dominantColors.includes(1)) {
+                let maxIdx = pcts.indexOf(Math.max(...pcts));
+                dominantColors[maxIdx] = 1;
+            }
+
+            // 4. Den Kult suchen, der EXAKT diese Farbkombination hat
+            let finalCult = null;
+            let finalCat = '';
+            let finalIdx = 0;
+
             Object.keys(appData.data).forEach(cat => {
-                if (cat === 'five' || cat === 'four') return;
                 appData.data[cat].forEach((cult, index) => {
-                    let score = 0, matchCount = 0;
-                    for (let i = 0; i < 5; i++) {
-                        if (cult.colors[i] === 1) { score += userScores[i]; matchCount++; }
-                        else { score -= userScores[i] * 0.7; }
+                    // Vergleiche dein Profil [1,0,0,1,0] mit dem Profil des Kults
+                    if (cult.colors.every((val, i) => val === dominantColors[i])) {
+                        finalCult = cult;
+                        finalCat = cat;
+                        finalIdx = index;
                     }
-                    // Wir speichern catId und itemIdx mit, um später verlinken zu können
-                    results.push({cult: cult, score: score / Math.sqrt(matchCount), catId: cat, itemIdx: index});
                 });
             });
-            results.sort((a, b) => b.score - a.score);
-            const top = results[0]; 
-            
-            document.getElementById('quiz-result-title').innerText = top.cult.name;
-            document.getElementById('quiz-result-subtitle').innerText = top.cult.subtitle;
-            document.getElementById('quiz-result-essence').innerText = top.cult.sections[0].essence;
-            
-            // Prozent-Berechnung der 5 Kernfarben
-            const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
-            let totalScore = userScores.reduce((a, b) => a + b, 0);
-            if (totalScore === 0) totalScore = 1; // Fallback, falls jemand überall null hat
-            
-            // Wir berechnen die % und sortieren sie absteigend
-            let sortedColors = userScores.map((v, i) => ({v, pct: Math.round((v / totalScore) * 100), n: colorNames[i]})).sort((a,b) => b.v - a.v);
-            
-            // Begründung inkl. der Prozentwerte zusammensetzen
-            let explanation = `Deine innere Einstellung weist folgende Zusammensetzung auf: <br>
-            <span class="inline-block mt-3 mb-1 px-2 py-1 bg-stone-200 rounded font-mono text-xs text-stone-800"><b>${sortedColors[0].pct}%</b> ${sortedColors[0].n}</span>
-            <span class="inline-block mt-3 mb-1 px-2 py-1 bg-stone-200 rounded font-mono text-xs text-stone-800"><b>${sortedColors[1].pct}%</b> ${sortedColors[1].n}</span>
-            <span class="inline-block mt-3 mb-1 px-2 py-1 bg-stone-200 rounded font-mono text-xs text-stone-800"><b>${sortedColors[2].pct}%</b> ${sortedColors[2].n}</span><br><br>
-            Da du deine Entscheidungen primär auf diese Grundwerte stützt, bist du ein perfektes Mitglied für <strong>${top.cult.name}</strong>.`;
-            
-            document.getElementById('quiz-result-explanation').innerHTML = explanation;
-            
-            // Verlinkung für den Sieger-Kult
-            const linkContainer = document.getElementById('quiz-result-link-container');
-            if(linkContainer) {
-                linkContainer.innerHTML = `<button onclick="jumpToCult('${top.catId}', ${top.itemIdx})" class="mt-4 text-sm bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold py-2 px-4 rounded transition flex items-center gap-2 shadow-sm"><span>➔ ${top.cult.name} im Kompendium ansehen</span></button>`;
+
+            // Fallback: Wenn keine exakte Kombi gefunden wurde (Sicherheit)
+            if (!finalCult) {
+                finalCult = appData.data['mono'][pcts.indexOf(Math.max(...pcts))];
+                finalCat = 'mono';
             }
-            
-// Hilfsfunktion für die Farbanzeige
+
+            // 5. UI befüllen
+            document.getElementById('quiz-result-title').innerText = finalCult.name;
+            document.getElementById('quiz-result-subtitle').innerText = finalCult.subtitle;
+            document.getElementById('quiz-result-essence').innerText = finalCult.sections[0].essence;
+
+            const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
+            let sortedColors = pcts.map((p, i) => ({p, n: colorNames[i]})).sort((a,b) => b.p - a.p);
+
+            let explanation = `Deine Seele setzt sich aus folgenden Kräften zusammen:<br>
+            <div class="flex flex-wrap gap-2 mt-3 mb-4 justify-center">
+                ${sortedColors.filter(c => c.p > 5).map(c => `
+                    <span class="px-2 py-1 bg-stone-200 rounded font-mono text-[10px] text-stone-800 border border-stone-300">
+                        <b>${c.p}%</b> ${c.n}
+                    </span>
+                `).join('')}
+            </div>
+            Basierend auf deiner Punkteverteilung bist du ein Vertreter von <strong>${finalCult.name}</strong>.`;
+
+            document.getElementById('quiz-result-explanation').innerHTML = explanation;
+
+            const linkContainer = document.getElementById('quiz-result-link-container');
+            linkContainer.innerHTML = `<button onclick="jumpToCult('${finalCat}', ${finalIdx})" class="mt-4 text-sm bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition hover:bg-amber-700 shadow-md flex items-center gap-2 mx-auto"><span>➔ Details im Kompendium</span></button>`;
+
+            // 6. Die "Ähnlichen Pfade" (Nächstbeste Treffer)
+            let otherResults = [];
+            Object.keys(appData.data).forEach(cat => {
+                appData.data[cat].forEach((cult, index) => {
+                    if (cult.name === finalCult.name) return;
+                    let score = 0;
+                    for (let i = 0; i < 5; i++) {
+                        score += (userScores[i] * cult.colors[i]);
+                    }
+                    otherResults.push({cult, score, cat, index});
+                });
+            });
+            otherResults.sort((a, b) => b.score - a.score);
+
             const getColorLabels = (colors) => {
                 const names = ["Weiß", "Blau", "Schwarz", "Rot", "Grün"];
                 return colors.map((val, i) => val === 1 ? names[i] : null).filter(n => n).join(' / ');
             };
-
-            // Platz 2 befüllen und klickbar machen
-            document.getElementById('quiz-runnerup-1-title').innerText = results[1].cult.name;
-            document.getElementById('quiz-runnerup-1-sub').innerHTML = `
-                <span class="block mb-1">${results[1].cult.subtitle}</span>
-                <span class="text-[9px] font-bold text-amber-800 uppercase tracking-tighter bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
-                    Fokus: ${getColorLabels(results[1].cult.colors)}
-                </span>
-            `;
-            document.getElementById('quiz-runnerup-1-card').onclick = () => jumpToCult(results[1].catId, results[1].itemIdx);
-            
-            // Platz 3 befüllen und klickbar machen
-            document.getElementById('quiz-runnerup-2-title').innerText = results[2].cult.name;
-            document.getElementById('quiz-runnerup-2-sub').innerHTML = `
-                <span class="block mb-1">${results[2].cult.subtitle}</span>
-                <span class="text-[9px] font-bold text-amber-800 uppercase tracking-tighter bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
-                    Fokus: ${getColorLabels(results[2].cult.colors)}
-                </span>
-            `;
-            document.getElementById('quiz-runnerup-2-card').onclick = () => jumpToCult(results[2].catId, results[2].itemIdx);
+            [1, 2].forEach(i => {
+                const res = otherResults[i-1];
+                document.getElementById(`quiz-runnerup-${i}-title`).innerText = res.cult.name;
+                document.getElementById(`quiz-runnerup-${i}-sub`).innerHTML = `
+                    <span class="block mb-1 text-[10px] opacity-75">${res.cult.subtitle}</span>
+                    <span class="text-[9px] font-bold text-amber-800 uppercase tracking-tighter bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                        Fokus: ${getColorLabels(res.cult.colors)}
+                    </span>
+                `;
+                document.getElementById(`quiz-runnerup-${i}-card`).onclick = () => jumpToCult(res.cat, res.index);
+            });
         }
         resetQuizUI();
 
