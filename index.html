@@ -156,6 +156,17 @@
         #tab-map-focus aside.w-64 {
             padding-bottom: 100px !important;
         }
+		.map-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100dvh !important;
+            z-index: 99999 !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+        }
+    </style>
     </style>
 </head>
 <body class="flex h-screen w-full bg-stone-50 overflow-hidden">
@@ -1873,6 +1884,7 @@
                             <div id="dynamic-map" class="relative w-full aspect-[1778/1334] bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-inner bg-cover bg-no-repeat bg-center" style="background-image: url('karte_bunt.jpg');">
                                 <canvas id="map-mask-canvas" style="display: none;"></canvas>
                                 <div id="map-markers" class="absolute inset-0"></div>
+								<button onclick="switchTab('tab-map-focus'); document.getElementById('map-viewport').classList.add('map-fullscreen'); document.getElementById('fs-btn-focus').innerText = '✖ Schließen';" class="lg:hidden absolute top-2 right-2 bg-slate-900/90 text-white px-2 py-1 rounded border border-slate-600 shadow z-50 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">⛶ Vollbild</button>
                                 <!-- MAßSTAB -->
                                 <div class="absolute bottom-6 left-6 bg-slate-900/50 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col items-start shadow-xl z-20 min-w-[180px]">
                                     <span class="text-[10px] text-amber-500/80 uppercase font-black tracking-widest mb-2 ml-1">Maßstab Osmieen</span>
@@ -1943,6 +1955,7 @@
                     </aside>
                     <!-- MITTE: DIE RIESIGE KARTE -->
                     <main class="flex-1 bg-black overflow-hidden relative flex items-center justify-center" id="map-viewport">
+						<button id="fs-btn-focus" onclick="const vp = document.getElementById('map-viewport'); vp.classList.toggle('map-fullscreen'); this.innerText = vp.classList.contains('map-fullscreen') ? '✖ Schließen' : '⛶ Vollbild';" class="lg:hidden absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-lg border border-slate-600 shadow-xl z-[100] text-xs font-bold uppercase tracking-widest transition backdrop-blur-sm">⛶ Vollbild</button>
                         <div id="map-transform-container" class="relative aspect-[1778/1334] bg-slate-800 bg-cover bg-no-repeat bg-center shadow-[0_0_50px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing origin-center transition-transform duration-100 ease-out" 
                              style="width: 100%; max-width: 1800px; background-image: url('karte_bunt.jpg'); transform: translate(0px, 0px) scale(1);">
                             <div id="map-markers-focus" class="absolute inset-0"></div>     
