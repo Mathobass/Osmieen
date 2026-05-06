@@ -2903,7 +2903,7 @@ function updateDynamicMap(vals) {
             applyTransform();
         }
         window.resetMapZoom = function() {
-             currentZoom = 1; panX = 0; panY = 0; applyTransform(); // Reset geht jetzt auch auf 0.7 zurück
+             currentZoom = 0.8; panX = 0; panY = 0; applyTransform(); // Reset geht jetzt auch auf 0.7 zurück
         }
         if (viewport && mapContainer) {
             viewport.addEventListener('wheel', (e) => {
