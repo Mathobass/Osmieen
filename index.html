@@ -2139,6 +2139,153 @@
                     </form>
                 </div>
             </section>
+			<section id="tab-agrarsystem" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <div class="flex items-center gap-4 mb-2">
+                    <h1 class="m-0 border-0">Das Agrarsystem (Konzept)</h1>
+                    <button onclick="openFeedbackModal('Agrarsystem')" type="button" class="px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center shadow-sm cursor-pointer">
+                        💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 ml-1 hidden md:inline">Notiz</span>
+                    </button>
+                </div>
+                <div class="border-b-2 border-stone-200 mb-6"></div>
+                
+                <p class="text-lg text-stone-500 font-medium mb-4">Dieses Kapitel befindet sich in der Ideenfindungsphase. Es skizziert das ländliche Ökosystem, die Abhängigkeiten der Bauern und den Handelsfluss der Nahrung.</p>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 text-sm text-amber-900 rounded-r-lg shadow-sm">
+                    <strong>Wichtiger Hinweis:</strong> Die hier beschriebenen Mechaniken und Konzepte sind noch nicht final und repräsentieren lediglich den aktuellen Stand der Abstimmungen.
+                </div>
+
+                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
+                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
+                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
+                        <div class="flex gap-3 text-xs font-semibold">
+                            <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
+                            <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
+                        </div>
+                    </div>
+                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏘️</span> 1. Die Dörfer & Weiler (Mikrokosmen)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌾</span> 2. Die Marktflecken (Kornkammern)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🚂</span> 3. Der Nahrungsfluss zu den Metropolen</a></li>
+                    </ul>
+                </div>
+
+                <details class="section-details">
+                    <summary id="agrar-1" class="section-summary">
+                        <div class="summary-title"><span>🏘️</span> <span class="text-amber-600">1.</span> Die Dörfer & Weiler (Das Bauern-Ökosystem) <button onclick="openFeedbackModal('Dörfer & Weiler (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>In den unzähligen Dörfern der Weite findet kein überregionaler Handel statt. Die Ländereien und Höfe sind stattdessen in sich geschlossene, lebendige soziale Mikrokosmen, die durch ein klares Risiko-Belohnungs-Gefälle geprägt sind:</p>
+                        <ul>
+                            <li><strong>Die Innere Sphäre (Die Patriarchen):</strong> Höfe, die geografisch nah an den befestigten Marktflecken liegen, profitieren von maximaler Sicherheit vor den Gefahren der Wildnis. Ihr Platz ist jedoch begrenzt. Die alteingesessenen Familien hier definieren ihren Reichtum durch Stabilität, sichere Ernten und exzellente politische Verbindungen zu den lokalen Blut-Priestern.</li>
+                            <li><strong>Das Grenzland (Die Landbarone):</strong> Je weiter ein Hof in die ungezügelte Wildnis hineinreicht, desto mehr freie Fläche steht zur massiven Expansion zur Verfügung. Diese Bauern können enorm reich werden, zahlen aber einen hohen Preis: Sie müssen ständige Angriffe von Bestien abwehren, Mauern errichten und aus eigener Tasche Söldner oder Wachen finanzieren. </li>
+                            <li><strong>Soziales Gefälle:</strong> Zwischen den elitären Landbaronen am Rand und den sicheren Patriarchen im Zentrum existiert eine breite Schicht aus einfachen Pächtern, die in ständiger Abhängigkeit wirtschaften und oft in die Mühlen der theokratischen Quoten geraten.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="agrar-2" class="section-summary">
+                        <div class="summary-title"><span>🌾</span> <span class="text-amber-600">2.</span> Die Marktflecken (Handelszentren & Kornkammern) <button onclick="openFeedbackModal('Marktflecken (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Das gesammelte landwirtschaftliche Rückgrat der Theokratie konzentriert sich in den etwa 2.000 befestigten Marktflecken und Sammelorten, die über das Land verteilt sind:</p>
+                        <ul>
+                            <li><strong>Das Nadelöhr des Handels:</strong> Alle Bauern bringen ihre Erträge zwingend zu diesen Marktplätzen. Erst hier wird die Nahrung offiziell gehandelt, gewogen und an Aufkäufer verkauft.</li>
+                            <li><strong>Die Eisernen Reserven:</strong> Diese Marktflecken bestehen nicht nur aus Wohnraum für ihre durchschnittlich 1.200 Einwohner, sondern aus gigantischen, gesicherten Speichern, Silos und Kühlkammern. Da nicht überall im Land Nahrung angebaut werden kann, dienen diese gesammelten Reserven als Überlebensgarantie für das Reich.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="agrar-3" class="section-summary">
+                        <div class="summary-title"><span>🚂</span> <span class="text-amber-600">3.</span> Der Nahrungsfluss zu den Metropolen <button onclick="openFeedbackModal('Nahrungsfluss (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Die großen Städte sind absolut unfähig, sich selbst zu ernähren, was eine kritische logistische Kette erzwingt:</p>
+                        <ul>
+                            <li><strong>Das Transport-Monopol:</strong> Die riesigen, lizenzierten Handelsdynastien kaufen die massiven Nahrungsreserven an den Marktflecken auf. Sie übernehmen den gefährlichen Transport durch das unerschlossene Land, oft mithilfe schwerfälliger, gezüchteter Monstrositäten oder massiven Karawanen.</li>
+                            <li><strong>Absolute Abhängigkeit:</strong> Ohne diesen konstanten Nahrungsfluss würden gigantische urbane Zentren sofort kollabieren. Die massiv übervölkerte Schwarze Stadt hat schlichtweg keinen Platz für Agrarwirtschaft. Auch die Blaue Stadt, die fast ausschließlich aus elitären Forschern, Bibliotheken und Observatorien besteht, ist vollständig auf den externen Handel angewiesen.</li>
+                            <li><strong>Strategische Verwundbarkeit:</strong> Dieses System macht die Getreidespeicher der Marktflecken zu den wichtigsten strategischen Knotenpunkten. Eine gezielte Sabotage in einem der Sammelorte kann eine Hungersnot in einer hundert Kilometer entfernten Metropole auslösen.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <section id="tab-blutprozession" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+                <div class="flex items-center gap-4 mb-2">
+                    <h1 class="m-0 border-0">Die Blutprozession (Konzept)</h1>
+                    <button onclick="openFeedbackModal('Blutprozession')" type="button" class="px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center shadow-sm cursor-pointer">
+                        💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 ml-1 hidden md:inline">Notiz</span>
+                    </button>
+                </div>
+                <div class="border-b-2 border-stone-200 mb-6"></div>
+                
+                <p class="text-lg text-stone-500 font-medium mb-4">Dieses Konzeptpapier skizziert die Abläufe, wenn die Macht der großen Städte in Form von theokratischen Karawanen in die Provinz kommt.</p>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 text-sm text-amber-900 rounded-r-lg shadow-sm">
+                    <strong>Wichtiger Hinweis:</strong> Auch dieses Modul ist ein fortlaufender Entwurf und dient als Diskussionsgrundlage.
+                </div>
+
+                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
+                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
+                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
+                        <div class="flex gap-3 text-xs font-semibold">
+                            <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
+                            <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
+                        </div>
+                    </div>
+                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🛡️</span> 1. Die Ankunft der Karawane</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🩸</span> 2. Blutabgabe & Qualitätskontrolle</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚖️</span> 3. Prüfungen & Das theokratische Gericht</a></li>
+                    </ul>
+                </div>
+
+                <details class="section-details">
+                    <summary id="blut-1" class="section-summary">
+                        <div class="summary-title"><span>🛡️</span> <span class="text-amber-600">1.</span> Die Ankunft der Karawane <button onclick="openFeedbackModal('Karawane (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Da nicht in jedem der zehntausenden kleinen Dörfer permanent theokratische Beamte stationiert sein können, reist die Autorität zu den Menschen. In regelmäßigen, regional festgelegten Abständen (oft monatlich oder halbjährlich) zieht die "Blutprozession" in die Dörfer ein.</p>
+                        <ul>
+                            <li><strong>Militärische Eskorte:</strong> Die Prozession ist ein massiver logistischer und militärischer Akt. Schwer bewaffnete Schocktruppen der Kulte eskortieren Beamte, Inquisitoren und theokratische Richter.</li>
+                            <li><strong>Einschüchterung als Konzept:</strong> Der Einzug der Karawane wird bewusst laut, prunkvoll und furchteinflößend inszeniert. Es ist der Moment, in dem die einfache Landbevölkerung die absolute, rohe Macht der Götter zu spüren bekommt, die sie sonst nur aus den Erzählungen des lokalen Priesters kennt.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="blut-2" class="section-summary">
+                        <div class="summary-title"><span>🩸</span> <span class="text-amber-600">2.</span> Blutabgabe & Qualitätskontrolle <button onclick="openFeedbackModal('Blutkontrolle (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Der Hauptzweck der Prozession ist die Sicherung der Ressourcen und der Logistik.</p>
+                        <ul>
+                            <li><strong>Einsammeln der Quoten:</strong> Das von den lokalen Blutschreinen verarbeitete Blut-Substrat wird offiziell gewogen, verplombt und auf die gepanzerten Wagen verladen.</li>
+                            <li><strong>Medizinische Prüfung:</strong> Die Beamten überprüfen stichprobenartig die Blut-Qualität der Dorfbewohner. Werden Krankheiten oder Verunreinigungen festgestellt, drohen dem Dorf Strafen, da verunreinigtes Blut die magischen Maschinen der Metropolen schädigen könnte.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="section-details">
+                    <summary id="blut-3" class="section-summary">
+                        <div class="summary-title"><span>⚖️</span> <span class="text-amber-600">3.</span> Prüfungen & Das theokratische Gericht <button onclick="openFeedbackModal('Gericht (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-icon">▼</div>
+                    </summary>
+                    <div class="details-content">
+                        <p>Die Prozession fungiert nicht nur als Logistikkette, sondern als fliegendes Gesetz und Bildungsgremium.</p>
+                        <ul>
+                            <li><strong>Die Kinder-Prüfung:</strong> Theokratische Lektoren prüfen den Wissenstand der Dorfkinder. Sie kontrollieren, ob die Eltern und der lokale Priester die Kinder ordnungsgemäß indoktriniert haben. Fällt das Dorf bei dieser Prüfung durch, droht der Entzug der Kinder in staatliche Obhut.</li>
+                            <li><strong>Rechtsprechung vor Ort:</strong> Lokale Konflikte, ungeklärte Verbrechen und Streitigkeiten, die der Dorfälteste nicht lösen konnte oder durfte, werden nun vor das fahrende theokratische Gericht gebracht. Die Urteile fallen schnell und endgültig – oftmals in Form von Schuldkonten, woraufhin die Verurteilten direkt in die Arbeitslager-Waggons der Karawane verfrachtet werden.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
         </main>
     </div>
 
