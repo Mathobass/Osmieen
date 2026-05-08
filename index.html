@@ -139,10 +139,13 @@
             opacity: 1;
         }
 /* --- IPAD / MOBILE SCROLLING FIXES --- */
-        body {
-            height: 100vh; 
-            height: 100dvh; /* Passt sich exakt an die Safari-Menüleiste an */
-            overscroll-behavior: none; /* Stoppt das lästige Gummi-Band-Zurückschnappen der gesamten Seite */
+        html, body {
+            position: fixed; /* Nagelt den Hintergrund fest */
+            width: 100%;
+            height: 100%; 
+            height: 100dvh; 
+            overflow: hidden;
+            overscroll-behavior: none; /* Blockiert iOS Bouncing komplett */
         }
         main, aside, .custom-scrollbar {
             -webkit-overflow-scrolling: touch; /* Erzwingt flüssiges Scrollen auf Touch-Geräten */
@@ -182,7 +185,7 @@
                 &#10005;
             </button>
         </div>
-        <nav class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6">
+        <nav class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-32 space-y-6">
             <div>
                 <h2 class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Regelwerk</h2>
                 <ul class="space-y-1">
