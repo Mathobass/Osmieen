@@ -245,6 +245,35 @@
                     <!-- KOMMENTARFUNKTION BUTTON ENDE -->
                 </ul>
             </div>
+			</ul>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-stone-800">
+                <h2 class="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-3">Kampagnen-Soundtrack</h2>
+                
+                <audio id="bg-music" loop>
+                    <source src="osmieen_theme.mp3" type="audio/mpeg">
+                    Dein Browser unterstützt kein Audio.
+                </audio>
+                
+                <div class="flex items-center gap-3 mb-3">
+                    <button id="btn-play-music" onclick="toggleMusic()" class="bg-stone-800 hover:bg-amber-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow-md border border-stone-700 hover:border-amber-500">
+                        ▶️
+                    </button>
+                    <div class="flex flex-col">
+                        <span id="music-status" class="text-xs text-stone-400 font-bold uppercase tracking-widest">Pausiert</span>
+                        <span class="text-[9px] text-stone-500 italic">Osmieen Theme</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2 px-1">
+                    <span class="text-[10px] text-stone-500">🔈</span>
+                    <input type="range" id="music-volume" min="0" max="1" step="0.01" value="0.2" oninput="setVolume(this.value)" class="w-full accent-amber-600 h-1 bg-stone-700 rounded-lg appearance-none cursor-pointer">
+                    <span class="text-[10px] text-stone-500">🔊</span>
+                </div>
+            </div>
+            </nav>
+    </aside>
         </nav>
     </aside>
     <div class="flex-1 flex flex-col h-full overflow-hidden relative w-full">
@@ -3797,6 +3826,35 @@ function calculateQuizResult() {
             setTimeout(() => { synth.getVoices(); }, 50);
             renderStoryPage();
         });
+		// --- AUDIO PLAYER LOGIK ---
+        const bgMusic = document.getElementById('bg-music');
+        const playBtn = document.getElementById('btn-play-music');
+        const musicStatus = document.getElementById('music-status');
+
+        // Initiale Lautstärke setzen (20% ist für Hintergrundmusik meistens gut)
+        if(bgMusic) bgMusic.volume = 0.2;
+
+        function toggleMusic() {
+            if (!bgMusic) return;
+            
+            if (bgMusic.paused) {
+                bgMusic.play();
+                playBtn.innerText = '⏸️'; // Ändert den Button zu Pause
+                musicStatus.innerText = 'Spielt...';
+                musicStatus.classList.add('text-amber-500');
+                musicStatus.classList.remove('text-stone-400');
+            } else {
+                bgMusic.pause();
+                playBtn.innerText = '▶️'; // Ändert den Button zu Play
+                musicStatus.innerText = 'Pausiert';
+                musicStatus.classList.remove('text-amber-500');
+                musicStatus.classList.add('text-stone-400');
+            }
+        }
+
+        function setVolume(val) {
+            if(bgMusic) bgMusic.volume = val;
+        }
     </script>
 </body>
 </html>
