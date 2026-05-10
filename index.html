@@ -2709,13 +2709,10 @@ function calculateRaceResult() {
         let matchScore = 0;
         for(let i = 0; i < 5; i++) {
             if (race.colors[i] === 2) {
-                // Primärfarbe: Zählt doppelt!
                 matchScore += userPcts[i] * 2; 
             } else if (race.colors[i] === 1) {
-                // Akzentfarbe: Zählt einfach
                 matchScore += userPcts[i] * 1; 
             } else {
-                // Strafe: Der User hat diese Farbe gewählt, aber die Rasse hat sie gar nicht
                 matchScore -= userPcts[i] * 0.5; 
             }
         }
@@ -2725,32 +2722,71 @@ function calculateRaceResult() {
     // Nach dem höchsten Score sortieren
     allRanked.sort((a, b) => b.score - a.score);
 
-    const finalRace = allRanked[0].race;
+    // --- NEU: Ränge bilden (Gleichstände zusammenfassen) ---
+    let ranks = [];
+    let currentRank = [];
+    let currentScore = allRanked[0].score;
+
+    allRanked.forEach(item => {
+        // Wir prüfen, ob der Score fast identisch ist (fängt kleine Dezimal-Rundungsfehler ab)
+        if (Math.abs(item.score - currentScore) < 0.1) {
+            currentRank.push(item);
+        } else {
+            ranks.push(currentRank);
+            currentRank = [item];
+            currentScore = item.score;
+        }
+    });
+    if (currentRank.length > 0) ranks.push(currentRank);
+
+    // Platz 1 (kann ein oder mehrere Völker sein)
+    const firstPlaceRaces = ranks[0].map(r => r.race);
     
-    // UI mit Platz 1 befüllen
-    document.getElementById('race-quiz-result-title').innerText = finalRace.name;
-    document.getElementById('race-quiz-result-subtitle').innerText = finalRace.subtitle;
+    // Die Namen mit einem "&" verbinden
+    document.getElementById('race-quiz-result-title').innerText = firstPlaceRaces.map(r => r.name).join(" & ");
+    
+    // Wenn es mehrere sind, schreiben wir "Geteilter Platz", sonst den normalen Untertitel
+    document.getElementById('race-quiz-result-subtitle').innerText = firstPlaceRaces.length > 1 
+        ? "Geteilter 1. Platz" 
+        : firstPlaceRaces[0].subtitle;
     
     const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
     let sortedColors = userPcts.map((p, i) => ({p: Math.round(p), n: colorNames[i]})).sort((a,b) => b.p - a.p);
 
+    let fazitText = firstPlaceRaces.length > 1 
+        ? `Basierend auf deinem Profil teilen sich gleich <strong>${firstPlaceRaces.length} Völker</strong> den ersten Platz. Du zeigst Charakterzüge, die zu all diesen Kulturen perfekt passen!`
+        : `Basierend auf diesem Profil passt das Volk <strong>${firstPlaceRaces[0].name}</strong> am besten zu dir.`;
+
+    // Das Profil befüllen (nur die geantworteten Farben + das Fazit)
     document.getElementById('race-quiz-result-explanation').innerHTML = `
-        Deine innersten Instinkte und kulturellen Werte verteilen sich wie folgt:<br>
-        <div class="flex flex-wrap gap-2 mt-3 mb-4 justify-center">
+        <h5 class="font-bold text-stone-800 mb-3 text-xs uppercase tracking-widest text-center">Deine Antworten</h5>
+        <div class="flex flex-wrap gap-2 mb-4 justify-center">
             ${sortedColors.filter(c => c.p > 0).map(c => `
                 <span class="px-2 py-1 bg-stone-200 rounded font-mono text-[10px] text-stone-800 border border-stone-300">
                     <b>${c.p}%</b> ${c.n}
                 </span>
             `).join('')}
         </div>
-        Basierend auf diesem Profil passt das Volk <strong>${finalRace.name}</strong> am besten zu dir.`;
+        <p class="text-sm text-stone-600 italic mt-4 border-t border-stone-200 pt-4 text-center">
+            ${fazitText}
+        </p>
+    `;
 
-    // Plätze 2 und 3 befüllen
-    [1, 2].forEach(i => {
-        const res = allRanked[i];
-        document.getElementById(`race-runnerup-${i}-title`).innerText = res.race.name;
-        document.getElementById(`race-runnerup-${i}-sub`).innerText = res.race.subtitle;
-    });
+    // Plätze 2 und 3 befüllen (das sind dann ranks[1] und ranks[2])
+    for (let i = 1; i <= 2; i++) {
+        let titleEl = document.getElementById(`race-runnerup-${i}-title`);
+        let subEl = document.getElementById(`race-runnerup-${i}-sub`);
+
+        if (ranks[i]) {
+            const tiedRaces = ranks[i].map(r => r.race);
+            titleEl.innerText = tiedRaces.map(r => r.name).join(" & ");
+            subEl.innerText = tiedRaces.length > 1 ? "Geteilter Platz" : tiedRaces[0].subtitle;
+        } else {
+            // Falls es keine weiteren Plätze mehr gibt (sehr unwahrscheinlich)
+            titleEl.innerText = "-";
+            subEl.innerText = "";
+        }
+    }
 }
 
 // Setzt das Quiz zurück
