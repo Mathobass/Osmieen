@@ -227,6 +227,10 @@
                         <span>Kult-Zuordnungs-Quiz</span>
                         <span>🔮</span>
                     </button></li>
+				 <li><button onclick="switchTab('tab-race-quiz')" id="btn-race-quiz" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+                        <span>Volk-Zuordnungs-Quiz</span>
+                        <span>🧬</span>
+                    </button></li>
                     <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
                         <span>Kompaktes Dashboard</span>
                         <span>📱</span>
@@ -2099,6 +2103,68 @@
         </div>
     </div>
 </section>
+
+<section id="tab-race-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+    <div id="race-quiz-intro" class="text-center py-10">
+        <h2 class="text-4xl font-black text-stone-800 mb-4">Welches Volk fließt in deinem Blut?</h2>
+        <p class="text-xl text-stone-600 mb-8 max-w-2xl mx-auto">
+            Finde heraus, welche der 17 Abstammungen von Osmieen am besten zu deiner wahren Mentalität, deinen Instinkten und deinem Spielstil passt.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button onclick="startRaceQuiz('short')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition">
+                Kurzes Quiz (7 Fragen)
+            </button>
+            <button onclick="startRaceQuiz('long')" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 px-8 rounded-lg shadow-md transition">
+                Tiefen-Analyse (30 Fragen)
+            </button>
+        </div>
+    </div>
+
+    <div id="race-quiz-question-area" class="hidden">
+        <div class="flex justify-between items-center mb-6">
+            <span class="text-sm font-bold text-stone-400 uppercase tracking-widest">Frage <span id="race-quiz-current-num">1</span> / <span id="race-quiz-total-num">7</span></span>
+            <div class="w-1/2 bg-stone-200 rounded-full h-2">
+                <div id="race-quiz-progress" class="bg-amber-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+        <h3 id="race-quiz-question-text" class="text-2xl font-bold text-stone-800 mb-8 leading-snug"></h3>
+        <div id="race-quiz-options" class="flex flex-col gap-3">
+            </div>
+    </div>
+
+    <div id="race-quiz-result-area" class="hidden text-center py-6">
+        <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Dein Ursprung liegt bei</h3>
+        <h2 id="race-quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
+        <p id="race-quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
+        
+        <div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
+            <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Dein Profil</h4>
+            <p id="race-quiz-result-explanation" class="text-sm text-stone-700 leading-relaxed mb-4"></p>
+        </div>
+
+        <div class="max-w-2xl mx-auto text-left mb-8">
+            <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
+                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 2</div>
+                    <div id="race-runnerup-1-title" class="font-bold text-stone-800 transition"></div>
+                    <div id="race-runnerup-1-sub" class="text-xs text-stone-500 italic mb-2"></div>
+                </div>
+                <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
+                    <div class="text-[10px] text-stone-400 font-bold uppercase mb-1">Platz 3</div>
+                    <div id="race-runnerup-2-title" class="font-bold text-stone-800 transition"></div>
+                    <div id="race-runnerup-2-sub" class="text-xs text-stone-500 italic mb-2"></div>
+                </div>
+            </div>
+        </div>        
+        <div class="flex justify-center gap-4">
+            <button onclick="resetRaceQuizUI()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold py-3 px-6 rounded-lg transition">Nochmal spielen</button>
+        </div>
+    </div>
+</section>
+			
 <!-- === DER FEEDBACK TAB (DER "WARENKORB") === -->
 			<section id="tab-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Welcher Kult passt zu dir?</h1>
@@ -2467,6 +2533,232 @@
             if(tabId !== 'tab-storybook') { stopStoryPlayback(); } else { renderStoryPage(); }
         }
 
+// Die 17 Rassen und ihre Farb-Werte: [Weiß, Blau, Schwarz, Rot, Grün]
+const racesData = [
+    // ⚖️ Perfekte Dualitäten (Beide Farben auf 2)
+    { name: "Drakona", subtitle: "Stolze Wächter & Zerstörer", colors: [0, 2, 0, 2, 0] },
+    { name: "Zwerg", subtitle: "Meister der Industrie & Tradition", colors: [2, 0, 2, 0, 0] },
+    { name: "Elf", subtitle: "Hüter kosmischer Mysterien", colors: [0, 2, 0, 0, 2] },
+    { name: "Fee", subtitle: "Feuerwerk der Natur", colors: [0, 0, 0, 2, 2] },
+    { name: "Fungril", subtitle: "Das wuchernde Myzel", colors: [0, 0, 2, 0, 2] },
+    { name: "Ribbet", subtitle: "Amphibische Beobachter", colors: [0, 2, 0, 0, 2] },
+
+    // 🎯 Fokussierte Rassen (Primär auf 2, Akzent auf 1)
+    { name: "Faun", subtitle: "Ungestüm & Kinetisch", colors: [0, 0, 0, 2, 1] }, // Rot primär, Grün Akzent
+    { name: "Firbolg", subtitle: "Die stoischen Riesen", colors: [1, 0, 0, 0, 2] }, // Grün primär, Weiß Akzent
+    { name: "Galapa", subtitle: "Unerschütterliche Panzerung", colors: [2, 1, 0, 0, 0] }, // Weiß primär, Blau Akzent
+    { name: "Riese", subtitle: "Physische Naturgewalt", colors: [0, 0, 1, 2, 0] }, // Rot primär, Schwarz Akzent
+    { name: "Goblin", subtitle: "Herrscher der Schatten", colors: [0, 1, 2, 0, 0] }, // Schwarz primär, Blau Akzent
+    { name: "Halbling", subtitle: "Das Herz des Dorfes", colors: [2, 0, 0, 0, 1] }, // Weiß primär, Grün Akzent
+    { name: "Inferis", subtitle: "Dämonischer Wille zur Macht", colors: [0, 0, 2, 1, 0] }, // Schwarz primär, Rot Akzent
+    { name: "Katari", subtitle: "Feline Präzision", colors: [0, 0, 0, 2, 1] }, // Rot primär, Grün Akzent
+    { name: "Ork", subtitle: "Eiserne Frontlinie", colors: [1, 0, 0, 2, 0] }, // Rot primär, Weiß Akzent
+    { name: "Simiah", subtitle: "Chaotische Erfinder", colors: [0, 1, 0, 2, 0] }, // Rot primär, Blau Akzent
+
+    // 👑 Die Ausnahme (3 Farben)
+    { name: "Mensch", subtitle: "Das Fundament der Theokratie", colors: [2, 0, 1, 1, 0] } // Weiß (Struktur) ist Kern, Schwarz/Rot sind Akzente
+];
+
+// Das kurze Quiz (7 Fragen)
+const raceQuestionsShort = [
+    {
+        question: "1. Wie nimmst du die Zeit und dein Leben wahr?",
+        answers: [
+            { text: "Jede Generation baut auf der vorherigen auf. Meine Traditionen und mein Erbe sind ewig.", color: 0 },
+            { text: "Zeit ist ein endloser Fluss. Ich habe die Geduld, Jahrzehnte in ein einziges Thema zu investieren.", color: 1 },
+            { text: "Zeit ist pure Währung. Ich nutze jede Sekunde rücksichtslos, um meinen eigenen Vorteil auszubauen.", color: 2 },
+            { text: "Ich lebe schnell, laut und intensiv. Wer weiß, ob ich morgen noch atme?", color: 3 },
+            { text: "Ich lebe im stetigen Rhythmus der Natur. Alles wächst, blüht und vergeht zu seiner Zeit.", color: 4 }
+        ]
+    },
+    {
+        question: "2. Ein Fremder bedroht dich unerwartet. Was ist dein allererster Instinkt?",
+        answers: [
+            { text: "Ich spanne meine Muskeln an, mache mich unerschütterlich wie eine Mauer und weiche keinen Zentimeter.", color: 0 },
+            { text: "Ich analysiere sofort seine Haltung und suche nach einem taktischen Ausweg oder einer Schwachstelle.", color: 1 },
+            { text: "Ich weiche in die Schatten zurück und schlage erst aus dem Hinterhalt zu, wenn ich im Vorteil bin.", color: 2 },
+            { text: "Pures Adrenalin. Ich fletsche die Zähne und stürze mich mit roher Gewalt auf ihn.", color: 3 },
+            { text: "Ich nutze instinktiv meine Umgebung, verschmelze mit dem Terrain oder klettere außer Reichweite.", color: 4 }
+        ]
+    },
+    {
+        question: "3. Was ist für dich die absolute ideale Gemeinschaft?",
+        answers: [
+            { text: "Ein friedliches, gemütliches Dorf, in dem jeder jeden kennt und man füreinander einsteht.", color: 0 },
+            { text: "Eine Gesellschaft der Gelehrten, in der reines Wissen und Fortschritt mehr zählen als Muskeln.", color: 1 },
+            { text: "Eine klare Hackordnung. Der Stärkere und Cleverste führt an, der Rest ordnet sich unter.", color: 2 },
+            { text: "Eine laute, wilde Sippe, zusammengehalten durch Schweiß, Blut und unvergessliche Schlachten.", color: 3 },
+            { text: "Ein tiefes Rudel- oder Herdengefühl. Wir bewegen uns als organischer Teil unserer Umwelt.", color: 4 }
+        ]
+    },
+    {
+        question: "4. Was verachtest du am allermeisten an anderen Lebewesen?",
+        answers: [
+            { text: "Respektlosigkeit gegenüber den Ahnen und das Brechen von heiligen Eiden.", color: 0 },
+            { text: "Ignoranz und den sturen Unwillen, die Mechanismen der Welt zu verstehen.", color: 1 },
+            { text: "Schwäche, Naivität und mangelnden Ehrgeiz, um an die Spitze zu kommen.", color: 2 },
+            { text: "Feigheit und ein Leben ohne echte, brennende Leidenschaft.", color: 3 },
+            { text: "Rücksichtslosigkeit gegenüber der Umwelt und das Zerstören natürlicher Kreisläufe.", color: 4 }
+        ]
+    },
+    {
+        question: "5. Wie gehst du mit einem gewaltigen, scheinbar unlösbaren Problem um?",
+        answers: [
+            { text: "Ich halte mich exakt an die Regeln und Traditionen. Was früher funktionierte, klappt auch jetzt.", color: 0 },
+            { text: "Ich studiere das Problem bis ins kleinste Detail, bis ich die perfekte, logische Lösung finde.", color: 1 },
+            { text: "Ich suche nach Erpressungsmaterial, Schmiergeldern oder jemandem, den ich dafür vorschicken kann.", color: 2 },
+            { text: "Ich ziehe meine Waffe oder mein Werkzeug und schlage mich mit purer Kraft einfach hindurch.", color: 3 },
+            { text: "Ich passe mich der Situation an. Wenn ich den Berg nicht verschieben kann, fließe ich wie Wasser darum herum.", color: 4 }
+        ]
+    },
+    {
+        question: "6. Wo findest du tiefen, inneren Frieden, wenn du dich zurückziehst?",
+        answers: [
+            { text: "In einem makellos aufgeräumten, symmetrischen Raum oder einer sicheren Festung.", color: 0 },
+            { text: "Inmitten von tiefem, reinem Wasser oder in einem völlig stillen, kühlen Labor.", color: 1 },
+            { text: "Tief unter der Erde oder an einem gut versteckten Ort, den absolut niemand außer mir kennt.", color: 2 },
+            { text: "Frieden? Ich entspanne mich am besten bei ohrenbetäubendem Lärm, Feuer und körperlicher Arbeit.", color: 3 },
+            { text: "Hoch oben in den Baumkronen, im Unterholz oder inmitten von dichtem Myzel und Pilzen.", color: 4 }
+        ]
+    },
+    {
+        question: "7. Wenn es zum körperlichen Kampf kommt, wie sieht dein Stil aus?",
+        answers: [
+            { text: "Eiserne Disziplin. Ich trage schwere Rüstung und stehe in perfekter, unbrechbarer Formation.", color: 0 },
+            { text: "Präzise und berechnend. Ich nutze elementare Magie oder exakt kalkulierte Schläge.", color: 1 },
+            { text: "Schmutzig und absolut tödlich. Es gibt keine Fairness, nur das Überleben.", color: 2 },
+            { text: "Zerstörerisch und schmerzhaft. Ich stecke extrem viel ein, teile aber doppelt so hart aus.", color: 3 },
+            { text: "Agil und wild. Ich nutze Klauen, Zähne oder blitzschnelle, tierische Reflexe.", color: 4 }
+        ]
+    }
+];
+
+// Platzhalter für das lange Quiz (kannst du später einfach mit den restlichen 23 Fragen füllen)
+const raceQuestionsLong = [
+    // ... hier kommen später die 30 Fragen rein ...
+];
+
+let currentRaceQuestions = [];
+let raceCurrentQuestion = 0;
+let raceUserScores = [0, 0, 0, 0, 0]; // [Weiß, Blau, Schwarz, Rot, Grün]
+
+// Startet das Quiz (Kurz oder Lang)
+function startRaceQuiz(type) {
+    currentRaceQuestions = type === 'short' ? raceQuestionsShort : raceQuestionsLong;
+    raceCurrentQuestion = 0;
+    raceUserScores = [0, 0, 0, 0, 0];
+    
+    document.getElementById('race-quiz-intro').classList.add('hidden');
+    document.getElementById('race-quiz-result-area').classList.add('hidden');
+    document.getElementById('race-quiz-question-area').classList.remove('hidden');
+    
+    renderRaceQuestion();
+}
+
+// Zeigt die aktuelle Frage an
+function renderRaceQuestion() {
+    if (raceCurrentQuestion >= currentRaceQuestions.length) {
+        calculateRaceResult();
+        return;
+    }
+    
+    const q = currentRaceQuestions[raceCurrentQuestion];
+    
+    // Fortschrittsbalken & Nummern updaten
+    document.getElementById('race-quiz-current-num').innerText = raceCurrentQuestion + 1;
+    document.getElementById('race-quiz-total-num').innerText = currentRaceQuestions.length;
+    document.getElementById('race-quiz-progress').style.width = ((raceCurrentQuestion / currentRaceQuestions.length) * 100) + '%';
+    
+    // Fragetext setzen
+    document.getElementById('race-quiz-question-text').innerText = q.question;
+    
+    // Antwort-Buttons generieren
+    const optionsContainer = document.getElementById('race-quiz-options');
+    optionsContainer.innerHTML = '';
+    
+    q.answers.forEach(ans => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 bg-stone-50 border border-stone-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition text-stone-700 shadow-sm";
+        btn.innerText = ans.text;
+        btn.onclick = () => answerRaceQuestion(ans.color);
+        optionsContainer.appendChild(btn);
+    });
+}
+
+// Speichert die Antwort und geht zur nächsten Frage
+function answerRaceQuestion(colorIndex) {
+    raceUserScores[colorIndex]++;
+    raceCurrentQuestion++;
+    renderRaceQuestion();
+}
+
+// Berechnet das Ergebnis anhand unserer 2-1-0 Gewichtung
+function calculateRaceResult() {
+    document.getElementById('race-quiz-question-area').classList.add('hidden');
+    document.getElementById('race-quiz-result-area').classList.remove('hidden');
+    
+    // Prozentuale Verteilung der User-Antworten berechnen
+    let totalScore = raceUserScores.reduce((a, b) => a + b, 0);
+    if (totalScore === 0) totalScore = 1;
+    let userPcts = raceUserScores.map(v => (v / totalScore) * 100);
+
+    let allRanked = [];
+    
+    // Jede Rasse bewerten
+    racesData.forEach(race => {
+        let matchScore = 0;
+        for(let i = 0; i < 5; i++) {
+            if (race.colors[i] === 2) {
+                // Primärfarbe: Zählt doppelt!
+                matchScore += userPcts[i] * 2; 
+            } else if (race.colors[i] === 1) {
+                // Akzentfarbe: Zählt einfach
+                matchScore += userPcts[i] * 1; 
+            } else {
+                // Strafe: Der User hat diese Farbe gewählt, aber die Rasse hat sie gar nicht
+                matchScore -= userPcts[i] * 0.5; 
+            }
+        }
+        allRanked.push({ race, score: matchScore });
+    });
+
+    // Nach dem höchsten Score sortieren
+    allRanked.sort((a, b) => b.score - a.score);
+
+    const finalRace = allRanked[0].race;
+    
+    // UI mit Platz 1 befüllen
+    document.getElementById('race-quiz-result-title').innerText = finalRace.name;
+    document.getElementById('race-quiz-result-subtitle').innerText = finalRace.subtitle;
+    
+    const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
+    let sortedColors = userPcts.map((p, i) => ({p: Math.round(p), n: colorNames[i]})).sort((a,b) => b.p - a.p);
+
+    document.getElementById('race-quiz-result-explanation').innerHTML = `
+        Deine innersten Instinkte und kulturellen Werte verteilen sich wie folgt:<br>
+        <div class="flex flex-wrap gap-2 mt-3 mb-4 justify-center">
+            ${sortedColors.filter(c => c.p > 0).map(c => `
+                <span class="px-2 py-1 bg-stone-200 rounded font-mono text-[10px] text-stone-800 border border-stone-300">
+                    <b>${c.p}%</b> ${c.n}
+                </span>
+            `).join('')}
+        </div>
+        Basierend auf diesem Profil passt das Volk <strong>${finalRace.name}</strong> am besten zu dir.`;
+
+    // Plätze 2 und 3 befüllen
+    [1, 2].forEach(i => {
+        const res = allRanked[i];
+        document.getElementById(`race-runnerup-${i}-title`).innerText = res.race.name;
+        document.getElementById(`race-runnerup-${i}-sub`).innerText = res.race.subtitle;
+    });
+}
+
+// Setzt das Quiz zurück
+function resetRaceQuizUI() {
+    document.getElementById('race-quiz-result-area').classList.add('hidden');
+    document.getElementById('race-quiz-intro').classList.remove('hidden');
+}
+		
         // --- 3. VAMPIRKULT DATEN & LOGIK ---
         const appData = {
             categories: [
