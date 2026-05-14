@@ -413,26 +413,43 @@
 
         /* ─── ACCORDIONS (flat, editorial) ─── */
         .prose-rules details.section-details {
-            border-top: 1px solid var(--c-border);
-            margin: 0;
-            background: transparent;
+            border: 1px solid var(--c-border);
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #fff;
+            overflow: hidden;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .prose-rules details.section-details[open] {
+            border-color: var(--c-amber-bd);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
         .prose-rules details.section-details:last-of-type {
-            border-bottom: 1px solid var(--c-border);
             margin-bottom: 2rem;
         }
         .prose-rules summary.section-summary {
             display: flex;
             align-items: center;
             gap: 0.875rem;
-            padding: 1.125rem 0;
+            padding: 1rem 1.25rem;
             cursor: pointer;
             user-select: none;
-            transition: opacity 0.1s;
+            transition: background 0.12s;
             background: transparent;
             border: none;
         }
-        .prose-rules summary.section-summary:hover { opacity: 0.75; }
+        .prose-rules details.section-details[open] > summary.section-summary {
+            border-bottom: 1px solid var(--c-border);
+            background: var(--c-bg-raised);
+        }
+        .prose-rules summary.section-summary:hover { background: var(--c-bg-raised); opacity: 1; }
+
+        /* TOC collapsible */
+        .toc-box .toc-list { transition: none; }
+        .toc-box.toc-collapsed .toc-list { display: none; }
+        .toc-toggle-arrow { display: inline-block; transition: transform 0.18s; font-size: 0.55rem; margin-left: 0.3rem; vertical-align: middle; }
+        .toc-box.toc-collapsed .toc-toggle-arrow { transform: rotate(0deg); }
+        .toc-box:not(.toc-collapsed) .toc-toggle-arrow { transform: rotate(90deg); }
         .prose-rules summary.section-summary .summary-title {
             display: flex;
             align-items: center;
@@ -488,7 +505,7 @@
         }
 
         .prose-rules .details-content {
-            padding: 0 0 1.75rem 2.75rem;
+            padding: 1.25rem 1.5rem 1.5rem 1.5rem;
             animation: contentIn 0.2s ease forwards;
         }
         @keyframes contentIn {
@@ -2245,21 +2262,27 @@
 
             <!-- ═══ TAB: VAMPIRKULTE (Interaktiver Kult-Explorer) ═══ -->
             <section id="tab-cults" class="content-tab w-full h-full hidden flex-col overflow-hidden">
-                <!-- Kategorie-Nav oben -->
+                <!-- Kopfzeile -->
                 <div class="flex-shrink-0 px-6 pt-5 pb-3 border-b border-stone-200">
-                    <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center gap-3">
                         <h1 class="text-2xl font-bold tracking-tight text-stone-900 flex items-center gap-2 m-0"><span>🩸</span> Vampirkulte in Osmieen</h1>
                         <button class="notiz-btn" onclick="openFeedbackModal('Vampirkulte')" title="Notiz hinzufügen">💬</button>
                     </div>
-                    <div id="categoryNav" class="flex flex-wrap gap-2"></div>
                 </div>
 
                 <!-- Hauptbereich: Kult-Liste | Chart+Details -->
                 <div class="flex flex-1 min-h-0 overflow-hidden">
 
-                    <!-- Linke Spalte: Kult-Liste -->
+                    <!-- Linke Spalte: Kategorie-Auswahl + Kult-Liste -->
                     <div class="w-52 flex-shrink-0 border-r border-stone-200 flex flex-col overflow-hidden">
-                        <div id="itemNav" class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-4 pt-2 flex flex-col gap-1"></div>
+                        <div class="flex-shrink-0 px-3 pt-3 pb-2 border-b border-stone-200 bg-stone-50">
+                            <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1.5">Anzahl Götter</p>
+                            <div id="categoryNav" class="flex flex-wrap gap-1.5"></div>
+                        </div>
+                        <div class="flex-shrink-0 px-3 pt-2 pb-1">
+                            <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Kulte</p>
+                        </div>
+                        <div id="itemNav" class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-4 pt-1 flex flex-col gap-1"></div>
                     </div>
 
                     <!-- Rechte Seite: Titel + Details + Chart -->
@@ -3194,7 +3217,7 @@ function renderCategoryNav() {
             nav.innerHTML = '';
             appData.categories.forEach(cat => {
                 const btn = document.createElement('button');
-                btn.className = `text-left px-3 py-2 rounded transition-colors text-sm font-medium ${cat.id === currentCategory ? 'bg-amber-100 text-amber-900' : 'text-stone-600 hover:bg-stone-100'}`;
+                btn.className = `text-left px-2 py-1 rounded transition-colors text-xs font-semibold w-full ${cat.id === currentCategory ? 'bg-amber-100 text-amber-900' : 'text-stone-500 hover:bg-stone-100 hover:text-stone-700'}`;
                 btn.innerText = cat.title;
                 btn.onclick = () => selectCategory(cat.id);
                 nav.appendChild(btn);
@@ -3238,7 +3261,7 @@ function updateContent() {
                 essenceEl.innerText = sec.essence;
                 secDiv.appendChild(essenceEl);
                 const gridDiv = document.createElement('div');
-                gridDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4';
+                gridDiv.className = 'flex flex-col gap-3 mt-4';
                 const posDiv = document.createElement('div');
                 posDiv.className = 'bg-green-50 border border-green-100 rounded p-3';
                 posDiv.innerHTML = `<h5 class="text-xs font-bold text-green-800 uppercase tracking-wide mb-1">Stärken (Positiv)</h5><p class="text-sm text-green-900">${sec.pos}</p>`;
@@ -3908,6 +3931,20 @@ function prepareFinalSubmission(e) {
             setTimeout(() => { updateFeedbackBadge(); }, 100);
         }
 setTimeout(injectFeedbackButtons, 500);
+
+        // TOC boxes: start collapsed, toggle on header click
+        document.querySelectorAll('.toc-box').forEach(box => {
+            box.classList.add('toc-collapsed');
+            const header = box.querySelector('div.flex');
+            if (!header) return;
+            const h3 = header.querySelector('h3');
+            if (h3) h3.innerHTML += '<span class="toc-toggle-arrow">▶</span>';
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', e => {
+                if (e.target.closest('button')) return;
+                box.classList.toggle('toc-collapsed');
+            });
+        });
 
         // --- VOLLTEXT-SUCHE ---
         let searchIndex = null;
