@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -6,121 +6,363 @@
     <title>Osmieen - Daggerheart Kampagne</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #fafaf9; /* stone-50 */
-            color: #292524; /* stone-800 */
-            font-family: system-ui, -apple-system, sans-serif;
-            overflow: hidden; 
+        /* ===== DESIGN TOKENS ===== */
+        :root {
+            --sidebar-w: 260px;
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --accent-bg: #fffbeb;
+            --accent-bg2: #fef3c7;
         }
-        /* Typografie für dein Regelwerk */
-        .prose-rules h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem; color: #1c1917; border-bottom: 2px solid #e7e5e4; padding-bottom: 0.5rem; }
-        .prose-rules h3 { font-size: 1.125rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #44403c; }
-        .prose-rules p { margin-bottom: 1rem; line-height: 1.75; color: #44403c; }
-        /* Listen-Styling */
-        .prose-rules ul { list-style-type: none; padding-left: 0; margin-bottom: 1.5rem; }
-        .prose-rules ul li { margin-bottom: 0.75rem; position: relative; padding-left: 1.5rem; line-height: 1.6; color: #44403c; }
-        .prose-rules ul li::before { content: "•"; color: #d97706; font-weight: bold; position: absolute; left: 0; }
-        /* Ausnahmen für das Inhaltsverzeichnis (TOC) und Unter-Akkordeons */
+
+        /* ===== BASE ===== */
+        html, body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+        body {
+            background-color: #f9fafb;
+            color: #111827;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 15px;
+        }
+        main, aside, .custom-scrollbar {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+
+        /* ===== SCROLLBARS ===== */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+        /* ===== SIDEBAR ===== */
+        #sidebar {
+            background: #ffffff;
+            border-right: 1px solid #f3f4f6;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.04);
+        }
+        #sidebar-logo-area {
+            padding: 1.25rem 1.25rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        #sidebar-logo-area .logo-name {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.02em;
+        }
+        #sidebar-logo-area .logo-sub {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            font-weight: 500;
+            margin-top: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        #sidebar-logo-area .logo-badge {
+            display: inline-block;
+            background: var(--accent-bg2);
+            color: #92400e;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+        .nav-group-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0 0.625rem;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .nav-btn {
+            width: 100%;
+            text-align: left;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-radius: 0.5rem;
+            padding: 0.45rem 0.75rem;
+            transition: background-color 0.12s ease, color 0.12s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .nav-btn:hover {
+            background-color: #f9fafb;
+            color: #374151;
+        }
+        .nav-btn.active {
+            background-color: var(--accent-bg);
+            color: #92400e;
+            font-weight: 600;
+        }
+        .nav-btn.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 22%;
+            height: 56%;
+            width: 3px;
+            background: var(--accent);
+            border-radius: 0 3px 3px 0;
+        }
+        .nav-btn .nav-icon {
+            margin-left: auto;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        #resizer {
+            background: #f3f4f6;
+        }
+        #resizer:hover {
+            background: var(--accent);
+        }
+
+        /* ===== TOP HEADER BAR ===== */
+        #top-header {
+            background: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+            padding: 0 1.5rem;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        #top-header .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+        #top-header .breadcrumb .current {
+            color: #374151;
+            font-weight: 600;
+        }
+        #top-header .breadcrumb .sep { color: #d1d5db; }
+
+        /* ===== TAB TRANSITIONS ===== */
+        .content-tab:not(.hidden) {
+            animation: fadeUp 0.18s ease forwards;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(5px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== CONTENT TYPOGRAPHY ===== */
+        .prose-rules h1 {
+            font-size: 1.875rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: #111827;
+            margin-bottom: 0.375rem;
+            line-height: 1.2;
+        }
+        .prose-rules .page-lead {
+            font-size: 0.9375rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .prose-rules h3 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .prose-rules p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #374151;
+            font-size: 0.9375rem;
+        }
+        .prose-rules ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1.25rem;
+        }
+        .prose-rules ul li {
+            margin-bottom: 0.625rem;
+            position: relative;
+            padding-left: 1.25rem;
+            line-height: 1.7;
+            color: #374151;
+            font-size: 0.9375rem;
+        }
+        .prose-rules ul li::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: absolute;
+            left: 3px;
+            top: 0.62em;
+        }
         .toc-list li::before, .sub-accordion-list li::before { content: none !important; }
         .toc-list li, .sub-accordion-list li { padding-left: 0 !important; margin-bottom: 0 !important; }
-        .prose-rules strong { color: #1c1917; font-weight: 700; }
-        .prose-rules .meta-text { font-size: 0.875rem; color: #78716c; display: block; margin-top: 0.25rem; }
-        /* --- HAUPT-AKKORDEON STYLING (H2 LEVEL) --- */
-        .prose-rules details.section-details { 
-            margin-bottom: 1rem; 
-            background-color: #ffffff;
-            border: 1px solid #e7e5e4;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        .prose-rules strong { color: #111827; font-weight: 600; }
+        .prose-rules .meta-text { font-size: 0.8125rem; color: #9ca3af; display: block; margin-top: 0.25rem; }
+
+        /* ===== ACCORDIONS ===== */
+        .prose-rules details.section-details {
+            margin-bottom: 0.5rem;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
-        .prose-rules summary.section-summary { 
-            font-size: 1.35rem; 
-            font-weight: 700; 
-            color: #292524; 
-            display: flex; 
-            align-items: center; 
+        .prose-rules details.section-details:hover {
+            border-color: #fcd34d;
+        }
+        .prose-rules details.section-details[open] {
+            border-color: #fcd34d;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.08);
+        }
+        .prose-rules summary.section-summary {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            background-color: #f5f5f4; 
-            padding: 0.75rem 1.25rem;
-            border-left: 4px solid #d97706; 
-            border-radius: 0.5rem; 
+            background: #ffffff;
+            padding: 0.875rem 1.25rem;
+            border-left: 3px solid var(--accent);
             cursor: pointer;
             list-style: none;
-            transition: background-color 0.3s ease-in-out;
+            user-select: none;
+            transition: background-color 0.12s ease;
         }
-        .prose-rules summary.section-summary:focus { outline: none; border-color: #b45309; }
+        .prose-rules summary.section-summary:focus { outline: none; }
         .prose-rules details.section-details[open] summary.section-summary {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-            border-bottom: 1px solid #e7e5e4;
-            margin-bottom: 1rem;
+            background: var(--accent-bg);
+            border-bottom: 1px solid #fde68a;
         }
-        .prose-rules summary.section-summary:hover { background-color: #e7e5e4; }
-        /* Generelles Verstecken des Standard-Pfeils in Safari/Chrome */
-        summary::-webkit-details-marker { display: none; } 
-        .prose-rules summary.section-summary .summary-title { display: flex; align-items: center; gap: 0.75rem; }
-        .prose-rules summary.section-summary .summary-icon { transition: transform 0.3s ease; font-size: 1.125rem; color: #78716c; }
-        .prose-rules details.section-details[open] summary.section-summary .summary-icon { transform: rotate(180deg); }
-        .prose-rules .details-content { padding: 0 1.25rem 1.25rem 1.25rem; }
-        /* Chart Container */
+        .prose-rules summary.section-summary:hover:not([open]) { background: #fafafa; }
+        summary::-webkit-details-marker { display: none; }
+        .prose-rules summary.section-summary .summary-title {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+        .prose-rules summary.section-summary .summary-icon {
+            transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.7rem;
+            color: #9ca3af;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3f4f6;
+            flex-shrink: 0;
+        }
+        .prose-rules details.section-details[open] summary.section-summary .summary-icon {
+            transform: rotate(180deg);
+            background: var(--accent-bg2);
+            color: var(--accent-dark);
+        }
+        .prose-rules .details-content {
+            padding: 1.25rem 1.5rem 1.5rem;
+            border-top: 0;
+        }
+
+        /* ===== TOC BOX ===== */
+        .toc-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .toc-box h3 {
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+            color: #9ca3af !important;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0 !important;
+            margin-bottom: 0.75rem !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .toc-box .toc-actions button {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            transition: color 0.12s;
+            font-weight: 500;
+        }
+        .toc-box .toc-actions button:hover { color: var(--accent-dark); }
+        .toc-list a {
+            font-size: 0.8125rem;
+            color: #374151;
+            font-weight: 500;
+            padding: 0.3rem 0.5rem;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.12s, color 0.12s;
+        }
+        .toc-list a:hover {
+            background: var(--accent-bg);
+            color: #92400e;
+        }
+
+        /* ===== CHART ===== */
         .chart-container {
             position: relative;
             width: 100%;
             max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
             height: 300px;
         }
         @media (min-width: 768px) { .chart-container { height: 350px; } }
-        /* Scrollbars */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
-        /* Smooth Scrolling für Anchor Links */
-        /* --- DASHBOARD STYLING --- */
+
+        /* ===== DASHBOARD (dark, unchanged) ===== */
         #tab-dashboard { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
         #tab-dashboard input[type=number], #tab-dashboard input[type=text] { font-size: 16px !important; }
-        #tab-dashboard input[type=number]::-webkit-inner-spin-button, #tab-dashboard input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .city-card { 
-            background-size: cover; 
-            background-position: center; 
-            position: relative; 
-            min-height: 140px; 
-            border-radius: 1rem; 
-            border: 1px solid #334155;
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
-        .city-overlay { 
-            background: linear-gradient(90deg, rgba(15, 23, 42, 0.98) 35%, rgba(15, 23, 42, 0.7) 100%); 
-            position: absolute; 
-            inset: 0; 
-            padding: 1rem; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-        }
-        .sticky-header { 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            backdrop-filter: blur(12px); 
-            background: rgba(15, 23, 42, 0.9); 
-            border-bottom: 1px solid #334155; 
-        }
-     #tab-dashboard input[type=range] { height: 8px; border-radius: 5px; background: #334155; appearance: none; }
-        /* --- NEU: KARTEN-LAYER AUSBLENDEN --- */
+        #tab-dashboard input[type=number]::-webkit-inner-spin-button,
+        #tab-dashboard input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .city-card { background-size: cover; background-position: center; position: relative; min-height: 140px; border-radius: 1rem; border: 1px solid #334155; margin-bottom: 1rem; overflow: hidden; }
+        .city-overlay { background: linear-gradient(90deg, rgba(15,23,42,0.98) 35%, rgba(15,23,42,0.7) 100%); position: absolute; inset: 0; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; }
+        .sticky-header { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); background: rgba(15,23,42,0.9); border-bottom: 1px solid #334155; }
+        #tab-dashboard input[type=range] { height: 8px; border-radius: 5px; background: #334155; appearance: none; }
+
+        /* ===== MAP ===== */
         body.hide-metropole .marker-metropole { display: none !important; }
         body.hide-provinz .marker-provinz { display: none !important; }
         body.hide-markt .marker-markt { display: none !important; }
         body.hide-dorf .marker-dorf { display: none !important; }
-		/* --- NEU: MAP TOOLTIP --- */
         #map-tooltip {
             position: absolute;
             pointer-events: none;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15,23,42,0.95);
             backdrop-filter: blur(4px);
             border: 1px solid #475569;
             color: white;
@@ -132,37 +374,17 @@
             opacity: 0;
             transition: opacity 0.2s ease;
             transform: translate(-50%, -120%);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
             white-space: nowrap;
         }
-        #map-tooltip.visible {
-            opacity: 1;
-        }
-/* --- IPAD / MOBILE SCROLLING FIXES --- */
-        html, body {
-            position: fixed; /* Nagelt den Hintergrund fest */
-            width: 100%;
-            height: 100%; 
-            height: 100dvh; 
-            overflow: hidden;
-            overscroll-behavior: none; /* Blockiert iOS Bouncing komplett */
-        }
-        main, aside, .custom-scrollbar {
-            -webkit-overflow-scrolling: touch; /* Erzwingt flüssiges Scrollen auf Touch-Geräten */
-            overscroll-behavior-y: contain; /* Verhindert, dass das Scrollen auf den Hintergrund überspringt */
-        }
-        /* Großzügiges, unsichtbares Polster unten, damit die Leisten nicht die Tasten verdecken */
-        .content-tab, #dashboard-root {
-            padding-bottom: 120px !important;
-        }
-        /* Spezielles Polster für die rechte Spalte in der großen Karte (Checkboxen) */
-        #tab-map-focus aside.w-64 {
-            padding-bottom: 100px !important;
-        }
-		.map-fullscreen {
+        #map-tooltip.visible { opacity: 1; }
+
+        /* ===== PADDING / MOBILE ===== */
+        .content-tab, #dashboard-root { padding-bottom: 120px !important; }
+        #tab-map-focus aside.w-64 { padding-bottom: 100px !important; }
+        .map-fullscreen {
             position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
+            top: 0 !important; left: 0 !important;
             width: 100vw !important;
             height: 100dvh !important;
             z-index: 99999 !important;
@@ -170,151 +392,145 @@
             margin: 0 !important;
         }
     </style>
-    </style>
 </head>
-<body class="flex h-screen w-full bg-stone-50 overflow-hidden">
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden" onclick="toggleSidebar(false)"></div>
-    <aside id="sidebar" class="bg-stone-900 text-stone-300 flex flex-col shadow-xl z-30 flex-shrink-0 absolute lg:relative inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out" style="width: 256px; max-width: 85vw;">
-        <div id="resizer" class="absolute top-0 right-0 w-1.5 h-full bg-stone-800 hover:bg-amber-500 cursor-col-resize hidden lg:block transition-colors z-40"></div>
-        <div class="p-6 border-b border-stone-800 flex justify-between items-center">
+<body class="flex h-screen w-full overflow-hidden" style="background:#f9fafb;">
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-20 hidden lg:hidden" onclick="toggleSidebar(false)"></div>
+    <aside id="sidebar" class="flex flex-col z-30 flex-shrink-0 absolute lg:relative inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out" style="width: 260px; max-width: 85vw;">
+        <div id="resizer" class="absolute top-0 right-0 w-1 h-full cursor-col-resize hidden lg:block transition-colors z-40"></div>
+
+        <!-- Logo -->
+        <div id="sidebar-logo-area" class="flex items-center justify-between">
             <div>
-                <h1 class="text-xl font-bold text-white tracking-wide uppercase">Osmieen</h1>
-                <p class="text-xs text-stone-500 mt-1">Daggerheart Kampagnen-Wiki</p>
+                <div class="logo-name">Osmieen</div>
+                <div class="logo-sub">Daggerheart Wiki</div>
+                <span class="logo-badge">Kampagne</span>
             </div>
-            <button onclick="toggleSidebar(false)" class="lg:hidden text-stone-400 hover:text-white focus:outline-none text-2xl leading-none">
-                &#10005;
+            <button onclick="toggleSidebar(false)" class="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <nav class="flex-1 overflow-y-auto custom-scrollbar p-4 pb-32 space-y-6">
-            <div>
-                <h2 class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Regelwerk</h2>
-                <ul class="space-y-1">
-                    <li><button onclick="switchTab('tab-rules')" id="btn-rules" class="nav-btn w-full text-left px-3 py-2 rounded text-sm bg-stone-800 text-white font-medium transition">Basisregeln</button></li>
-                    <li><button onclick="switchTab('tab-chars')" id="btn-chars" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Charaktererstellung</button></li>
-                </ul>
-            </div>
-            <div>
-                <h2 class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Lore & Welt</h2>
-                <ul class="space-y-1">
-                    <li><button onclick="switchTab('tab-world')" id="btn-world" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Die Welt Osmieen</button></li>
-                    <li><button onclick="switchTab('tab-theocracy')" id="btn-theocracy" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Kulte & Theokratie</button></li>
-                    <li><button onclick="switchTab('tab-life')" id="btn-life" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Alltag & Justiz</button></li>
-                    <li><button onclick="switchTab('tab-shadows')" id="btn-shadows" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Schattenkriege & Untergrund</button></li>
-                    <li><button onclick="switchTab('tab-propaganda')" id="btn-propaganda" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Propaganda & Feiertage</button></li>
-                    <li><button onclick="switchTab('tab-military')" id="btn-military" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition">Militär & Isolation</button></li>
-                </ul>
-            </div>
-             <div>
-                <h2 class="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Anhänge</h2>
-             <ul class="space-y-1">
-                    <li><button onclick="switchTab('tab-ancestries')" id="btn-ancestries" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Abstammungs-Archiv</span>
-                        <span>🧬</span>
-                    </button></li>
-                    <li><button onclick="switchTab('tab-agrarsystem')" id="btn-agrarsystem" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Agrarsystem (Idee)</span>
-                        <span>🌾</span>
-                    </button></li>
-                    <li><button onclick="switchTab('tab-blutprozession')" id="btn-blutprozession" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Blutprozession (Idee)</span>
-                        <span>🩸</span>
-                    </button></li>
-						<li><button onclick="switchTab('tab-cults')" id="btn-cults" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Vampirkulte</span>
-                        <span>🩸</span>
-                    </button></li>
-				 <li><button onclick="switchTab('tab-quiz')" id="btn-quiz" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Kult-Zuordnungs-Quiz</span>
-                        <span>🔮</span>
-                    </button></li>
-				 <li><button onclick="switchTab('tab-race-quiz')" id="btn-race-quiz" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Volk-Zuordnungs-Quiz</span>
-                        <span>🧬</span>
-                    </button></li>
-                    <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                        <span>Kompaktes Dashboard</span>
-                        <span>📱</span>
-                    </button></li>
-						<li><button onclick="switchTab('tab-map-focus')" id="btn-map-focus" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-    					<span>Große Karten-Ansicht</span>
-    					<span>🗺️</span>
-					</button></li>
-                    <li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
-                     <span>Storybook: Geschichte (Test)</span>
-                    <span>📖</span>
-                    </button></li>
 
-                    <!-- KOMMENTARFUNKTION BUTTON START -->
-                    <li><button onclick="switchTab('tab-feedback')" id="btn-feedback" class="nav-btn w-full text-left px-3 py-2 rounded text-sm text-stone-400 hover:text-white hover:bg-stone-800 transition flex items-center justify-between">
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto custom-scrollbar py-4 pb-32 space-y-5 px-3">
+            <div>
+                <span class="nav-group-label">Regelwerk</span>
+                <ul class="space-y-0.5 mt-1">
+                    <li><button onclick="switchTab('tab-rules')" id="btn-rules" class="nav-btn active">Basisregeln</button></li>
+                    <li><button onclick="switchTab('tab-chars')" id="btn-chars" class="nav-btn">Charaktererstellung</button></li>
+                </ul>
+            </div>
+            <div>
+                <span class="nav-group-label">Lore & Welt</span>
+                <ul class="space-y-0.5 mt-1">
+                    <li><button onclick="switchTab('tab-world')" id="btn-world" class="nav-btn">Die Welt Osmieen</button></li>
+                    <li><button onclick="switchTab('tab-theocracy')" id="btn-theocracy" class="nav-btn">Kulte & Theokratie</button></li>
+                    <li><button onclick="switchTab('tab-life')" id="btn-life" class="nav-btn">Alltag & Justiz</button></li>
+                    <li><button onclick="switchTab('tab-shadows')" id="btn-shadows" class="nav-btn">Schattenkriege & Untergrund</button></li>
+                    <li><button onclick="switchTab('tab-propaganda')" id="btn-propaganda" class="nav-btn">Propaganda & Feiertage</button></li>
+                    <li><button onclick="switchTab('tab-military')" id="btn-military" class="nav-btn">Militär & Isolation</button></li>
+                </ul>
+            </div>
+            <div>
+                <span class="nav-group-label">Anhänge</span>
+                <ul class="space-y-0.5 mt-1">
+                    <li><button onclick="switchTab('tab-ancestries')" id="btn-ancestries" class="nav-btn justify-between">
+                        <span>Abstammungs-Archiv</span><span class="nav-icon">🧬</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-agrarsystem')" id="btn-agrarsystem" class="nav-btn justify-between">
+                        <span>Agrarsystem (Idee)</span><span class="nav-icon">🌾</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-blutprozession')" id="btn-blutprozession" class="nav-btn justify-between">
+                        <span>Blutprozession (Idee)</span><span class="nav-icon">🩸</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-cults')" id="btn-cults" class="nav-btn justify-between">
+                        <span>Vampirkulte</span><span class="nav-icon">🩸</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-quiz')" id="btn-quiz" class="nav-btn justify-between">
+                        <span>Kult-Zuordnungs-Quiz</span><span class="nav-icon">🔮</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-race-quiz')" id="btn-race-quiz" class="nav-btn justify-between">
+                        <span>Volk-Zuordnungs-Quiz</span><span class="nav-icon">🧬</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-dashboard')" id="btn-dashboard" class="nav-btn justify-between">
+                        <span>Kompaktes Dashboard</span><span class="nav-icon">📱</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-map-focus')" id="btn-map-focus" class="nav-btn justify-between">
+                        <span>Große Karten-Ansicht</span><span class="nav-icon">🗺️</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-storybook')" id="btn-storybook" class="nav-btn justify-between">
+                        <span>Storybook: Geschichte</span><span class="nav-icon">📖</span>
+                    </button></li>
+                    <li><button onclick="switchTab('tab-feedback')" id="btn-feedback" class="nav-btn justify-between">
                         <span>Feedback Zettel</span>
-                        <span class="relative">💬 <span id="feedback-badge" class="absolute -top-1 -right-2 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span></span>
+                        <span class="nav-icon relative">💬 <span id="feedback-badge" class="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold px-1 py-0.5 rounded-full hidden">0</span></span>
                     </button></li>
-                    <!-- KOMMENTARFUNKTION BUTTON ENDE -->
                 </ul>
             </div>
-			</ul>
-            </div>
-
-<div class="mt-6 pt-6 border-t border-stone-800">
-                <h2 class="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-3">mal sehen was man alles reinbekommt</h2>
-                
-                <audio id="bg-music" loop>
-                    <source src="osmieen_theme.mp3" type="audio/mpeg">
-                    Dein Browser unterstützt kein Audio.
-                </audio>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <button onclick="skipMusic(-30)" class="text-stone-400 hover:text-white text-[10px] font-bold bg-stone-800 hover:bg-stone-700 w-7 h-7 rounded-full transition flex items-center justify-center shrink-0 shadow-sm" title="30s zurück">-30</button>
-                    
-                    <button id="btn-play-music" onclick="toggleMusic()" class="bg-stone-800 hover:bg-amber-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition shadow-md border border-stone-700 hover:border-amber-500 shrink-0">
-                        ▶️
-                    </button>
-                    
-                    <button onclick="skipMusic(30)" class="text-stone-400 hover:text-white text-[10px] font-bold bg-stone-800 hover:bg-stone-700 w-7 h-7 rounded-full transition flex items-center justify-center shrink-0 shadow-sm" title="30s vor">+30</button>
-                    
-                    <div class="flex flex-col ml-1 overflow-hidden">
-                        <span id="music-status" class="text-xs text-stone-400 font-bold uppercase tracking-widest truncate">Pausiert</span>
-                        <span class="text-[9px] text-stone-500 italic truncate">Osmieen Theme</span>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 mb-3 px-1">
-                    <span id="music-current-time" class="text-[9px] text-stone-500 font-mono w-6 text-right shrink-0">0:00</span>
-                    <input type="range" id="music-progress" min="0" max="100" value="0" oninput="seekMusic(this.value)" class="w-full accent-amber-500 h-1.5 bg-stone-700 rounded-lg appearance-none cursor-pointer">
-                    <span id="music-total-time" class="text-[9px] text-stone-500 font-mono w-6 text-left shrink-0">0:00</span>
-                </div>
-                
-                <div class="flex items-center gap-2 px-1">
-                    <span class="text-[10px] text-stone-500 shrink-0">🔈</span>
-                    <input type="range" id="music-volume" min="0" max="1" step="0.01" value="0.2" oninput="setVolume(this.value)" class="w-full accent-amber-600 h-1 bg-stone-700 rounded-lg appearance-none cursor-pointer">
-                    <span class="text-[10px] text-stone-500 shrink-0">🔊</span>
+        <!-- Musikplayer -->
+        <div class="mx-3 mb-4 mt-2 p-3 rounded-xl border border-gray-100 bg-gray-50">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-2">🎵 Osmieen Theme</span>
+            <audio id="bg-music" loop>
+                <source src="osmieen_theme.mp3" type="audio/mpeg">
+            </audio>
+            <div class="flex items-center gap-2 mb-2">
+                <button onclick="skipMusic(-30)" class="text-gray-400 hover:text-gray-700 text-[10px] font-bold bg-white hover:bg-gray-100 border border-gray-200 w-7 h-7 rounded-full transition flex items-center justify-center shrink-0" title="30s zurück">-30</button>
+                <button id="btn-play-music" onclick="toggleMusic()" class="bg-amber-500 hover:bg-amber-600 text-white rounded-full w-9 h-9 flex items-center justify-center transition shadow-sm shrink-0">▶️</button>
+                <button onclick="skipMusic(30)" class="text-gray-400 hover:text-gray-700 text-[10px] font-bold bg-white hover:bg-gray-100 border border-gray-200 w-7 h-7 rounded-full transition flex items-center justify-center shrink-0" title="30s vor">+30</button>
+                <div class="flex flex-col ml-1 overflow-hidden">
+                    <span id="music-status" class="text-[10px] font-semibold text-gray-500 uppercase tracking-widest truncate">Pausiert</span>
                 </div>
             </div>
+            <div class="flex items-center gap-2 mb-2">
+                <span id="music-current-time" class="text-[9px] text-gray-400 font-mono w-6 text-right shrink-0">0:00</span>
+                <input type="range" id="music-progress" min="0" max="100" value="0" oninput="seekMusic(this.value)" class="w-full accent-amber-500 h-1.5 rounded-lg appearance-none cursor-pointer" style="background:#e5e7eb;">
+                <span id="music-total-time" class="text-[9px] text-gray-400 font-mono w-6 text-left shrink-0">0:00</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] text-gray-400 shrink-0">🔈</span>
+                <input type="range" id="music-volume" min="0" max="1" step="0.01" value="0.2" oninput="setVolume(this.value)" class="w-full accent-amber-500 h-1 rounded-lg appearance-none cursor-pointer" style="background:#e5e7eb;">
+                <span class="text-[10px] text-gray-400 shrink-0">🔊</span>
+            </div>
+        </div>
             </nav>
     </aside>
-        </nav>
-    </aside>
+
     <div class="flex-1 flex flex-col h-full overflow-hidden relative w-full">
-        <header class="lg:hidden bg-stone-900 text-white p-4 flex items-center justify-between shadow-md z-10 flex-shrink-0">
-            <h1 class="text-lg font-bold tracking-wide uppercase">Osmieen Wiki</h1>
-            <button onclick="toggleSidebar(true)" class="p-2 bg-stone-800 rounded hover:bg-amber-500 transition focus:outline-none text-xl leading-none">
-                &#9776;
-            </button>
-        </header>
-        <main class="flex-1 bg-stone-50 h-full overflow-y-auto custom-scrollbar relative scroll-smooth">
+        <!-- Top Header Bar -->
+        <div id="top-header">
+            <div class="flex items-center gap-3">
+                <!-- Hamburger (mobile only) -->
+                <button onclick="toggleSidebar(true)" class="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <span>Osmieen</span>
+                    <span class="sep">›</span>
+                    <span id="breadcrumb-current" class="current">Basisregeln</span>
+                </nav>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-medium text-gray-400 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>
+                    Daggerheart Kampagne
+                </span>
+            </div>
+        </div>
+
+        <main class="flex-1 h-full overflow-y-auto custom-scrollbar relative scroll-smooth" style="background:#f9fafb;">
             <section id="tab-rules" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules block">
                 <h1>Das Regelwerk (Daggerheart)</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Dieses Kapitel fasst die harten Mechaniken und Regeln zusammen, nach denen die Kampagne in Osmieen gespielt wird.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Dieses Kapitel fasst die harten Mechaniken und Regeln zusammen, nach denen die Kampagne in Osmieen gespielt wird.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>📜</span> 1. Basisregeln</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-rules', 'rules-1')" class="flex items-center gap-2"><span>📜</span> 1. Basisregeln</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -335,18 +551,18 @@
             </section>
             <section id="tab-chars" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Charaktererstellung</h1>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-chars', 'chars-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🧬</span> 1. Abstammungen (Ancestries)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-chars', 'chars-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚔️</span> 2. Klassen & Domains</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-chars', 'chars-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>👤</span> 3. Beispiel-Charakter</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-chars', 'chars-1')" class="flex items-center gap-2"><span>🧬</span> 1. Abstammungen (Ancestries)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-chars', 'chars-2')" class="flex items-center gap-2"><span>⚔️</span> 2. Klassen & Domains</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-chars', 'chars-3')" class="flex items-center gap-2"><span>👤</span> 3. Beispiel-Charakter</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -788,24 +1004,24 @@
             </section>
             <section id="tab-world" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Die Welt Osmieen</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Physische Welt, Demografie, Wirtschaft, Infrastruktur und die Natur der Herrscher.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Physische Welt, Demografie, Wirtschaft, Infrastruktur und die Natur der Herrscher.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌍</span> 1. Grundprämisse & Geografie</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🧛</span> 2. Demografie & Die Natur der Vampire</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🚂</span> 3. Infrastruktur, Wissenschaft & Schusswaffen</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-4')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🔮</span> 4. Informationsnetzwerke & Teleportation</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-5')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏰</span> 5. Siedlungsstruktur & Stadtgrößen</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-6')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚙️</span> 6. Binnenwirtschaft, Spezial-Bestien & Der Metall-Boom</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-7')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>📜</span> 7. Die Handelsdynastien (Lizenzierte Monopole)</a></li>
-			 			<li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-8')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌾</span> 8. Das Agrarsystem & Die Ländliche Ökonomie</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-1')" class="flex items-center gap-2"><span>🌍</span> 1. Grundprämisse & Geografie</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-2')" class="flex items-center gap-2"><span>🧛</span> 2. Demografie & Die Natur der Vampire</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-3')" class="flex items-center gap-2"><span>🚂</span> 3. Infrastruktur, Wissenschaft & Schusswaffen</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-4')" class="flex items-center gap-2"><span>🔮</span> 4. Informationsnetzwerke & Teleportation</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-5')" class="flex items-center gap-2"><span>🏰</span> 5. Siedlungsstruktur & Stadtgrößen</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-6')" class="flex items-center gap-2"><span>⚙️</span> 6. Binnenwirtschaft, Spezial-Bestien & Der Metall-Boom</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-7')" class="flex items-center gap-2"><span>📜</span> 7. Die Handelsdynastien (Lizenzierte Monopole)</a></li>
+			 			<li><a href="javascript:void(0)" onclick="crossReference('tab-world', 'world-8')" class="flex items-center gap-2"><span>🌾</span> 8. Das Agrarsystem & Die Ländliche Ökonomie</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -909,21 +1125,21 @@
             </section>
             <section id="tab-theocracy" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Die Theokratie & Das Kult-System</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Herrschaftsstrukturen, die fünf Vampir-Götter und ihre verschachtelten Kulte.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Herrschaftsstrukturen, die fünf Vampir-Götter und ihre verschachtelten Kulte.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏛️</span> 1. Gesetz & Politische Führung</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>👥</span> 2. Demografie & Verteilung der Kulte</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏘️</span> 3. Die Verteilung der Vampir-Population</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-4')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🩸</span> 4. Eigenschaften der einfarbigen Vampir-Rassen</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-5')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🕸️</span> 5. Die Mehrfarbigen Kulte (Das politische Netz)</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-1')" class="flex items-center gap-2"><span>🏛️</span> 1. Gesetz & Politische Führung</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-2')" class="flex items-center gap-2"><span>👥</span> 2. Demografie & Verteilung der Kulte</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-3')" class="flex items-center gap-2"><span>🏘️</span> 3. Die Verteilung der Vampir-Population</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-4')" class="flex items-center gap-2"><span>🩸</span> 4. Eigenschaften der einfarbigen Vampir-Rassen</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-5')" class="flex items-center gap-2"><span>🕸️</span> 5. Die Mehrfarbigen Kulte (Das politische Netz)</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -997,27 +1213,27 @@
             </section>
             <section id="tab-life" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Alltag, Bildung, Überwachung & Justiz</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Tägliches Leben, Bildung, Pflichten und Strafen der Sterblichen.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Tägliches Leben, Bildung, Pflichten und Strafen der Sterblichen.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🧒</span> 1. Die theokratische Grundbildung (Kindheit)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🎒</span> 2. Beschulung auf dem Land & die Blutprozession</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🎂</span> 3. Der kollektive Stichtag (Volljährigkeit)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-4')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🎓</span> 4. Das Hochschulsystem (Spezialisierung)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-5')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>👁️</span> 5. Das magische Überwachungsnetz</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-6')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🔖</span> 6. Die Blut-Marke (Tracking-System)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-7')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>👨‍👩‍👧‍👦</span> 7. Blut-Prämien & familiäre Pflicht</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-8')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏢</span> 8. Staatliche Obhut</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-9')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚙️</span> 9. Arbeitsquoten & Leistungssystem</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-10')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚕️</span> 10. Das theokratische Medizinsystem</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-11')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚖️</span> 11. Justiz- und Strafsystem (Schuld in Arbeitszeit)</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-1')" class="flex items-center gap-2"><span>🧒</span> 1. Die theokratische Grundbildung (Kindheit)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-2')" class="flex items-center gap-2"><span>🎒</span> 2. Beschulung auf dem Land & die Blutprozession</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-3')" class="flex items-center gap-2"><span>🎂</span> 3. Der kollektive Stichtag (Volljährigkeit)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-4')" class="flex items-center gap-2"><span>🎓</span> 4. Das Hochschulsystem (Spezialisierung)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-5')" class="flex items-center gap-2"><span>👁️</span> 5. Das magische Überwachungsnetz</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-6')" class="flex items-center gap-2"><span>🔖</span> 6. Die Blut-Marke (Tracking-System)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-7')" class="flex items-center gap-2"><span>👨‍👩‍👧‍👦</span> 7. Blut-Prämien & familiäre Pflicht</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-8')" class="flex items-center gap-2"><span>🏢</span> 8. Staatliche Obhut</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-9')" class="flex items-center gap-2"><span>⚙️</span> 9. Arbeitsquoten & Leistungssystem</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-10')" class="flex items-center gap-2"><span>⚕️</span> 10. Das theokratische Medizinsystem</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-life', 'life-11')" class="flex items-center gap-2"><span>⚖️</span> 11. Justiz- und Strafsystem (Schuld in Arbeitszeit)</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -1133,23 +1349,23 @@
             </section>
             <section id="tab-shadows" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Schattenkriege & Untergrund</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Inoffizielle Konflikte, Sabotageakte und das kriminelle Netzwerk.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Inoffizielle Konflikte, Sabotageakte und das kriminelle Netzwerk.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🗡️</span> 1. Die Schattenkriege der Kulte</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏃</span> 2. Der Untergrund der Nicht-Vampire & Flucht</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>📉</span> 3. Das Quoten-Dilemma & Die Schattenwirtschaft</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-4')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🧛</span> 4. Die Erhebung zum Vampir & Manipulation</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-5')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🦠</span> 5. Die grüne Mutation</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-6')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🧠</span> 6. Expertenwissen des Untergrunds</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-7')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🚂</span> 7. Wirtschaftskrieg: Handelsdynastien vs. Die Züge</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-1')" class="flex items-center gap-2"><span>🗡️</span> 1. Die Schattenkriege der Kulte</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-2')" class="flex items-center gap-2"><span>🏃</span> 2. Der Untergrund der Nicht-Vampire & Flucht</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-3')" class="flex items-center gap-2"><span>📉</span> 3. Das Quoten-Dilemma & Die Schattenwirtschaft</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-4')" class="flex items-center gap-2"><span>🧛</span> 4. Die Erhebung zum Vampir & Manipulation</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-5')" class="flex items-center gap-2"><span>🦠</span> 5. Die grüne Mutation</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-6')" class="flex items-center gap-2"><span>🧠</span> 6. Expertenwissen des Untergrunds</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-shadows', 'shadows-7')" class="flex items-center gap-2"><span>🚂</span> 7. Wirtschaftskrieg: Handelsdynastien vs. Die Züge</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -1231,18 +1447,18 @@
             </section>
             <section id="tab-propaganda" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Populismus, Propaganda & Feiertage</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Kontrolle der Massen durch spektakuläre Ablenkungen und falsche Hoffnungen.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Kontrolle der Massen durch spektakuläre Ablenkungen und falsche Hoffnungen.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-propaganda', 'prop-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>♟️</span> 1. Bauernopfer</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-propaganda', 'prop-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🎪</span> 2. Feiertage</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-propaganda', 'prop-1')" class="flex items-center gap-2"><span>♟️</span> 1. Bauernopfer</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-propaganda', 'prop-2')" class="flex items-center gap-2"><span>🎪</span> 2. Feiertage</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -1274,22 +1490,22 @@
             </section>
             <section id="tab-military" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Exekutive, Militär & Die Absolute Isolation</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Innere Wachen, die Streitkräfte und die radikale Abschottung nach außen.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Innere Wachen, die Streitkräfte und die radikale Abschottung nach außen.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🛡️</span> 1. Die theokratischen Wachen</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>📜</span> 2. Die Auslegung des Weißen Gesetzes</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🚧</span> 3. Die Informationssperre & Todeszone</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-4')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>👁️‍🗨️</span> 4. Magische Überwachung & Kontrolle</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-5')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚔️</span> 5. Die Roten Schocktruppen (Das Militär)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-6')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>💥</span> 6. Radikale Jagd</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-1')" class="flex items-center gap-2"><span>🛡️</span> 1. Die theokratischen Wachen</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-2')" class="flex items-center gap-2"><span>📜</span> 2. Die Auslegung des Weißen Gesetzes</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-3')" class="flex items-center gap-2"><span>🚧</span> 3. Die Informationssperre & Todeszone</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-4')" class="flex items-center gap-2"><span>👁️‍🗨️</span> 4. Magische Überwachung & Kontrolle</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-5')" class="flex items-center gap-2"><span>⚔️</span> 5. Die Roten Schocktruppen (Das Militär)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-military', 'mil-6')" class="flex items-center gap-2"><span>💥</span> 6. Radikale Jagd</a></li>
                     </ul>
                 </div>
                 <details class="section-details">
@@ -1357,11 +1573,11 @@
             <!-- NEUER TAB: ABSTAMMUNGEN DETAIL-ARCHIV -->
             <section id="tab-ancestries" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Abstammungen (Archiv)</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Detaillierte Beschreibungen und Mechaniken aller spielbaren Abstammungen innerhalb der Osmieen-Kampagne.</p>
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Übersicht</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+                <p class="page-lead">Detaillierte Beschreibungen und Mechaniken aller spielbaren Abstammungen innerhalb der Osmieen-Kampagne.</p>
+                <div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Übersicht</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
@@ -1784,8 +2000,8 @@
                 <header class="mb-6">
                    <div class="flex items-center gap-4">
                         <h1 class="text-3xl font-bold tracking-tight text-stone-900 flex items-center gap-3 m-0"><span>🩸</span> Vampirkulte in Osmieen</h1>
-                        <button onclick="openFeedbackModal('Vampirkulte')" type="button" class="px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center shadow-sm cursor-pointer">
-                            💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 ml-1 hidden md:inline">Notiz</span>
+                        <button onclick="openFeedbackModal('Vampirkulte')" type="button" class="px-2 py-1 rounded-lg bg-gray-100 border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-all flex items-center text-gray-500 hover:text-amber-700">
+                            💬 <span class="text-[10px] uppercase tracking-widest font-normal text-gray-500 ml-1 hidden md:inline">Notiz</span>
                         </button>
                     </div>
                     <p class="mt-2 text-stone-500 max-w-3xl">Erkunde die philosophischen Strömungen der Kulte interaktiv für deine Daggerheart-Kampagne.</p>
@@ -2065,12 +2281,10 @@
                 </div>
             </section>
             <!-- === KARTEN FOKUS TAB ENDE === -->
-
 <section id="tab-storybook" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
     <h1>Osmieen Storybook</h1>
-    <p class="text-lg text-stone-500 font-medium mb-8">Erlebe die Welt und die Konflikte der Kulte in einer einfachen von Gemini erstellten Geschichte</p>
-
-    <div class="bg-stone-100 border border-stone-200 rounded-xl p-4 mb-6 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+    <p class="page-lead">Erlebe die Welt und die Konflikte der Kulte in einer einfachen von Gemini erstellten Geschichte</p>
+<div class="bg-stone-100 border border-stone-200 rounded-xl p-4 mb-6 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
         <div class="flex items-center gap-2">
             <button id="btn-play-story" onclick="toggleStoryPlayback()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded shadow transition flex items-center gap-2">
                 <span id="play-icon">▶️</span> <span id="play-text">Vorlesen starten</span>
@@ -2079,31 +2293,25 @@
                 ⏹️
             </button>
         </div>
-        
-        <div class="flex items-center gap-4">
+<div class="flex items-center gap-4">
             <button onclick="prevStoryPage()" class="text-stone-600 hover:text-amber-600 font-bold text-xl px-2 transition disabled:opacity-30" id="btn-prev-page">«</button>
             <span class="text-sm font-bold text-stone-500 uppercase tracking-widest">Seite <span id="current-page-num">1</span> / <span id="total-page-num">?</span></span>
             <button onclick="nextStoryPage()" class="text-stone-600 hover:text-amber-600 font-bold text-xl px-2 transition disabled:opacity-30" id="btn-next-page">»</button>
         </div>
     </div>
-
-    <div class="bg-white border border-stone-200 rounded-xl p-8 shadow-md min-h-[400px] relative">
+<div class="bg-white border border-stone-200 rounded-xl p-8 shadow-md min-h-[400px] relative">
         <h2 id="story-chapter-title" class="text-2xl font-bold text-stone-800 mb-6 border-b border-stone-100 pb-2 mt-0">Kapitel Titel</h2>
-        
-        <div id="story-image-container" class="mb-6 hidden">
+<div id="story-image-container" class="mb-6 hidden">
             <img id="story-image" src="" alt="Szenenbild" class="w-full sm:w-2/3 md:w-1/2 mx-auto h-auto rounded-xl shadow-md border border-stone-200">
         </div>
-
-        <div id="story-content" class="text-stone-700 leading-relaxed text-lg whitespace-pre-wrap">
+<div id="story-content" class="text-stone-700 leading-relaxed text-lg whitespace-pre-wrap">
             Hier erscheint gleich der Text...
         </div>
-        
-        <div id="reading-indicator" class="absolute top-4 right-4 text-xs font-bold text-amber-500 uppercase tracking-widest hidden animate-pulse">
+<div id="reading-indicator" class="absolute top-4 right-4 text-xs font-bold text-amber-500 uppercase tracking-widest hidden animate-pulse">
             🔊 Wird vorgelesen...
         </div>
     </div>
 </section>
-
 <section id="tab-race-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
     <div id="race-quiz-intro" class="text-center py-10">
         <h2 class="text-4xl font-black text-stone-800 mb-4">Welches Volk fließt in deinem Blut?</h2>
@@ -2119,8 +2327,7 @@
             </button>
         </div>
     </div>
-
-    <div id="race-quiz-question-area" class="hidden">
+<div id="race-quiz-question-area" class="hidden">
         <div class="flex justify-between items-center mb-6">
             <span class="text-sm font-bold text-stone-400 uppercase tracking-widest">Frage <span id="race-quiz-current-num">1</span> / <span id="race-quiz-total-num">7</span></span>
             <div class="w-1/2 bg-stone-200 rounded-full h-2">
@@ -2131,18 +2338,15 @@
         <div id="race-quiz-options" class="flex flex-col gap-3">
             </div>
     </div>
-
-    <div id="race-quiz-result-area" class="hidden text-center py-6">
+<div id="race-quiz-result-area" class="hidden text-center py-6">
         <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Dein Ursprung liegt bei</h3>
         <h2 id="race-quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
         <p id="race-quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
-        
-        <div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
+<div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
             <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Dein Profil</h4>
             <p id="race-quiz-result-explanation" class="text-sm text-stone-700 leading-relaxed mb-4"></p>
         </div>
-
-        <div class="max-w-2xl mx-auto text-left mb-8">
+<div class="max-w-2xl mx-auto text-left mb-8">
             <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden group">
@@ -2164,11 +2368,10 @@
         </div>
     </div>
 </section>
-			
 <!-- === DER FEEDBACK TAB (DER "WARENKORB") === -->
 			<section id="tab-quiz" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Welcher Kult passt zu dir?</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Ein psychologischer Test, um deinen wahren Platz in der Theokratie von Osmieen zu finden.</p>
+                <p class="page-lead">Ein psychologischer Test, um deinen wahren Platz in der Theokratie von Osmieen zu finden.</p>
                 <div id="quiz-container" class="bg-white border border-stone-200 rounded-xl p-8 shadow-sm">       
                     <div id="quiz-start-area" class="text-center py-6">
                         <h2 class="text-2xl font-bold text-stone-800 mb-4">Wähle deine Analyse</h2>
@@ -2195,8 +2398,7 @@
                         <h3 class="text-sm font-bold text-stone-500 uppercase tracking-widest mb-2 mt-0">Die Götter haben geurteilt</h3>
                         <h2 id="quiz-result-title" class="text-4xl font-black text-amber-700 mb-2">Ergebnis</h2>
                         <p id="quiz-result-subtitle" class="text-xl text-stone-600 italic mb-6 border-l-4 border-amber-600 pl-4 inline-block mx-auto text-left"></p>
-                        
-                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
+<div class="bg-stone-50 border border-stone-200 rounded-lg p-6 max-w-2xl mx-auto text-left mb-8 shadow-inner">
                             <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Warum dieser Kult?</h4>
                             <p id="quiz-result-explanation" class="text-sm text-stone-700 leading-relaxed mb-4"></p>
                             <div class="pt-4 border-t border-stone-200">
@@ -2205,8 +2407,7 @@
                             </div>
                             <div id="quiz-result-link-container"></div>
                         </div>
-
-                        <div class="max-w-2xl mx-auto text-left mb-8">
+<div class="max-w-2xl mx-auto text-left mb-8">
                             <h4 class="font-bold text-stone-500 text-xs uppercase tracking-widest mb-3 text-center">Ebenfalls passend (Alternative Pfade)</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div id="quiz-runnerup-1-card" class="bg-white border border-stone-200 rounded p-4 shadow-sm relative overflow-hidden cursor-pointer hover:border-amber-400 hover:shadow-md transition group">
@@ -2232,7 +2433,7 @@
             </section>
 <section id="tab-feedback" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <h1>Dein Feedback-Zettel</h1>
-                <p class="text-lg text-stone-500 font-medium mb-8">Hier sind alle deine gesammelten Anmerkungen. Überprüfe sie und schicke sie gesammelt an mich ab. Mach das am besten nicht nach jedem Ding einzeln, sondern sammel die Sachen erst hier</p>
+                <p class="page-lead">Hier sind alle deine gesammelten Anmerkungen. Überprüfe sie und schicke sie gesammelt an mich ab. Mach das am besten nicht nach jedem Ding einzeln, sondern sammel die Sachen erst hier</p>
                 <div id="feedback-cart-list" class="space-y-4 mb-8">
                     <p class="text-stone-400 italic py-8 text-center border-2 border-dashed border-stone-200 rounded-xl">Dein Zettel ist noch leer. Klicke im Wiki auf die 💬 Buttons neben den Überschriften!</p>
                 </div>
@@ -2250,37 +2451,33 @@
             </section>
 			<section id="tab-agrarsystem" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <div class="flex items-center gap-4 mb-2">
-                    <h1 class="m-0 border-0">Das Agrarsystem (Konzept)</h1>
-                    <button onclick="openFeedbackModal('Agrarsystem')" type="button" class="px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center shadow-sm cursor-pointer">
-                        💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 ml-1 hidden md:inline">Notiz</span>
+                    <h1 class="m-0">Das Agrarsystem (Konzept)</h1>
+                    <button onclick="openFeedbackModal('Agrarsystem')" type="button" class="px-2 py-1 rounded-lg bg-gray-100 border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-all flex items-center text-gray-500 hover:text-amber-700">
+                        💬 <span class="text-[10px] uppercase tracking-widest font-normal text-gray-500 ml-1 hidden md:inline">Notiz</span>
                     </button>
                 </div>
-                <div class="border-b-2 border-stone-200 mb-6"></div>
-                
-                <p class="text-lg text-stone-500 font-medium mb-4">Dieses Kapitel befindet sich in der Ideenfindungsphase. Es skizziert das ländliche Ökosystem, die Abhängigkeiten der Bauern und den Handelsfluss der Nahrung.</p>
-                
-                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 text-sm text-amber-900 rounded-r-lg shadow-sm">
+                <div class="border-b border-gray-200 mb-6"></div>
+<p class="page-lead">Dieses Kapitel befindet sich in der Ideenfindungsphase. Es skizziert das ländliche Ökosystem, die Abhängigkeiten der Bauern und den Handelsfluss der Nahrung.</p>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 text-sm text-amber-900 rounded-r-xl">
                     <strong>Wichtiger Hinweis:</strong> Die hier beschriebenen Mechaniken und Konzepte sind noch nicht final und repräsentieren lediglich den aktuellen Stand der Abstimmungen.
                 </div>
-
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+<div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🏘️</span> 1. Die Dörfer & Weiler (Mikrokosmen)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🌾</span> 2. Die Marktflecken (Kornkammern)</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🚂</span> 3. Der Nahrungsfluss zu den Metropolen</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-1')" class="flex items-center gap-2"><span>🏘️</span> 1. Die Dörfer & Weiler (Mikrokosmen)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-2')" class="flex items-center gap-2"><span>🌾</span> 2. Die Marktflecken (Kornkammern)</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-agrarsystem', 'agrar-3')" class="flex items-center gap-2"><span>🚂</span> 3. Der Nahrungsfluss zu den Metropolen</a></li>
                     </ul>
                 </div>
-
-                <details class="section-details">
+<details class="section-details">
                     <summary id="agrar-1" class="section-summary">
-                        <div class="summary-title"><span>🏘️</span> <span class="text-amber-600">1.</span> Die Dörfer & Weiler (Das Bauern-Ökosystem) <button onclick="openFeedbackModal('Dörfer & Weiler (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-title"><span>🏘️</span> <span class="text-amber-600">1.</span> Die Dörfer & Weiler (Das Bauern-Ökosystem) <button onclick="openFeedbackModal('Dörfer & Weiler (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded-md bg-gray-100 hover:bg-amber-50 border border-gray-200 hover:border-amber-300 transition-all text-[10px] text-gray-500 hover:text-amber-700">💬</button></div>
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
@@ -2292,10 +2489,9 @@
                         </ul>
                     </div>
                 </details>
-
-                <details class="section-details">
+<details class="section-details">
                     <summary id="agrar-2" class="section-summary">
-                        <div class="summary-title"><span>🌾</span> <span class="text-amber-600">2.</span> Die Marktflecken (Handelszentren & Kornkammern) <button onclick="openFeedbackModal('Marktflecken (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-title"><span>🌾</span> <span class="text-amber-600">2.</span> Die Marktflecken (Handelszentren & Kornkammern) <button onclick="openFeedbackModal('Marktflecken (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded-md bg-gray-100 hover:bg-amber-50 border border-gray-200 hover:border-amber-300 transition-all text-[10px] text-gray-500 hover:text-amber-700">💬</button></div>
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
@@ -2306,10 +2502,9 @@
                         </ul>
                     </div>
                 </details>
-
-                <details class="section-details">
+<details class="section-details">
                     <summary id="agrar-3" class="section-summary">
-                        <div class="summary-title"><span>🚂</span> <span class="text-amber-600">3.</span> Der Nahrungsfluss zu den Metropolen <button onclick="openFeedbackModal('Nahrungsfluss (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-title"><span>🚂</span> <span class="text-amber-600">3.</span> Der Nahrungsfluss zu den Metropolen <button onclick="openFeedbackModal('Nahrungsfluss (Agrar)')" type="button" class="ml-3 px-2 py-1 rounded-md bg-gray-100 hover:bg-amber-50 border border-gray-200 hover:border-amber-300 transition-all text-[10px] text-gray-500 hover:text-amber-700">💬</button></div>
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
@@ -2322,40 +2517,35 @@
                     </div>
                 </details>
             </section>
-
-            <section id="tab-blutprozession" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
+<section id="tab-blutprozession" class="content-tab max-w-4xl mx-auto p-8 lg:p-12 prose-rules hidden">
                 <div class="flex items-center gap-4 mb-2">
-                    <h1 class="m-0 border-0">Die Blutprozession (Konzept)</h1>
-                    <button onclick="openFeedbackModal('Blutprozession')" type="button" class="px-2 py-1 rounded bg-stone-100 border border-stone-300 hover:bg-amber-100 hover:border-amber-400 transition-all flex items-center shadow-sm cursor-pointer">
-                        💬 <span class="text-[10px] uppercase tracking-widest font-normal text-stone-500 ml-1 hidden md:inline">Notiz</span>
+                    <h1 class="m-0">Die Blutprozession (Konzept)</h1>
+                    <button onclick="openFeedbackModal('Blutprozession')" type="button" class="px-2 py-1 rounded-lg bg-gray-100 border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-all flex items-center text-gray-500 hover:text-amber-700">
+                        💬 <span class="text-[10px] uppercase tracking-widest font-normal text-gray-500 ml-1 hidden md:inline">Notiz</span>
                     </button>
                 </div>
-                <div class="border-b-2 border-stone-200 mb-6"></div>
-                
-                <p class="text-lg text-stone-500 font-medium mb-4">Dieses Konzeptpapier skizziert die Abläufe, wenn die Macht der großen Städte in Form von theokratischen Karawanen in die Provinz kommt.</p>
-                
-                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 text-sm text-amber-900 rounded-r-lg shadow-sm">
+                <div class="border-b border-gray-200 mb-6"></div>
+<p class="page-lead">Dieses Konzeptpapier skizziert die Abläufe, wenn die Macht der großen Städte in Form von theokratischen Karawanen in die Provinz kommt.</p>
+<div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 text-sm text-amber-900 rounded-r-xl">
                     <strong>Wichtiger Hinweis:</strong> Auch dieses Modul ist ein fortlaufender Entwurf und dient als Diskussionsgrundlage.
                 </div>
-
-                <div class="bg-stone-100 border border-stone-200 rounded-lg p-5 mb-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 border-b border-stone-200 pb-2">
-                        <h3 class="text-sm font-bold text-stone-700 uppercase tracking-wide m-0">Inhaltsverzeichnis</h3>
-                        <div class="flex gap-3 text-xs font-semibold">
+<div class="toc-box">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest m-0 mb-0">Inhaltsverzeichnis</h3>
+                        <div class="toc-actions flex gap-3">
                             <button onclick="toggleAllDetails(this, true)" class="text-stone-500 hover:text-amber-600 transition">⏬ Ausklappen</button>
                             <button onclick="toggleAllDetails(this, false)" class="text-stone-500 hover:text-amber-600 transition">⏫ Einklappen</button>
                         </div>
                     </div>
-                    <ul class="toc-list flex flex-col gap-2 text-sm pl-0 m-0 font-medium">
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-1')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🛡️</span> 1. Die Ankunft der Karawane</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-2')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>🩸</span> 2. Blutabgabe & Qualitätskontrolle</a></li>
-                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-3')" class="text-amber-700 hover:text-amber-900 transition flex items-center gap-2"><span>⚖️</span> 3. Prüfungen & Das theokratische Gericht</a></li>
+                    <ul class="toc-list flex flex-col gap-1 pl-0 m-0">
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-1')" class="flex items-center gap-2"><span>🛡️</span> 1. Die Ankunft der Karawane</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-2')" class="flex items-center gap-2"><span>🩸</span> 2. Blutabgabe & Qualitätskontrolle</a></li>
+                        <li><a href="javascript:void(0)" onclick="crossReference('tab-blutprozession', 'blut-3')" class="flex items-center gap-2"><span>⚖️</span> 3. Prüfungen & Das theokratische Gericht</a></li>
                     </ul>
                 </div>
-
-                <details class="section-details">
+<details class="section-details">
                     <summary id="blut-1" class="section-summary">
-                        <div class="summary-title"><span>🛡️</span> <span class="text-amber-600">1.</span> Die Ankunft der Karawane <button onclick="openFeedbackModal('Karawane (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-title"><span>🛡️</span> <span class="text-amber-600">1.</span> Die Ankunft der Karawane <button onclick="openFeedbackModal('Karawane (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded-md bg-gray-100 hover:bg-amber-50 border border-gray-200 hover:border-amber-300 transition-all text-[10px] text-gray-500 hover:text-amber-700">💬</button></div>
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
@@ -2366,10 +2556,9 @@
                         </ul>
                     </div>
                 </details>
-
-                <details class="section-details">
+<details class="section-details">
                     <summary id="blut-2" class="section-summary">
-                        <div class="summary-title"><span>🩸</span> <span class="text-amber-600">2.</span> Blutabgabe & Qualitätskontrolle <button onclick="openFeedbackModal('Blutkontrolle (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-title"><span>🩸</span> <span class="text-amber-600">2.</span> Blutabgabe & Qualitätskontrolle <button onclick="openFeedbackModal('Blutkontrolle (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded-md bg-gray-100 hover:bg-amber-50 border border-gray-200 hover:border-amber-300 transition-all text-[10px] text-gray-500 hover:text-amber-700">💬</button></div>
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
@@ -2380,10 +2569,9 @@
                         </ul>
                     </div>
                 </details>
-
-                <details class="section-details">
+<details class="section-details">
                     <summary id="blut-3" class="section-summary">
-                        <div class="summary-title"><span>⚖️</span> <span class="text-amber-600">3.</span> Prüfungen & Das theokratische Gericht <button onclick="openFeedbackModal('Gericht (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded bg-stone-200/50 hover:bg-amber-200 border border-stone-300 hover:border-amber-400 transition-all text-[10px]">💬</button></div>
+                        <div class="summary-title"><span>⚖️</span> <span class="text-amber-600">3.</span> Prüfungen & Das theokratische Gericht <button onclick="openFeedbackModal('Gericht (Blutprozession)')" type="button" class="ml-3 px-2 py-1 rounded-md bg-gray-100 hover:bg-amber-50 border border-gray-200 hover:border-amber-300 transition-all text-[10px] text-gray-500 hover:text-amber-700">💬</button></div>
                         <div class="summary-icon">▼</div>
                     </summary>
                     <div class="details-content">
@@ -2397,8 +2585,7 @@
             </section>
         </main>
     </div>
-
-    <div id="feedback-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+<div id="feedback-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative">
             <div class="bg-stone-900 p-4 flex justify-between items-center text-white">
                 <h3 class="font-bold text-lg m-0">Notiz hinzufügen</h3>
@@ -2417,8 +2604,7 @@
             </div>
         </div>
     </div>
-
-    <script>
+<script>
         // --- 0. NEUE LOGIK FÜR ALLE AUF/ZUKLAPPEN & QUERVERWEISE ---
         function toggleAllDetails(buttonElem, state) {
             const tab = buttonElem.closest('.content-tab');
@@ -2451,8 +2637,7 @@
                 setTimeout(() => { selectCategory(categoryId); }, 100);
             }
         }
-
-        // --- 1. SIDEBAR RESPONSIVE & RESIZE LOGIK ---
+// --- 1. SIDEBAR RESPONSIVE & RESIZE LOGIK ---
         function toggleSidebar(forceState) {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -2488,51 +2673,52 @@
                 document.body.style.userSelect = '';
             }
         });
-
-        // --- 2. TAB NAVIGATION LOGIK ---
+// --- 2. TAB NAVIGATION LOGIK ---
+        const TAB_LABELS = {
+            'tab-rules': 'Basisregeln', 'tab-chars': 'Charaktererstellung',
+            'tab-world': 'Die Welt Osmieen', 'tab-theocracy': 'Kulte & Theokratie',
+            'tab-life': 'Alltag & Justiz', 'tab-shadows': 'Schattenkriege & Untergrund',
+            'tab-propaganda': 'Propaganda & Feiertage', 'tab-military': 'Militär & Isolation',
+            'tab-ancestries': 'Abstammungs-Archiv', 'tab-agrarsystem': 'Agrarsystem',
+            'tab-blutprozession': 'Blutprozession', 'tab-cults': 'Vampirkulte',
+            'tab-quiz': 'Kult-Zuordnungs-Quiz', 'tab-race-quiz': 'Volk-Zuordnungs-Quiz',
+            'tab-dashboard': 'Kompaktes Dashboard', 'tab-map-focus': 'Große Karten-Ansicht',
+            'tab-storybook': 'Storybook', 'tab-feedback': 'Feedback Zettel'
+        };
         function switchTab(tabId) {
             if (window.innerWidth < 1024) { toggleSidebar(false); }
             document.querySelectorAll('.content-tab').forEach(tab => {
                 tab.classList.remove('block', 'flex');
                 tab.classList.add('hidden');
             });
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-stone-800', 'text-white');
-                btn.classList.add('text-stone-400');
-            });
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             const activeTab = document.getElementById(tabId);
             if(tabId === 'tab-cults') {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('flex');
-                if(radarChartInstance) { radarChartInstance.resize(); } 
+                if(radarChartInstance) { radarChartInstance.resize(); }
                 else { initApp(); }
             } else if(tabId === 'tab-dashboard') {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('block');
-                if(!dashboardInitialized) { initDashboard(); } 
+                if(!dashboardInitialized) { initDashboard(); }
                 else { refreshDashboardCharts(); }
             } else if(tabId === 'tab-map-focus') {
                 activeTab.classList.remove('hidden');
-                activeTab.classList.add('flex'); 
-                if(!dashboardInitialized) { initDashboard(); } 
+                activeTab.classList.add('flex');
+                if(!dashboardInitialized) { initDashboard(); }
                 else { refreshDashboardCharts(); }
             } else {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('block');
             }
             const activeBtn = document.getElementById(tabId.replace('tab-', 'btn-'));
-            if(activeBtn) {
-                activeBtn.classList.remove('text-stone-400');
-                if(tabId === 'tab-cults') {
-                    activeBtn.classList.add('bg-stone-800'); 
-                } else {
-                    activeBtn.classList.add('bg-stone-800', 'text-white');
-                }
-            }
+            if(activeBtn) { activeBtn.classList.add('active'); }
+            const bc = document.getElementById('breadcrumb-current');
+            if(bc) { bc.textContent = TAB_LABELS[tabId] || tabId; }
             if(tabId === 'tab-feedback') { renderFeedbackCart(); }
             if(tabId !== 'tab-storybook') { stopStoryPlayback(); } else { renderStoryPage(); }
         }
-
 // Die 17 Rassen und ihre Farb-Werte: [Weiß, Blau, Schwarz, Rot, Grün]
 const racesData = [
     // ⚖️ Perfekte Dualitäten (Beide Farben auf 2)
@@ -2542,8 +2728,7 @@ const racesData = [
     { name: "Fee", subtitle: "Feuerwerk der Natur", colors: [0, 0, 0, 2, 2] },
     { name: "Fungril", subtitle: "Das wuchernde Myzel", colors: [0, 0, 2, 0, 2] },
     { name: "Ribbet", subtitle: "Amphibische Beobachter", colors: [0, 2, 0, 0, 2] },
-
-    // 🎯 Fokussierte Rassen (Primär auf 2, Akzent auf 1)
+// 🎯 Fokussierte Rassen (Primär auf 2, Akzent auf 1)
     { name: "Faun", subtitle: "Ungestüm & Kinetisch", colors: [0, 0, 0, 2, 1] }, // Rot primär, Grün Akzent
     { name: "Firbolg", subtitle: "Die stoischen Riesen", colors: [1, 0, 0, 0, 2] }, // Grün primär, Weiß Akzent
     { name: "Galapa", subtitle: "Unerschütterliche Panzerung", colors: [2, 1, 0, 0, 0] }, // Weiß primär, Blau Akzent
@@ -2554,11 +2739,9 @@ const racesData = [
     { name: "Katari", subtitle: "Feline Präzision", colors: [0, 0, 0, 2, 1] }, // Rot primär, Grün Akzent
     { name: "Ork", subtitle: "Eiserne Frontlinie", colors: [1, 0, 0, 2, 0] }, // Rot primär, Weiß Akzent
     { name: "Simiah", subtitle: "Chaotische Erfinder", colors: [0, 1, 0, 2, 0] }, // Rot primär, Blau Akzent
-
-    // 👑 Die Ausnahme (3 Farben)
+// 👑 Die Ausnahme (3 Farben)
     { name: "Mensch", subtitle: "Das Fundament der Theokratie", colors: [2, 0, 1, 1, 0] } // Weiß (Struktur) ist Kern, Schwarz/Rot sind Akzente
 ];
-
 // Das kurze Quiz (7 Fragen)
 const raceQuestionsShort = [
     {
@@ -2632,51 +2815,40 @@ const raceQuestionsShort = [
         ]
     }
 ];
-
 // Platzhalter für das lange Quiz (kannst du später einfach mit den restlichen 23 Fragen füllen)
 const raceQuestionsLong = [
     // ... hier kommen später die 30 Fragen rein ...
 ];
-
 let currentRaceQuestions = [];
 let raceCurrentQuestion = 0;
 let raceUserScores = [0, 0, 0, 0, 0]; // [Weiß, Blau, Schwarz, Rot, Grün]
-
 // Startet das Quiz (Kurz oder Lang)
 function startRaceQuiz(type) {
     currentRaceQuestions = type === 'short' ? raceQuestionsShort : raceQuestionsLong;
     raceCurrentQuestion = 0;
     raceUserScores = [0, 0, 0, 0, 0];
-    
-    document.getElementById('race-quiz-intro').classList.add('hidden');
+document.getElementById('race-quiz-intro').classList.add('hidden');
     document.getElementById('race-quiz-result-area').classList.add('hidden');
     document.getElementById('race-quiz-question-area').classList.remove('hidden');
-    
-    renderRaceQuestion();
+renderRaceQuestion();
 }
-
 // Zeigt die aktuelle Frage an
 function renderRaceQuestion() {
     if (raceCurrentQuestion >= currentRaceQuestions.length) {
         calculateRaceResult();
         return;
     }
-    
-    const q = currentRaceQuestions[raceCurrentQuestion];
-    
-    // Fortschrittsbalken & Nummern updaten
+const q = currentRaceQuestions[raceCurrentQuestion];
+// Fortschrittsbalken & Nummern updaten
     document.getElementById('race-quiz-current-num').innerText = raceCurrentQuestion + 1;
     document.getElementById('race-quiz-total-num').innerText = currentRaceQuestions.length;
     document.getElementById('race-quiz-progress').style.width = ((raceCurrentQuestion / currentRaceQuestions.length) * 100) + '%';
-    
-    // Fragetext setzen
+// Fragetext setzen
     document.getElementById('race-quiz-question-text').innerText = q.question;
-    
-    // Antwort-Buttons generieren
+// Antwort-Buttons generieren
     const optionsContainer = document.getElementById('race-quiz-options');
     optionsContainer.innerHTML = '';
-    
-    q.answers.forEach(ans => {
+q.answers.forEach(ans => {
         const btn = document.createElement('button');
         btn.className = "w-full text-left p-4 bg-stone-50 border border-stone-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition text-stone-700 shadow-sm";
         btn.innerText = ans.text;
@@ -2684,27 +2856,22 @@ function renderRaceQuestion() {
         optionsContainer.appendChild(btn);
     });
 }
-
 // Speichert die Antwort und geht zur nächsten Frage
 function answerRaceQuestion(colorIndex) {
     raceUserScores[colorIndex]++;
     raceCurrentQuestion++;
     renderRaceQuestion();
 }
-
 // Berechnet das Ergebnis anhand unserer 2-1-0 Gewichtung
 function calculateRaceResult() {
     document.getElementById('race-quiz-question-area').classList.add('hidden');
     document.getElementById('race-quiz-result-area').classList.remove('hidden');
-    
-    // Prozentuale Verteilung der User-Antworten berechnen
+// Prozentuale Verteilung der User-Antworten berechnen
     let totalScore = raceUserScores.reduce((a, b) => a + b, 0);
     if (totalScore === 0) totalScore = 1;
     let userPcts = raceUserScores.map(v => (v / totalScore) * 100);
-
-    let allRanked = [];
-    
-    // Jede Rasse bewerten
+let allRanked = [];
+// Jede Rasse bewerten
     racesData.forEach(race => {
         let matchScore = 0;
         for(let i = 0; i < 5; i++) {
@@ -2718,16 +2885,13 @@ function calculateRaceResult() {
         }
         allRanked.push({ race, score: matchScore });
     });
-
-    // Nach dem höchsten Score sortieren
+// Nach dem höchsten Score sortieren
     allRanked.sort((a, b) => b.score - a.score);
-
-    // --- NEU: Ränge bilden (Gleichstände zusammenfassen) ---
+// --- NEU: Ränge bilden (Gleichstände zusammenfassen) ---
     let ranks = [];
     let currentRank = [];
     let currentScore = allRanked[0].score;
-
-    allRanked.forEach(item => {
+allRanked.forEach(item => {
         // Wir prüfen, ob der Score fast identisch ist (fängt kleine Dezimal-Rundungsfehler ab)
         if (Math.abs(item.score - currentScore) < 0.1) {
             currentRank.push(item);
@@ -2738,26 +2902,20 @@ function calculateRaceResult() {
         }
     });
     if (currentRank.length > 0) ranks.push(currentRank);
-
-    // Platz 1 (kann ein oder mehrere Völker sein)
+// Platz 1 (kann ein oder mehrere Völker sein)
     const firstPlaceRaces = ranks[0].map(r => r.race);
-    
-    // Die Namen mit einem "&" verbinden
+// Die Namen mit einem "&" verbinden
     document.getElementById('race-quiz-result-title').innerText = firstPlaceRaces.map(r => r.name).join(" & ");
-    
-    // Wenn es mehrere sind, schreiben wir "Geteilter Platz", sonst den normalen Untertitel
+// Wenn es mehrere sind, schreiben wir "Geteilter Platz", sonst den normalen Untertitel
     document.getElementById('race-quiz-result-subtitle').innerText = firstPlaceRaces.length > 1 
         ? "Geteilter 1. Platz" 
         : firstPlaceRaces[0].subtitle;
-    
-    const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
+const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
     let sortedColors = userPcts.map((p, i) => ({p: Math.round(p), n: colorNames[i]})).sort((a,b) => b.p - a.p);
-
-    let fazitText = firstPlaceRaces.length > 1 
+let fazitText = firstPlaceRaces.length > 1 
         ? `Basierend auf deinem Profil teilen sich gleich <strong>${firstPlaceRaces.length} Völker</strong> den ersten Platz. Du zeigst Charakterzüge, die zu all diesen Kulturen perfekt passen!`
         : `Basierend auf diesem Profil passt das Volk <strong>${firstPlaceRaces[0].name}</strong> am besten zu dir.`;
-
-    // Das Profil befüllen (nur die geantworteten Farben + das Fazit)
+// Das Profil befüllen (nur die geantworteten Farben + das Fazit)
     document.getElementById('race-quiz-result-explanation').innerHTML = `
         <h5 class="font-bold text-stone-800 mb-3 text-xs uppercase tracking-widest text-center">Deine Antworten</h5>
         <div class="flex flex-wrap gap-2 mb-4 justify-center">
@@ -2771,13 +2929,11 @@ function calculateRaceResult() {
             ${fazitText}
         </p>
     `;
-
-    // Plätze 2 und 3 befüllen (das sind dann ranks[1] und ranks[2])
+// Plätze 2 und 3 befüllen (das sind dann ranks[1] und ranks[2])
     for (let i = 1; i <= 2; i++) {
         let titleEl = document.getElementById(`race-runnerup-${i}-title`);
         let subEl = document.getElementById(`race-runnerup-${i}-sub`);
-
-        if (ranks[i]) {
+if (ranks[i]) {
             const tiedRaces = ranks[i].map(r => r.race);
             titleEl.innerText = tiedRaces.map(r => r.name).join(" & ");
             subEl.innerText = tiedRaces.length > 1 ? "Geteilter Platz" : tiedRaces[0].subtitle;
@@ -2788,14 +2944,12 @@ function calculateRaceResult() {
         }
     }
 }
-
 // Setzt das Quiz zurück
 function resetRaceQuizUI() {
     document.getElementById('race-quiz-result-area').classList.add('hidden');
     document.getElementById('race-quiz-intro').classList.remove('hidden');
 }
-		
-        // --- 3. VAMPIRKULT DATEN & LOGIK ---
+// --- 3. VAMPIRKULT DATEN & LOGIK ---
         const appData = {
             categories: [
                 { id: 'mono', title: 'Fundamente (1 Gott)' },
@@ -2878,16 +3032,14 @@ function resetRaceQuizUI() {
         let currentItemIndex = 0;
         let radarChartInstance = null;
         let appInitialized = false;
-
-        function initApp() {
+function initApp() {
             if(appInitialized) return;
             initChart(); 
             renderCategoryNav();
             selectCategory('mono'); 
             appInitialized = true;
         }
-
-        function renderCategoryNav() {
+function renderCategoryNav() {
             const nav = document.getElementById('categoryNav');
             nav.innerHTML = '';
             appData.categories.forEach(cat => {
@@ -2898,8 +3050,7 @@ function resetRaceQuizUI() {
                 nav.appendChild(btn);
             });
         }
-
-        function selectCategory(categoryId) {
+function selectCategory(categoryId) {
             currentCategory = categoryId;
             currentItemIndex = 0;
             renderCategoryNav();
@@ -2907,8 +3058,7 @@ function resetRaceQuizUI() {
             renderItemNav();
             updateContent();
         }
-
-        function renderItemNav() {
+function renderItemNav() {
             const nav = document.getElementById('itemNav');
             nav.innerHTML = '';
             const items = appData.data[currentCategory];
@@ -2924,8 +3074,7 @@ function resetRaceQuizUI() {
                 nav.appendChild(btn);
             });
         }
-
-        function updateContent() {
+function updateContent() {
             const item = appData.data[currentCategory][currentItemIndex];
             document.getElementById('detailTitle').innerText = item.name;
             document.getElementById('detailSubtitle').innerText = item.subtitle;
@@ -2953,8 +3102,7 @@ function resetRaceQuizUI() {
             });
             updateChart(item);
         }
-
-        function initChart() {
+function initChart() {
             const ctx = document.getElementById('colorRadarChart').getContext('2d');
             Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
             Chart.defaults.color = '#78716c';
@@ -2983,8 +3131,7 @@ function resetRaceQuizUI() {
                 }
             });
         }
-
-        function updateChart(item) {
+function updateChart(item) {
             if(!radarChartInstance) return;
             const canvas = document.getElementById('colorRadarChart');
             const ctx = canvas.getContext('2d');
@@ -3019,8 +3166,7 @@ function resetRaceQuizUI() {
             radarChartInstance.data.datasets[0].pointHoverBorderColor = pointBgColors;
             radarChartInstance.update();
         }
-
-        // --- 4. DASHBOARD & KARTEN LOGIK ---
+// --- 4. DASHBOARD & KARTEN LOGIK ---
         let dashboardInitialized = false;
         const dashboardState = {
             totalPopMio: 19,
@@ -3036,19 +3182,16 @@ function resetRaceQuizUI() {
             ]
         };
         let dashboardCharts = {};
-
-        function formatNum(n) { 
+function formatNum(n) { 
             return new Intl.NumberFormat('de-DE').format(Math.round(n)); 
         }
-
-        // --- LAYER-TOGGLE FUNKTION ---
+// --- LAYER-TOGGLE FUNKTION ---
         window.toggleLayer = function(layer, isVisible) {
             if (isVisible) { document.body.classList.remove('hide-' + layer); } 
             else { document.body.classList.add('hide-' + layer); }   
             document.querySelectorAll('.chk-' + layer).forEach(cb => { cb.checked = isVisible; });
         }
-
-        // --- DYNAMISCHE KARTEN LOGIK START ---
+// --- DYNAMISCHE KARTEN LOGIK START ---
         const MASK_IMAGE_URL = 'karte_maske1.jpg'; 
         let mapMaskData = null;
         let maskWidth = 0;
@@ -3056,22 +3199,18 @@ function resetRaceQuizUI() {
         let currentMapSeed = Math.floor(Math.random() * 1000000);
         let prngState = currentMapSeed;
         let autoRerollMap = true; 
-        
-        window.toggleAutoReroll = function(isChecked) { autoRerollMap = isChecked; };
-        
-        function seededRandom() {
+window.toggleAutoReroll = function(isChecked) { autoRerollMap = isChecked; };
+function seededRandom() {
             let t = prngState += 0x6D2B79F5;
             t = Math.imul(t ^ t >>> 15, t | 1);
             t ^= t + Math.imul(t ^ t >>> 7, t | 61);
             return ((t ^ t >>> 14) >>> 0) / 4294967296;
         }
-
-        window.rerollMap = function() {
+window.rerollMap = function() {
             currentMapSeed = Math.floor(Math.random() * 1000000);
             refreshDashboardCharts();
         };
-
-        function loadMapMask(callback) {
+function loadMapMask(callback) {
             if (!MASK_IMAGE_URL) { if(callback) callback(); return; }
             const img = new Image();
             img.crossOrigin = "Anonymous"; 
@@ -3088,13 +3227,11 @@ function resetRaceQuizUI() {
             img.src = MASK_IMAGE_URL;
         }
         loadMapMask(() => { refreshDashboardCharts(); });
-
-        function getDistance(x1, y1, x2, y2) {
+function getDistance(x1, y1, x2, y2) {
             const aspect = 1778 / 1334;
             return Math.sqrt(Math.pow((x1 - x2) * aspect, 2) + Math.pow(y1 - y2, 2));
         }
-
-        function findValidPos(seedBase, attemptsLimit = 500) {
+function findValidPos(seedBase, attemptsLimit = 500) {
             let x, y, attempts = 0;
             prngState = seedBase; 
             while (attempts < attemptsLimit) {
@@ -3111,20 +3248,16 @@ function resetRaceQuizUI() {
             }
             return null;
         }
-
-        function updateDynamicMap(vals) {
+function updateDynamicMap(vals) {
             const markerContainer = document.getElementById('map-markers');
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
-            
-            const visualProvinz = Math.floor(vals.provinzCount / 20); 
+const visualProvinz = Math.floor(vals.provinzCount / 20); 
             const visualMarkt = Math.floor(vals.marktCount / 20); 
             const visualDorf = Math.floor(vals.weilerCount / 20); 
-            
-            const placedProvinz = [];
+const placedProvinz = [];
             const placedMarkt = [];
-
-            for(let i=0; i<visualProvinz; i++) {
+for(let i=0; i<visualProvinz; i++) {
                 let pos = findValidPos(currentMapSeed + i + 10000); 
                 if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 2.0)) {
                     const dot = document.createElement('div');
@@ -3134,8 +3267,7 @@ function resetRaceQuizUI() {
                     placedProvinz.push(pos);
                 }
             }
-            
-            for(let i=0; i<visualMarkt; i++) {
+for(let i=0; i<visualMarkt; i++) {
                 let pos = findValidPos(currentMapSeed + i + 20000); 
                 if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 1.5) && !placedMarkt.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.8)) {
                     const dot = document.createElement('div');
@@ -3145,8 +3277,7 @@ function resetRaceQuizUI() {
                     placedMarkt.push(pos);
                 }
             }
-            
-            for(let i=0; i<visualDorf; i++) {
+for(let i=0; i<visualDorf; i++) {
                 let pos = findValidPos(currentMapSeed + i + 30000);
                 if(pos && !placedProvinz.some(p => getDistance(pos.x, pos.y, p.x, p.y) < 0.2)) {
                     const dot = document.createElement('div');
@@ -3155,8 +3286,7 @@ function resetRaceQuizUI() {
                     markerContainer.appendChild(dot);
                 }
             }
-            
-            dashboardState.cities.forEach(city => {
+dashboardState.cities.forEach(city => {
                 if (city.pct > 0) {
                     const bigDot = document.createElement('div');
                     bigDot.className = "marker-metropole absolute rounded-full w-4 h-4 transform -translate-x-1/2 -translate-y-1/2 z-30";
@@ -3167,24 +3297,20 @@ function resetRaceQuizUI() {
                 }
             });
         }
-
-        function updateFocusMap(vals) {
+function updateFocusMap(vals) {
             const markerContainer = document.getElementById('map-markers-focus');
             if (!markerContainer) return;
             markerContainer.innerHTML = '';
-            
-            const visualProvinz = Math.floor(vals.provinzCount / 2.5); 
+const visualProvinz = Math.floor(vals.provinzCount / 2.5); 
             const visualMarkt = Math.floor(vals.marktCount / 5); 
             const visualDorf = Math.floor(vals.weilerCount / 10); 
-            
-            const allPlaced = [];
+const allPlaced = [];
             const sets = [
                 {type: 'provinz', count: visualProvinz, dist: 2.5, color: 'bg-fuchsia-500 border border-fuchsia-200 shadow-[0_0_6px_rgba(217,70,239,0.8)]', size: 'w-4 h-4', offset: 100000, markerClass: 'marker-provinz z-20'},
                 {type: 'markt', count: visualMarkt, dist: 0.8, color: 'bg-teal-500/80', size: 'w-2.5 h-2.5', offset: 200000, markerClass: 'marker-markt z-10'},
                 {type: 'dorf', count: visualDorf, dist: 0.15, color: 'bg-green-400/80', size: 'w-1.5 h-1.5', offset: 300000, markerClass: 'marker-dorf z-0'}
             ];
-            
-            sets.forEach(set => {
+sets.forEach(set => {
                 for(let i = 0; i < set.count; i++) {
                     let pos = findValidPos(currentMapSeed + i + set.offset); 
                     if (pos) {
@@ -3197,8 +3323,7 @@ function resetRaceQuizUI() {
                             }
                             return getDistance(pos.x, pos.y, p.x, p.y) < reqDist;
                         });
-
-                        if (!tooClose) {
+if (!tooClose) {
                             const dot = document.createElement('div');
                             dot.className = `${set.markerClass} absolute rounded-full ${set.color} ${set.size} transform -translate-x-1/2 -translate-y-1/2`;
                             dot.style.left = pos.x + '%'; 
@@ -3209,8 +3334,7 @@ function resetRaceQuizUI() {
                     }
                 }
             });
-            
-            // Tooltip Element holen
+// Tooltip Element holen
             const tooltip = document.getElementById('map-tooltip');
             dashboardState.cities.forEach(city => {
                 if (city.pct > 0) {
@@ -3251,8 +3375,7 @@ function resetRaceQuizUI() {
                 }
             });
         }
-
-        // --- SNAPSHOT LOGIK START ---
+// --- SNAPSHOT LOGIK START ---
         let snapshots = JSON.parse(localStorage.getItem('osmieen_snapshots') || '[]');
         function updateSnapshotSelect() {
             const sel = document.getElementById('snapshot-select');
@@ -3301,8 +3424,7 @@ function resetRaceQuizUI() {
             }
         };
         setTimeout(updateSnapshotSelect, 500);
-
-        // --- WERTE & BERECHNUNG ---
+// --- WERTE & BERECHNUNG ---
         function getCalculatedValues() {
             const totalPop = dashboardState.totalPopMio * 1000000;
             const urbanPop = Math.round(totalPop * (dashboardState.urbanRate / 100));
@@ -3318,8 +3440,7 @@ function resetRaceQuizUI() {
                 weilerCount: Math.max(0, Math.round(weilerPop / 150))
             };
         }
-
-        function balance(idx, newPct) {
+function balance(idx, newPct) {
             const vals = getCalculatedValues();
             let lockedSum = 0;
             dashboardState.cities.forEach((c, i) => { if(c.locked && i !== idx) lockedSum += c.pct; });
@@ -3338,8 +3459,7 @@ function resetRaceQuizUI() {
             }
             updateDashboardUI();
         }
-
-        // --- OBERFLÄCHE AKTUALISIEREN & SYNC ---
+// --- OBERFLÄCHE AKTUALISIEREN & SYNC ---
         function updateDashboardUI() {
             const vals = getCalculatedValues();
             document.getElementById('display-total-pop').innerText = formatNum(vals.totalPop);
@@ -3416,8 +3536,7 @@ function resetRaceQuizUI() {
             });
             refreshDashboardCharts();
         }
-
-        window.toggleCityLock = (index) => {
+window.toggleCityLock = (index) => {
             dashboardState.cities[index].locked = !dashboardState.cities[index].locked;
             updateDashboardUI();
         };
@@ -3426,8 +3545,7 @@ function resetRaceQuizUI() {
             const vals = getCalculatedValues();
             balance(index, ((parseFloat(val) || 0) / vals.big5Pop) * 100);
         };
-
-        // EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
+// EVENT LISTENER FÜR INPUTS & REGLER (ZENTRAL)
         const mappings = [
             { id: 'pop-mio', fId: 'pop', stateKey: 'totalPopMio' },
             { id: 'urban-rate', fId: 'urban', stateKey: 'urbanRate' },
@@ -3447,56 +3565,46 @@ function resetRaceQuizUI() {
                 document.getElementById(`f-range-${m.fId}`).addEventListener('input', updateState);
             }
         });
-
-        function initDashboard() {
+function initDashboard() {
             const tooltips = { 
                 callbacks: { label: (ctx) => `${ctx.label}: ${formatNum(ctx.raw)} Ew.` },
                 backgroundColor: '#1e293b', padding: 8, titleFont: { size: 10 }, bodyFont: { size: 10 }
             };
             const options = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: tooltips } };
-            
-            dashboardCharts.urban = new Chart(document.getElementById('chartUrbanRural'), {
+dashboardCharts.urban = new Chart(document.getElementById('chartUrbanRural'), {
                 type: 'doughnut',
                 data: { labels: ['Stadtbewohner', 'Landbevölkerung'], datasets: [{ data: [0,0], backgroundColor: ['#ef4444', '#334155'], borderWidth: 0 }] },
                 options: { ...options, cutout: '80%' }
             });
-            
-            dashboardCharts.siedlung = new Chart(document.getElementById('chartSiedlung'), {
+dashboardCharts.siedlung = new Chart(document.getElementById('chartSiedlung'), {
                 type: 'bar',
                 data: { labels: ['Big 5', 'Provinz', 'Märkte', 'Dörfer'], datasets: [{ data: [0,0,0,0], backgroundColor: ['#ef4444', '#64748b', '#0d9488', '#166534'], borderRadius: 4 }] },
                 options: { ...options, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 8 } } } } }
             });
-            
-            dashboardCharts.big5 = new Chart(document.getElementById('chartBig5'), {
+dashboardCharts.big5 = new Chart(document.getElementById('chartBig5'), {
                 type: 'pie',
                 data: { labels: dashboardState.cities.map(c => c.name), datasets: [{ data: [0,0,0,0,0], backgroundColor: dashboardState.cities.map(c => c.color), borderWidth: 2, borderColor: '#0f172a' }] },
                 options: options
             });   
-            
-            updateDashboardUI();
+updateDashboardUI();
             dashboardInitialized = true;
         }
-
-        function refreshDashboardCharts() {
+function refreshDashboardCharts() {
             if(!dashboardCharts.urban) return;
             const vals = getCalculatedValues();
             dashboardCharts.urban.data.datasets[0].data = [vals.urbanPop, vals.ruralPop];
             dashboardCharts.urban.update('none');
-            
-            dashboardCharts.siedlung.data.datasets[0].data = [vals.big5Pop, vals.provinzPop, vals.marktPop, vals.weilerPop];
+dashboardCharts.siedlung.data.datasets[0].data = [vals.big5Pop, vals.provinzPop, vals.marktPop, vals.weilerPop];
             dashboardCharts.siedlung.update('none');
-            
-            dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
+dashboardCharts.big5.data.datasets[0].data = dashboardState.cities.map(c => Math.round(vals.big5Pop * (c.pct / 100)));
             dashboardCharts.big5.update('none');   
-            
-            if (autoRerollMap) {
+if (autoRerollMap) {
                 currentMapSeed = Math.floor(Math.random() * 1000000); 
             }
             updateDynamicMap(vals);
             updateFocusMap(vals); 
         }
-
-        // --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
+// --- ZOOM & PAN LOGIK FÜR DIE GROßE KARTE ---
         let currentZoom = 1; // Startet weiter rausgezoomt
         let panX = 0;
         let panY = 0;
@@ -3505,8 +3613,7 @@ function resetRaceQuizUI() {
         let startY = 0;
         const viewport = document.getElementById('map-viewport');
         const mapContainer = document.getElementById('map-transform-container');
-
-        function applyTransform() {
+function applyTransform() {
             if (!mapContainer) return;
             mapContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;   
             const scaleHint = document.getElementById('scale-hint');
@@ -3520,56 +3627,47 @@ function resetRaceQuizUI() {
                 }
             }
         }
-
-        window.zoomMap = function(delta) {
+window.zoomMap = function(delta) {
             currentZoom += delta;
             if (currentZoom < 0.3) currentZoom = 0.3; // Lässt dich jetzt noch weiter rauszoomen
             if (currentZoom > 5.0) currentZoom = 5.0;
             applyTransform();
         }
-
-        window.resetMapZoom = function() {
+window.resetMapZoom = function() {
              currentZoom = 1; panX = 0; panY = 0; applyTransform(); 
         }
-
-        if (viewport && mapContainer) {
+if (viewport && mapContainer) {
             viewport.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 window.zoomMap(e.deltaY > 0 ? -0.1 : 0.1);
             }, { passive: false });
-            
-            mapContainer.addEventListener('mousedown', (e) => {
+mapContainer.addEventListener('mousedown', (e) => {
                 isPanning = true;
                 startX = e.clientX - panX;
                 startY = e.clientY - panY;
                 mapContainer.style.transition = 'none';
             });
-            
-            window.addEventListener('mousemove', (e) => {
+window.addEventListener('mousemove', (e) => {
                 if (!isPanning) return;
                 panX = e.clientX - startX;
                 panY = e.clientY - startY;
                 applyTransform();
             });
-            
-            window.addEventListener('mouseup', () => {
+window.addEventListener('mouseup', () => {
                 if (isPanning) {
                     isPanning = false;
                     mapContainer.style.transition = 'transform 0.1s ease-out';
                 }
             });
         }
-
-        // --- 5. KOMMENTAR-FUNKTION LOGIK ---
+// --- 5. KOMMENTAR-FUNKTION LOGIK ---
         window.onload = () => {
             const initialVals = getCalculatedValues();
             updateFocusMap(initialVals); 
         };
-
-        // --- ZWEISTUFIGE FEEDBACK LOGIK ---
+// --- ZWEISTUFIGE FEEDBACK LOGIK ---
         let feedbackCart = JSON.parse(localStorage.getItem('osmieen_feedback_cart') || '[]');
-        
-        function injectFeedbackButtons() {
+function injectFeedbackButtons() {
             document.querySelectorAll('summary.section-summary').forEach(summary => {
                 const titleDiv = summary.querySelector('.summary-title');
                 if(!titleDiv || titleDiv.querySelector('.feedback-trigger')) return;
@@ -3586,18 +3684,15 @@ function resetRaceQuizUI() {
             });
             updateFeedbackBadge();
         }
-
-        function openFeedbackModal(contextName) {
+function openFeedbackModal(contextName) {
             document.getElementById('modal-context').value = contextName;
             document.getElementById('modal-text').value = '';
             document.getElementById('feedback-modal').classList.remove('hidden');
         }
-
-        function closeFeedbackModal() {
+function closeFeedbackModal() {
             document.getElementById('feedback-modal').classList.add('hidden');
         }
-
-        function saveFeedbackToCart() {
+function saveFeedbackToCart() {
             const text = document.getElementById('modal-text').value.trim();
             const context = document.getElementById('modal-context').value;
             if(!text) { alert("Bitte schreib etwas auf, bevor du speicherst."); return; }
@@ -3607,8 +3702,7 @@ function resetRaceQuizUI() {
             updateFeedbackBadge();
             alert("Wurde auf deinen Feedback-Zettel gepackt!");
         }
-
-        function updateFeedbackBadge() {
+function updateFeedbackBadge() {
             const badge = document.getElementById('feedback-badge');
             const submitBtn = document.getElementById('btn-submit-all');
             if(feedbackCart.length > 0) {
@@ -3623,8 +3717,7 @@ function resetRaceQuizUI() {
                 renderFeedbackCart();
             }
         }
-
-        function renderFeedbackCart() {
+function renderFeedbackCart() {
             const list = document.getElementById('feedback-cart-list');
             if(feedbackCart.length === 0) {
                 list.innerHTML = '<p class="text-stone-400 italic py-8 text-center border-2 border-dashed border-stone-200 rounded-xl">Dein Zettel ist noch leer. Klicke im Wiki auf die 💬 Buttons!</p>';
@@ -3638,14 +3731,12 @@ function resetRaceQuizUI() {
                 </div>
             `).join('');
         }
-
-        function removeFromCart(index) {
+function removeFromCart(index) {
             feedbackCart.splice(index, 1);
             localStorage.setItem('osmieen_feedback_cart', JSON.stringify(feedbackCart));
             updateFeedbackBadge();
         }
-
-        function prepareFinalSubmission(e) {
+function prepareFinalSubmission(e) {
             if(feedbackCart.length === 0) {
                 e.preventDefault();
                 alert("Es gibt nichts zum Abschicken!");
@@ -3661,8 +3752,7 @@ function resetRaceQuizUI() {
             feedbackCart = [];
             setTimeout(() => { updateFeedbackBadge(); }, 100);
         }
-
-        setTimeout(injectFeedbackButtons, 500);
+setTimeout(injectFeedbackButtons, 500);
 		const qQuick = [
             { q: "Ein komplexes mechanisches Schloss blockiert deinen Weg. Was tust du?", options: [ 
                 { text: "Ich suche konzentriert nach dem Rhythmus und dem Muster der Zylinder.", colors: [0, 0.6, 0, 0, 0.4] }, 
@@ -3704,8 +3794,7 @@ function resetRaceQuizUI() {
                 { text: "Ich höre zu, wer mich hintergeht, und schlage präventiv zu.", colors: [0, 0, 0.6, 0.4, 0] } 
             ] }
         ];
-
-        const qDeep = [
+const qDeep = [
             ...qQuick,
             { q: "Jemand erzählt in einer Taverne eine Geschichte, die faktisch völlig falsch ist.", options: [ 
                 { text: "Ich korrigiere ihn sofort vor allen Leuten.", colors: [0.5, 0.5, 0, 0, 0] }, 
@@ -3842,16 +3931,14 @@ function resetRaceQuizUI() {
         let activeQuiz = [];
         let currentQuizIndex = 0;
         let userScores = [0, 0, 0, 0, 0]; 
-
-        window.resetQuizUI = function() {
+window.resetQuizUI = function() {
             document.getElementById('quiz-start-area').classList.remove('hidden');
             document.getElementById('quiz-question-area').classList.add('hidden');
             document.getElementById('quiz-result-area').classList.add('hidden');
             currentQuizIndex = 0;
             userScores = [0, 0, 0, 0, 0];
         }
-
-        window.startQuiz = function(mode) {
+window.startQuiz = function(mode) {
             activeQuiz = (mode === 'deep') ? [...qDeep] : [...qQuick];
             activeQuiz.sort(() => Math.random() - 0.5);
             currentQuizIndex = 0;
@@ -3860,8 +3947,7 @@ function resetRaceQuizUI() {
             document.getElementById('quiz-question-area').classList.remove('hidden');
             renderQuizQuestion();
         }
-
-        function renderQuizQuestion() {
+function renderQuizQuestion() {
             if (currentQuizIndex >= activeQuiz.length) { calculateQuizResult(); return; }
             document.getElementById('quiz-progress').innerText = `Frage ${currentQuizIndex + 1} von ${activeQuiz.length}`;
             const qObj = activeQuiz[currentQuizIndex];
@@ -3876,7 +3962,6 @@ function resetRaceQuizUI() {
                 optionsDiv.appendChild(btn);
             });
         }
-
 window.jumpToCult = function(catId, itemIdx) {
             switchTab('tab-cults');
             currentCategory = catId;
@@ -3887,25 +3972,20 @@ window.jumpToCult = function(catId, itemIdx) {
             updateContent();
             window.scrollTo(0,0);
         };
-
 function calculateQuizResult() {
             document.getElementById('quiz-question-area').classList.add('hidden');
             document.getElementById('quiz-result-area').classList.remove('hidden');
-            
-            let totalScore = userScores.reduce((a, b) => a + b, 0);
+let totalScore = userScores.reduce((a, b) => a + b, 0);
             if (totalScore === 0) totalScore = 1;
             let pcts = userScores.map(v => Math.round((v / totalScore) * 100));
-
-            // 1. Platz 1 bestimmen (Relative Gap-Analyse)
+// 1. Platz 1 bestimmen (Relative Gap-Analyse)
             let maxPct = Math.max(...pcts);
             let threshold = maxPct * 0.8;
             let dominantPattern = pcts.map(p => p >= threshold ? 1 : 0);
-
-            let finalCult = null;
+let finalCult = null;
             let finalCat = '';
             let finalIdx = 0;
-
-            Object.keys(appData.data).forEach(cat => {
+Object.keys(appData.data).forEach(cat => {
                 appData.data[cat].forEach((cult, index) => {
                     if (cult.colors.every((val, i) => val === dominantPattern[i])) {
                         finalCult = cult;
@@ -3914,22 +3994,18 @@ function calculateQuizResult() {
                     }
                 });
             });
-
-            // Fallback für Platz 1
+// Fallback für Platz 1
             if (!finalCult) {
                 finalCult = appData.data['mono'][pcts.indexOf(Math.max(...pcts))];
                 finalCat = 'mono';
             }
-
-            // UI für Platz 1 befüllen
+// UI für Platz 1 befüllen
             document.getElementById('quiz-result-title').innerText = finalCult.name;
             document.getElementById('quiz-result-subtitle').innerText = finalCult.subtitle;
             document.getElementById('quiz-result-essence').innerText = finalCult.sections[0].essence;
-
-            const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
+const colorNames = ["Weiß (Ordnung)", "Blau (Wissen)", "Schwarz (Macht)", "Rot (Leidenschaft)", "Grün (Natur)"];
             let sortedColors = pcts.map((p, i) => ({p, n: colorNames[i]})).sort((a,b) => b.p - a.p);
-
-            document.getElementById('quiz-result-explanation').innerHTML = `
+document.getElementById('quiz-result-explanation').innerHTML = `
                 Deine Seele setzt sich aus folgenden Kräften zusammen:<br>
                 <div class="flex flex-wrap gap-2 mt-3 mb-4 justify-center">
                     ${sortedColors.filter(c => c.p > 5).map(c => `
@@ -3939,22 +4015,18 @@ function calculateQuizResult() {
                     `).join('')}
                 </div>
                 Diese Dominanz macht dich zu einem Vertreter von <strong>${finalCult.name}</strong>.`;
-
-            document.getElementById('quiz-result-link-container').innerHTML = `
+document.getElementById('quiz-result-link-container').innerHTML = `
                 <button onclick="jumpToCult('${finalCat}', ${finalIdx})" class="mt-4 text-sm bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition hover:bg-amber-700 shadow-md flex items-center gap-2 mx-auto">
                     <span>➔ Details im Kompendium</span>
                 </button>`;
-
-            // 2. Platz 2 & 3: Mathematische Präzisions-Logik
+// 2. Platz 2 & 3: Mathematische Präzisions-Logik
             let otherResults = [];
             Object.keys(appData.data).forEach(cat => {
                 appData.data[cat].forEach((cult, index) => {
                     if (cult.name === finalCult.name) return;
-                    
-                    let matchScore = 0;
+let matchScore = 0;
                     let cultColorCount = cult.colors.reduce((a,b) => a+b, 0);
-
-                    for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 5; i++) {
                         if (cult.colors[i] === 1) {
                             // Wenn der Kult eine Farbe hat, die du kaum hast (unter 15%), 
                             // bekommt er einen massiven Malus.
@@ -3969,23 +4041,18 @@ function calculateQuizResult() {
                             if (pcts[i] > 20) matchScore -= 10;
                         }
                     }
-                    
-                    // "Fokus-Faktor": Bevorzugt Kulte, deren Farbanzahl näher an deiner 
+// "Fokus-Faktor": Bevorzugt Kulte, deren Farbanzahl näher an deiner 
                     // tatsächlichen Treffer-Anzahl liegt.
                     let finalScore = matchScore / (1 + Math.abs(cultColorCount - dominantPattern.reduce((a,b)=>a+b,0)));
-                    
-                    otherResults.push({cult, finalScore, cat, index});
+otherResults.push({cult, finalScore, cat, index});
                 });
             });
-
-            otherResults.sort((a, b) => b.finalScore - a.finalScore);
-
-            const getColorLabels = (colors) => {
+otherResults.sort((a, b) => b.finalScore - a.finalScore);
+const getColorLabels = (colors) => {
                 const names = ["Weiß", "Blau", "Schwarz", "Rot", "Grün"];
                 return colors.map((val, i) => val === 1 ? names[i] : null).filter(n => n).join(' / ');
             };
-
-            [1, 2].forEach(i => {
+[1, 2].forEach(i => {
                 const res = otherResults[i-1];
                 document.getElementById(`quiz-runnerup-${i}-title`).innerText = res.cult.name;
                 document.getElementById(`quiz-runnerup-${i}-sub`).innerHTML = `
@@ -3998,8 +4065,7 @@ function calculateQuizResult() {
             });
         }
         resetQuizUI();
-
-        const storyPages = [
+const storyPages = [
             {
                 title: "Die Venen von Osmieen: Der Sektor 4",
                 img: "0.png", 
@@ -4066,13 +4132,11 @@ function calculateQuizResult() {
                 text: "Der Galapa schritt langsam über die Fluchtspur der Gruppe hinweg. Wo seine gewaltigen Füße den Boden berührten, spross augenblicklich dickes Moos und weißer Klee hervor, der den Geruch von Schweiß und vergossenem Blut unter einer Schicht aus Natur begrub. Vespera beobachtete fasziniert, wie Beryl die magischen Rückstände ihrer Flucht mit einer Geste in das grüne Herz des Waldes zog. Ihre Spuren waren ausgelöscht, verloren im ewigen Kreislauf des Wachstums. Für heute waren sie Geister in einer Welt, die nur an Fleisch und Eisen glaubte."
             }
         ];
-
-        let currentStoryIndex = 0;
+let currentStoryIndex = 0;
         let isReading = false;
         let synth = window.speechSynthesis;
         let currentUtterance = null;
-        
-        function renderStoryPage() {
+function renderStoryPage() {
             const page = storyPages[currentStoryIndex];
             document.getElementById('story-chapter-title').innerText = page.title;
             document.getElementById('story-content').innerText = page.text;
@@ -4090,8 +4154,7 @@ function calculateQuizResult() {
             document.getElementById('btn-prev-page').disabled = currentStoryIndex === 0;
             document.getElementById('btn-next-page').disabled = currentStoryIndex === storyPages.length - 1;
         }
-
-        function nextStoryPage() {
+function nextStoryPage() {
             if (currentStoryIndex < storyPages.length - 1) {
                 currentStoryIndex++;
                 renderStoryPage();
@@ -4100,16 +4163,14 @@ function calculateQuizResult() {
                 stopStoryPlayback();
             }
         }
-
-        function prevStoryPage() {
+function prevStoryPage() {
             if (currentStoryIndex > 0) {
                 currentStoryIndex--;
                 renderStoryPage();
                 if (isReading) speakCurrentPage();
             }
         }
-
-        function toggleStoryPlayback() {
+function toggleStoryPlayback() {
             if (isReading) {
                 stopStoryPlayback();
             } else {
@@ -4120,8 +4181,7 @@ function calculateQuizResult() {
                 speakCurrentPage();
             }
         }
-
-        function stopStoryPlayback() {
+function stopStoryPlayback() {
             isReading = false;
             synth.cancel();
             document.getElementById('play-icon').innerText = '▶️';
@@ -4129,8 +4189,7 @@ function calculateQuizResult() {
             const indicator = document.getElementById('reading-indicator');
             if(indicator) indicator.classList.add('hidden');
         }
-
-        function speakCurrentPage() {
+function speakCurrentPage() {
             synth.cancel();
             if (!isReading) return;
             let fullText = storyPages[currentStoryIndex].title + ". " + storyPages[currentStoryIndex].text;
@@ -4163,8 +4222,7 @@ function calculateQuizResult() {
             }
             speakNextSentence();
         }
-
-        window.addEventListener('load', () => {
+window.addEventListener('load', () => {
             setTimeout(() => { synth.getVoices(); }, 50);
             renderStoryPage();
         });
@@ -4175,14 +4233,11 @@ function calculateQuizResult() {
         const musicProgress = document.getElementById('music-progress');
         const currentTimeDisplay = document.getElementById('music-current-time');
         const totalTimeDisplay = document.getElementById('music-total-time');
-
-        // Initiale Lautstärke setzen
+// Initiale Lautstärke setzen
         if(bgMusic) bgMusic.volume = 0.2;
-
-        function toggleMusic() {
+function toggleMusic() {
             if (!bgMusic) return;
-            
-            if (bgMusic.paused) {
+if (bgMusic.paused) {
                 bgMusic.play();
                 playBtn.innerText = '⏸️';
                 musicStatus.innerText = 'Spielt...';
@@ -4196,50 +4251,40 @@ function calculateQuizResult() {
                 musicStatus.classList.add('text-stone-400');
             }
         }
-
-        function setVolume(val) {
+function setVolume(val) {
             if(bgMusic) bgMusic.volume = val;
         }
-
-        // Hilfsfunktion: Sekunden in ein lesbares Format umwandeln (Minuten:Sekunden)
+// Hilfsfunktion: Sekunden in ein lesbares Format umwandeln (Minuten:Sekunden)
         function formatTime(seconds) {
             if (isNaN(seconds)) return "0:00";
             const m = Math.floor(seconds / 60);
             const s = Math.floor(seconds % 60);
             return m + ":" + (s < 10 ? "0" : "") + s;
         }
-
-        if(bgMusic) {
+if(bgMusic) {
             // Sobald die Audio-Datei geladen ist: Gesamtlänge in den Slider eintragen
             bgMusic.addEventListener('loadedmetadata', () => {
                 musicProgress.max = bgMusic.duration;
                 totalTimeDisplay.innerText = formatTime(bgMusic.duration);
             });
-
-            // Während die Musik spielt: Aktuelle Zeit und Slider-Position updaten
+// Während die Musik spielt: Aktuelle Zeit und Slider-Position updaten
             bgMusic.addEventListener('timeupdate', () => {
                 musicProgress.value = bgMusic.currentTime;
                 currentTimeDisplay.innerText = formatTime(bgMusic.currentTime);
             });
         }
-
-        // Funktion für den Fortschritts-Slider (an einen bestimmten Punkt springen)
+// Funktion für den Fortschritts-Slider (an einen bestimmten Punkt springen)
         function seekMusic(val) {
             if(bgMusic) {
                 bgMusic.currentTime = val;
             }
         }
-
-        // Funktion für die +/- 30 Sekunden Buttons
+// Funktion für die +/- 30 Sekunden Buttons
         function skipMusic(seconds) {
             if(bgMusic) {
                 bgMusic.currentTime += seconds;
             }
         }
-
-        function setVolume(val) {
-            if(bgMusic) bgMusic.volume = val;
-        }
-    </script>
+</script>
 </body>
 </html>
