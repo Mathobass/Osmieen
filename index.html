@@ -2259,26 +2259,26 @@
 
                     <!-- Linke Spalte: Kult-Liste -->
                     <div class="w-52 flex-shrink-0 border-r border-stone-200 flex flex-col overflow-hidden">
-                        <p id="introText" class="text-xs text-stone-400 italic px-4 pt-3 pb-2 m-0 flex-shrink-0"></p>
-                        <div id="itemNav" class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-4 flex flex-col gap-1"></div>
+                        <div id="itemNav" class="flex-1 overflow-y-auto custom-scrollbar px-2 pb-4 pt-2 flex flex-col gap-1"></div>
                     </div>
 
                     <!-- Rechte Seite: Titel + Details + Chart -->
                     <div class="flex-1 overflow-y-auto custom-scrollbar">
                         <div class="flex flex-col gap-5 p-6">
 
-                            <!-- Titel -->
+                            <!-- Kategoriebeschreibung + Untertitel + Name -->
                             <div>
-                                <h2 id="detailTitle" class="text-xl font-bold text-stone-900 mb-1 m-0"></h2>
-                                <p id="detailSubtitle" class="text-sm text-stone-500 italic m-0"></p>
+                                <p id="introText" class="text-xs text-stone-400 italic mb-2 m-0"></p>
+                                <p id="detailSubtitle" class="text-sm text-stone-500 italic mb-1 m-0"></p>
+                                <h2 id="detailTitle" class="text-xl font-bold text-stone-900 m-0"></h2>
                             </div>
 
-                            <!-- Stärken & Schwächen -->
-                            <div id="detailContent" class="flex flex-col gap-3"></div>
-
-                            <!-- Chart darunter -->
-                            <div class="flex justify-center pt-2">
-                                <canvas id="colorRadarChart" width="360" height="360" style="max-width:360px;width:100%;"></canvas>
+                            <!-- Stärken & Schwächen neben dem Chart -->
+                            <div class="flex flex-col lg:flex-row gap-6 items-start">
+                                <div id="detailContent" class="flex flex-col gap-3 flex-1 min-w-0"></div>
+                                <div class="flex-shrink-0 flex justify-center lg:justify-end">
+                                    <canvas id="colorRadarChart" width="420" height="420" style="max-width:420px;width:100%;"></canvas>
+                                </div>
                             </div>
 
                         </div>
