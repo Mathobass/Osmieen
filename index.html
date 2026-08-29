@@ -1,736 +1,1363 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Osmieen - Daggerheart Kampagne</title>
+    <title>Chroniken von Osmieen — Kompendium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <style>
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-           OSMIEEN WIKI — DESIGN SYSTEM v3
-           Inspired by: Linear Docs, Vercel Docs, Radix UI
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        :root {
-            /* Colors */
-            --c-bg:        #ffffff;
-            --c-bg-subtle: #f8fafc;
-            --c-bg-raised: #f1f5f9;
-            --c-border:    #e2e8f0;
-            --c-border-2:  #f1f5f9;
-            --c-text-1:    #0f172a;
-            --c-text-2:    #334155;
-            --c-text-3:    #64748b;
-            --c-text-4:    #94a3b8;
-            --c-amber:     #f59e0b;
-            --c-amber-d:   #d97706;
-            --c-amber-bg:  #fffbeb;
-            --c-amber-bg2: #fef3c7;
-            --c-amber-bd:  #fde68a;
-            /* Spacing */
-            --sb-w: 264px;
-            --hdr-h: 44px;
-            /* Radius */
-            --r-sm: 5px;
-            --r:    8px;
-            --r-lg: 12px;
-        }
 
-        /* ─── RESET & BASE ─── */
-        *, *::before, *::after { box-sizing: border-box; }
-        html, body {
-            position: fixed;
-            width: 100%; height: 100%; height: 100dvh;
-            overflow: hidden;
-            overscroll-behavior: none;
-            margin: 0; padding: 0;
-        }
-        body {
-            background: var(--c-bg-subtle);
-            color: var(--c-text-1);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-        main, aside, .custom-scrollbar {
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
-        }
-        button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; }
-        a { color: inherit; text-decoration: none; }
-        summary { list-style: none; }
-        summary::-webkit-details-marker { display: none; }
+/* -- OSMIEEN KOMPENDIUM — Design System Parchment · Crimson · Gold · Dark Mahogany "Die Chroniken der Theokratie" -- */
+:root {
+    --c-bg:          #f0e6d2;
+    --c-bg-alt:      #e8dcc8;
+    --c-bg-deep:     #e0d4bc;
+    --c-card:        #faf5ec;
+    --c-card-2:      #f5edd8;
+    --c-nav:         #12100e;
+    --c-nav-2:       #1e1b16;
+    --c-nav-3:       #2a2620;
+    --c-nav-text:    #d4c49a;
+    --c-nav-muted:   #8a7a5a;
+    --c-accent:      #7e1c1c;
+    --c-accent-l:    #9b2828;
+    --c-accent-ll:   #b83232;
+    --c-gold:        #a0621a;
+    --c-gold-l:      #c47c20;
+    --c-gold-bright: #d4922a;
+    --c-text:        #1a1208;
+    --c-text-2:      #3d2c1a;
+    --c-text-3:      #6b5040;
+    --c-text-muted:  #9a7f68;
+    --c-border:      #c4a878;
+    --c-border-l:    #d8c49a;
+    --c-border-ll:   #e8d8b8;
+    --nav-h:         58px;
+    --r:             8px;
+    --r-lg:          14px;
+}
 
-        /* ─── SCROLLBAR ─── */
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+    position: fixed; width: 100%; height: 100%; height: 100dvh;
+    overflow: hidden; overscroll-behavior: none;
+    margin: 0; padding: 0;
+}
+body {
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    font-size: 16px; line-height: 1.75;
+    background: var(--c-bg);
+    color: var(--c-text);
+    display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+a { color: inherit; text-decoration: none; }
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
 
-        /* ━━━━━━━━━━━━━━━━━━ SIDEBAR ━━━━━━━━━━━━━━━━━━ */
-        #sidebar {
-            background: var(--c-bg);
-            border-right: 1px solid var(--c-border);
-            display: flex;
-            flex-direction: column;
-        }
+/* ─── SCROLLBAR ─── */
+.kompendium-scroll::-webkit-scrollbar { width: 6px; }
+.kompendium-scroll::-webkit-scrollbar-track { background: var(--c-bg-alt); }
+.kompendium-scroll::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
+.kompendium-scroll::-webkit-scrollbar-thumb:hover { background: var(--c-gold); }
+/* Also keep custom-scrollbar working for interactive components */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--c-gold); }
 
-        /* Logo */
-        .sb-header {
-            padding: 1rem 1rem 0.875rem;
-            border-bottom: 1px solid var(--c-border-2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-        .sb-logo { display: flex; align-items: center; gap: 0.625rem; }
-        .sb-logo-mark {
-            width: 30px; height: 30px;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            border-radius: var(--r-sm);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.9375rem; color: #fff;
-            letter-spacing: -0.02em; flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(245,158,11,0.3);
-        }
-        .sb-logo-text { }
-        .sb-logo-name { font-size: 0.875rem; font-weight: 700; color: var(--c-text-1); letter-spacing: -0.02em; line-height: 1.2; }
-        .sb-logo-sub  { font-size: 0.6875rem; color: var(--c-text-4); font-weight: 500; line-height: 1; }
-        .sb-close-btn {
-            padding: 0.375rem;
-            border-radius: var(--r-sm);
-            color: var(--c-text-4);
-            transition: background 0.1s, color 0.1s;
-        }
-        .sb-close-btn:hover { background: var(--c-bg-raised); color: var(--c-text-2); }
+/* -- TOP NAVIGATION -- */
+#topnav {
+    flex-shrink: 0;
+    height: var(--nav-h);
+    background: var(--c-nav);
+    border-bottom: 1px solid var(--c-nav-3);
+    display: flex; align-items: center;
+    padding: 0 16px;
+    gap: 0;
+    position: relative;
+    z-index: 200;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.45);
+}
 
-        /* Search */
-        .sb-search {
-            margin: 0.75rem 0.75rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--c-bg-subtle);
-            border: 1px solid var(--c-border);
-            border-radius: var(--r);
-            padding: 0.4375rem 0.625rem;
-            transition: border-color 0.15s, box-shadow 0.15s;
-            cursor: text;
-        }
-        .sb-search:focus-within {
-            border-color: var(--c-amber);
-            box-shadow: 0 0 0 3px rgba(245,158,11,0.1);
-        }
-        .sb-search-icon { color: var(--c-text-4); flex-shrink: 0; font-size: 0.8125rem; }
-        .sb-search-input {
-            flex: 1; border: none; background: transparent;
-            font-size: 0.8125rem; color: var(--c-text-2);
-            outline: none; font-family: inherit;
-        }
-        .sb-search-input::placeholder { color: var(--c-text-4); }
-        .sb-search-kbd {
-            font-size: 0.625rem; font-family: monospace;
-            background: var(--c-bg); border: 1px solid var(--c-border);
-            border-radius: 4px; padding: 1px 5px; color: var(--c-text-4);
-            flex-shrink: 0;
-        }
-        /* Search wrapper + results dropdown */
-        .sb-search-wrap {
-            margin: 0.75rem 0.75rem 0;
-            position: relative;
-        }
-        .sb-search-wrap .sb-search {
-            margin: 0;
-        }
-        .search-results {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0; right: 0;
-            background: var(--c-bg);
-            border: 1px solid var(--c-border);
-            border-radius: var(--r);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            z-index: 200;
-            max-height: 320px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        .search-results.hidden { display: none; }
-        .search-result-item {
-            display: flex;
-            flex-direction: column;
-            padding: 0.5rem 0.75rem;
-            cursor: pointer;
-            border-bottom: 1px solid var(--c-border-2);
-            transition: background 0.1s;
-        }
-        .search-result-item:last-child { border-bottom: none; }
-        .search-result-item:hover, .search-result-item.focused {
-            background: var(--c-amber-bg);
-        }
-        .search-result-label {
-            font-size: 0.8125rem;
-            font-weight: 500;
-            color: var(--c-text-1);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .search-result-label mark {
-            background: var(--c-amber-bg2);
-            color: var(--c-amber-d);
-            border-radius: 2px;
-            padding: 0 1px;
-            font-weight: 700;
-        }
-        .search-result-meta {
-            font-size: 0.6875rem;
-            color: var(--c-text-4);
-            margin-top: 1px;
-        }
-        .search-result-type-tab { color: var(--c-amber-d); font-weight: 600; }
-        .search-no-results {
-            padding: 1rem 0.75rem;
-            font-size: 0.8125rem;
-            color: var(--c-text-4);
-            text-align: center;
-        }
+/* Logo / Brand */
+.nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 12px 4px 4px;
+    border-right: 1px solid var(--c-nav-3);
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+.nav-logo:hover { background: var(--c-nav-2); }
+.nav-logo-icon {
+    width: 32px; height: 32px;
+    background: var(--c-accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #f5ddd0;
+    font-style: normal;
+    border: 1px solid var(--c-accent-l);
+    flex-shrink: 0;
+}
+.nav-logo-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--c-nav-text);
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.nav-logo-sub {
+    font-size: 10px; color: var(--c-nav-muted);
+    letter-spacing: 0.06em; line-height: 1;
+    white-space: nowrap;
+    font-family: 'Lora', serif;
+    font-style: italic;
+}
 
-        /* Navigation */
-        .sb-nav {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.875rem 0.75rem 1.5rem;
-        }
-        .sb-section { margin-bottom: 1.25rem; }
-        .sb-section-label {
-            font-size: 0.6rem;
-            font-weight: 700;
-            color: var(--c-text-4);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 0 0.5rem;
-            margin-bottom: 0.25rem;
-            display: block;
-        }
-        .sb-item {
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            width: 100%;
-            padding: 0.375rem 0.5rem;
-            border-radius: var(--r-sm);
-            font-size: 0.8125rem;
-            font-weight: 500;
-            color: var(--c-text-3);
-            transition: background 0.1s, color 0.1s;
-            position: relative;
-            text-align: left;
-        }
-        .sb-item:hover { background: var(--c-bg-raised); color: var(--c-text-1); }
-        .sb-item.active {
-            color: var(--c-text-1);
-            font-weight: 600;
-            background: var(--c-bg-subtle);
-        }
-        .sb-item.active::after {
-            content: '';
-            position: absolute;
-            right: 0.5rem;
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--c-amber);
-        }
-        .sb-item-icon { margin-left: auto; font-size: 0.75rem; opacity: 0.45; flex-shrink: 0; }
-        .sb-badge {
-            margin-left: auto;
-            font-size: 0.5625rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.05em;
-            padding: 1px 5px; border-radius: 4px;
-            background: var(--c-amber-bg); color: var(--c-amber-d);
-            border: 1px solid var(--c-amber-bd);
-        }
+/* Nav center (main menu) */
+.nav-center {
+    flex: 1;
+    display: flex; align-items: center; gap: 2px;
+}
 
-        /* Sidebar footer: music player */
-        .sb-footer {
-            border-top: 1px solid var(--c-border-2);
-            padding: 0.75rem;
-            flex-shrink: 0;
-        }
-        .sb-music-label {
-            font-size: 0.625rem; font-weight: 700;
-            color: var(--c-text-4); text-transform: uppercase;
-            letter-spacing: 0.08em; margin-bottom: 0.5rem; display: block;
-        }
-        .sb-music-controls { display: flex; align-items: center; gap: 0.5rem; }
-        .sb-music-btn {
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            background: var(--c-bg-raised);
-            border: 1px solid var(--c-border);
-            color: var(--c-text-3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem;
-            transition: background 0.1s, color 0.1s;
-            flex-shrink: 0;
-        }
-        .sb-music-btn:hover { background: var(--c-amber-bg); color: var(--c-amber-d); }
-        .sb-music-btn.play {
-            width: 32px; height: 32px;
-            background: var(--c-text-1);
-            color: #fff; border-color: var(--c-text-1);
-        }
-        .sb-music-btn.play:hover { background: var(--c-amber-d); border-color: var(--c-amber-d); }
-        .sb-music-info { flex: 1; min-width: 0; }
-        .sb-music-status { font-size: 0.6875rem; font-weight: 600; color: var(--c-text-3); display: block; }
-        .sb-music-track  { font-size: 0.625rem; color: var(--c-text-4); display: block; }
-        .sb-music-progress {
-            display: flex; align-items: center; gap: 0.375rem; margin-top: 0.5rem;
-        }
-        .sb-music-time { font-size: 0.6rem; color: var(--c-text-4); font-variant-numeric: tabular-nums; flex-shrink: 0; }
-        input[type=range].sb-range {
-            flex: 1; height: 3px; border-radius: 2px;
-            background: var(--c-border); appearance: none; cursor: pointer;
-            accent-color: var(--c-amber);
-        }
+/* Nav buttons */
+.nav-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    color: var(--c-nav-muted);
+    font-size: 13px; font-weight: 500;
+    font-family: 'Lora', serif;
+    transition: background 0.12s, color 0.12s;
+    white-space: nowrap;
+    position: relative;
+    cursor: pointer;
+}
+.nav-btn:hover, .nav-btn.open {
+    background: var(--c-nav-2);
+    color: var(--c-nav-text);
+}
+.nav-btn.active { color: var(--c-gold-bright); }
+.nav-btn-arrow {
+    font-size: 9px;
+    color: var(--c-nav-muted);
+    transition: transform 0.15s;
+}
+.nav-btn.open .nav-btn-arrow { transform: rotate(180deg); }
 
-        /* Sidebar resizer */
-        #resizer {
-            background: transparent;
-            transition: background 0.15s;
-        }
-        #resizer:hover { background: var(--c-amber); }
+/* Dropdown */
+.nav-dropdown-wrap {
+    position: relative;
+}
+.nav-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--c-nav-2);
+    border: 1px solid var(--c-nav-3);
+    border-radius: var(--r);
+    min-width: 220px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 300;
+    overflow: hidden;
+    display: none;
+    padding: 4px;
+}
+.nav-dropdown.open { display: block; }
+.nav-dropdown-group {
+    padding: 4px 0 2px;
+}
+.nav-dropdown-group-label {
+    font-size: 10px; font-weight: 700;
+    color: var(--c-nav-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px 2px;
+    font-family: 'Lora', serif;
+}
+.nav-dropdown-divider {
+    height: 1px;
+    background: var(--c-nav-3);
+    margin: 4px 8px;
+}
+.nav-dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 12px;
+    border-radius: 5px;
+    color: var(--c-nav-text);
+    font-size: 13px;
+    font-family: 'Lora', serif;
+    transition: background 0.1s, color 0.1s;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+.nav-dropdown-item:hover {
+    background: var(--c-nav-3);
+    color: var(--c-gold-bright);
+}
+.nav-dropdown-item.active {
+    background: rgba(126,28,28,0.25);
+    color: var(--c-gold-bright);
+}
+.nav-dropdown-item-icon { font-size: 14px; flex-shrink: 0; }
+.nav-dropdown-item-label { flex: 1; }
+.nav-dropdown-item-badge {
+    font-size: 9px;
+    background: rgba(160,98,26,0.3);
+    color: var(--c-gold-bright);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid rgba(160,98,26,0.4);
+}
 
-        /* ━━━━━━━━━━━━━━━━━━ TOP BAR ━━━━━━━━━━━━━━━━━━ */
-        #top-header {
-            height: var(--hdr-h);
-            background: var(--c-bg);
-            border-bottom: 1px solid var(--c-border);
-            display: flex; align-items: center;
-            justify-content: space-between;
-            padding: 0 1.5rem;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-        .topbar-left { display: flex; align-items: center; gap: 0.75rem; }
-        .topbar-hamburger {
-            padding: 0.375rem;
-            border-radius: var(--r-sm);
-            color: var(--c-text-4);
-            transition: background 0.1s, color 0.1s;
-        }
-        .topbar-hamburger:hover { background: var(--c-bg-raised); color: var(--c-text-2); }
-        .topbar-breadcrumb {
-            display: flex; align-items: center; gap: 0.375rem;
-            font-size: 0.8125rem; color: var(--c-text-4); font-weight: 500;
-        }
-        .topbar-breadcrumb .bc-sep { color: var(--c-border); font-size: 1rem; line-height: 1; }
-        .topbar-breadcrumb .bc-current { color: var(--c-text-2); font-weight: 600; }
-        .topbar-chip {
-            display: inline-flex; align-items: center; gap: 0.375rem;
-            background: var(--c-bg-subtle);
-            border: 1px solid var(--c-border);
-            border-radius: 999px;
-            padding: 0.25rem 0.625rem;
-            font-size: 0.6875rem; font-weight: 600; color: var(--c-text-4);
-        }
-        .topbar-chip .dot {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--c-amber);
-        }
+/* Nav right */
+.nav-right {
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0;
+}
+.nav-icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c-nav-muted);
+    font-size: 15px;
+    transition: background 0.12s, color 0.12s;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.nav-icon-btn:hover { background: var(--c-nav-2); color: var(--c-nav-text); }
 
-        /* ━━━━━━━━━━━━━━━━━━ TAB TRANSITION ━━━━━━━━━━━━━━━━━━ */
-        .content-tab:not(.hidden) {
-            animation: wikiIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes wikiIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+/* Search in nav */
+.nav-search-wrap {
+    position: relative;
+}
+.nav-search-input {
+    background: var(--c-nav-2);
+    border: 1px solid var(--c-nav-3);
+    border-radius: 6px;
+    color: var(--c-nav-text);
+    font-size: 12px;
+    font-family: 'Lora', serif;
+    padding: 5px 10px 5px 28px;
+    outline: none;
+    width: 180px;
+    transition: width 0.2s, border-color 0.15s;
+}
+.nav-search-input::placeholder { color: var(--c-nav-muted); }
+.nav-search-input:focus {
+    border-color: var(--c-gold);
+    width: 220px;
+}
+.nav-search-icon {
+    position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+    color: var(--c-nav-muted); font-size: 11px; pointer-events: none;
+}
+.nav-search-results {
+    position: absolute;
+    top: calc(100% + 6px); right: 0;
+    background: var(--c-nav-2);
+    border: 1px solid var(--c-nav-3);
+    border-radius: var(--r);
+    width: 280px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 300;
+    overflow: hidden;
+    display: none;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.nav-search-results.open { display: block; }
+.nav-search-result-item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--c-nav-text);
+    cursor: pointer;
+    transition: background 0.1s;
+    font-family: 'Lora', serif;
+}
+.nav-search-result-item:hover { background: var(--c-nav-3); }
 
-        /* ━━━━━━━━━━━━━━━━━━ WIKI CONTENT ━━━━━━━━━━━━━━━━━━ */
+/* Music panel */
+.music-panel {
+    position: fixed;
+    top: calc(var(--nav-h) + 8px);
+    right: 12px;
+    background: var(--c-nav-2);
+    border: 1px solid var(--c-nav-3);
+    border-radius: var(--r-lg);
+    padding: 14px 16px;
+    width: 240px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 250;
+    display: none;
+}
+.music-panel.open { display: block; }
+.music-panel-title {
+    font-size: 11px; font-weight: 700;
+    color: var(--c-nav-muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    font-family: 'Lora', serif;
+}
+.music-track-name {
+    font-size: 13px; color: var(--c-nav-text);
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 10px;
+}
+.music-controls {
+    display: flex; gap: 6px; align-items: center;
+    margin-bottom: 10px;
+}
+.music-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    background: var(--c-nav-3);
+    color: var(--c-nav-text);
+    border: none; cursor: pointer;
+    transition: background 0.12s;
+}
+.music-btn:hover { background: rgba(160,98,26,0.25); color: var(--c-gold-bright); }
+.music-progress-row {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--c-nav-muted);
+}
+.music-range {
+    flex: 1;
+    -webkit-appearance: none; appearance: none;
+    height: 3px; border-radius: 2px;
+    background: var(--c-nav-3); outline: none; cursor: pointer;
+}
+.music-range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--c-gold); cursor: pointer;
+}
 
-        /* Page wrapper */
-        .prose-rules {
-            padding-top: 2.5rem !important;
-        }
+/* -- CONTENT AREA -- */
+#content-area {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+#tabs-wrapper {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+#tabs-wrapper.hidden { display: none !important; }
+.kompendium-scroll {
+    flex: 1;
+    overflow-y: auto;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+}
 
-        /* Page title area */
-        .prose-rules h1 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: var(--c-text-1);
-            line-height: 1.15;
-            margin: 0 0 0.5rem;
-        }
-        .prose-rules .page-lead {
-            font-size: 0.9375rem;
-            color: var(--c-text-3);
-            line-height: 1.65;
-            margin: 0 0 2rem;
-        }
+/* -- OVERVIEW / HERO SECTION -- */
+#section-overview {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+}
+#section-overview::-webkit-scrollbar { width: 6px; }
+#section-overview::-webkit-scrollbar-track { background: var(--c-bg-alt); }
+#section-overview::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
+#section-overview.hidden { display: none !important; }
+.hero-banner {
+    background: linear-gradient(160deg, #1a0808 0%, #2a0e0e 40%, #1e1510 100%);
+    padding: 64px 32px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--c-nav-3);
+}
+.hero-banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 1;
+}
+.hero-eyebrow {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--c-gold);
+    margin-bottom: 14px;
+    font-family: 'Lora', serif;
+    position: relative;
+}
+.hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    color: #f0e0c8;
+    line-height: 1.1;
+    margin: 0 0 16px;
+    position: relative;
+}
+.hero-title span { color: var(--c-accent-ll); }
+.hero-subtitle {
+    font-size: 16px;
+    color: #8a7a66;
+    font-style: italic;
+    font-family: 'Lora', serif;
+    margin: 0 0 40px;
+    position: relative;
+    max-width: 560px;
+    margin-left: auto; margin-right: auto;
+}
+.hero-divider {
+    display: flex; align-items: center; gap: 12px;
+    justify-content: center;
+    margin-bottom: 32px;
+    position: relative;
+}
+.hero-divider-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-gold));
+}
+.hero-divider-line:last-child {
+    background: linear-gradient(90deg, var(--c-gold), transparent);
+}
+.hero-divider-icon { color: var(--c-gold); font-size: 16px; }
+.hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.stat-tile {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(196,168,120,0.2);
+    border-radius: var(--r);
+    padding: 14px 20px;
+    min-width: 130px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    transition: border-color 0.2s, background 0.2s;
+}
+.stat-tile:hover {
+    border-color: rgba(196,168,120,0.4);
+    background: rgba(255,255,255,0.07);
+}
+.stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--c-gold-bright);
+    line-height: 1.1;
+}
+.stat-label {
+    font-size: 10px;
+    color: #6a5c4a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: 'Lora', serif;
+}
 
-        /* Section divider above accordions */
-        .prose-rules h3 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--c-text-2);
-            margin: 1.5rem 0 0.5rem;
-        }
-        .prose-rules p {
-            font-size: 0.9375rem;
-            color: var(--c-text-2);
-            line-height: 1.75;
-            margin: 0 0 0.875rem;
-        }
-        .prose-rules strong { font-weight: 600; color: var(--c-text-1); }
-        .prose-rules .meta-text { font-size: 0.8rem; color: var(--c-text-4); display: block; margin-top: 0.25rem; }
+/* Overview grid */
+.overview-body {
+    padding: 24px 24px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+.overview-card {
+    background: var(--c-card);
+    border: 1px solid var(--c-border-ll);
+    border-radius: var(--r-lg);
+    padding: 16px 18px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+}
+.overview-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--c-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s;
+}
+.overview-card:hover { border-color: var(--c-border); box-shadow: 0 4px 20px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.overview-card:hover::before { transform: scaleX(1); }
+.overview-card-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+.overview-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--c-text);
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+.overview-card-desc {
+    font-size: 13px;
+    color: var(--c-text-3);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 14px;
+}
+.overview-chips {
+    display: flex; flex-wrap: wrap; gap: 5px;
+}
+.overview-chip {
+    font-size: 10px;
+    background: var(--c-bg-alt);
+    color: var(--c-text-3);
+    border: 1px solid var(--c-border-ll);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: 'Lora', serif;
+    white-space: nowrap;
+}
 
-        /* Lists */
-        .prose-rules ul { list-style: none; padding: 0; margin: 0 0 1.25rem; }
-        .prose-rules ul li {
-            position: relative;
-            padding-left: 1.125rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.9375rem;
-            color: var(--c-text-2);
-            line-height: 1.7;
-        }
-        .prose-rules ul li::before {
-            content: '';
-            position: absolute; left: 2px; top: 0.65em;
-            width: 4px; height: 4px;
-            border-radius: 50%;
-            background: var(--c-amber);
-        }
-        .toc-list li::before, .sub-accordion-list li::before { display: none !important; }
-        .toc-list li, .sub-accordion-list li { padding-left: 0 !important; margin-bottom: 0 !important; }
+/* -- CONTENT TABS (prose-rules, section-details, etc.) -- */
 
-        /* ─── ACCORDIONS (flat, editorial) ─── */
-        .prose-rules details.section-details {
-            border: 1px solid var(--c-border);
-            border-radius: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: #fff;
-            overflow: hidden;
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .prose-rules details.section-details[open] {
-            border-color: var(--c-amber-bd);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-        }
-        .prose-rules details.section-details:last-of-type {
-            margin-bottom: 2rem;
-        }
-        .prose-rules summary.section-summary {
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            padding: 1rem 1.25rem;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.12s;
-            background: transparent;
-            border: none;
-        }
-        .prose-rules details.section-details[open] > summary.section-summary {
-            border-bottom: 1px solid var(--c-border);
-            background: var(--c-bg-raised);
-        }
-        .prose-rules summary.section-summary:hover { background: var(--c-bg-raised); opacity: 1; }
+/* The content-tab is shown/hidden by original JS */
+.content-tab {
+    padding-top: 40px;
+    padding-bottom: 64px;
+}
 
-        /* TOC collapsible */
-        .toc-box .toc-list { transition: none; }
-        .toc-box.toc-collapsed .toc-list { display: none; }
-        .toc-toggle-arrow { display: inline-block; transition: transform 0.18s; font-size: 0.55rem; margin-left: 0.3rem; vertical-align: middle; }
-        .toc-box.toc-collapsed .toc-toggle-arrow { transform: rotate(0deg); }
-        .toc-box:not(.toc-collapsed) .toc-toggle-arrow { transform: rotate(90deg); }
-        .prose-rules summary.section-summary .summary-title {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            flex: 1;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            color: var(--c-text-1);
-        }
-        .prose-rules summary.section-summary .sum-marker {
-            width: 24px; height: 24px; flex-shrink: 0;
-            border-radius: var(--r-sm);
-            background: var(--c-bg-raised);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.6875rem; font-weight: 700; color: var(--c-text-3);
-            transition: background 0.15s, color 0.15s;
-        }
-        .prose-rules details.section-details[open] summary.section-summary .sum-marker {
-            background: var(--c-amber-bg2);
-            color: var(--c-amber-d);
-        }
-        .prose-rules summary.section-summary .summary-icon {
-            width: 20px; height: 20px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--c-text-4); font-size: 0.625rem;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s;
-            background: transparent;
-            border-radius: 0;
-        }
-        .prose-rules details.section-details[open] summary.section-summary .summary-icon {
-            transform: rotate(180deg);
-            color: var(--c-amber-d);
-        }
-        /* Notiz button — always sits between title and chevron in summaries */
-        .notiz-btn {
-            flex-shrink: 0;
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 22px; height: 22px;
-            border-radius: var(--r-sm);
-            background: transparent;
-            border: 1px solid transparent;
-            font-size: 0.6875rem;
-            color: var(--c-text-4);
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s, color 0.15s;
-            line-height: 1;
-            padding: 0;
-        }
-        .notiz-btn:hover {
-            background: var(--c-amber-bg);
-            border-color: var(--c-amber-bd);
-            color: var(--c-amber-d);
-        }
+/* prose-rules: the main content section typography */
+.prose-rules h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 900;
+    color: var(--c-text);
+    margin: 0 0 10px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+.prose-rules h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--c-text); margin: 32px 0 12px;
+}
+.prose-rules h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--c-text-2); margin: 20px 0 8px;
+}
+.prose-rules h4 {
+    font-size: 13px; font-weight: 600;
+    color: var(--c-text-3); margin: 12px 0 6px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-family: 'Lora', serif;
+}
+.prose-rules p {
+    color: var(--c-text-2);
+    margin: 0 0 14px;
+    font-size: 15px;
+}
+.prose-rules ul, .prose-rules ol {
+    padding-left: 20px;
+    color: var(--c-text-2);
+}
+.prose-rules li { margin-bottom: 8px; font-size: 15px; }
+.prose-rules strong { color: var(--c-text); font-weight: 600; }
+.prose-rules em { color: var(--c-text-3); }
+.prose-rules a {
+    color: var(--c-gold) !important;
+    text-decoration: underline;
+    text-decoration-color: rgba(160,98,26,0.4);
+    text-underline-offset: 2px;
+    transition: color 0.15s;
+}
+.prose-rules a:hover { color: var(--c-gold-bright) !important; }
+.page-lead {
+    font-size: 16px;
+    color: var(--c-text-3);
+    font-style: italic;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--c-border-ll);
+    font-family: 'Lora', serif;
+    line-height: 1.7;
+}
 
-        .prose-rules .details-content {
-            padding: 1.25rem 1.5rem 1.5rem 1.5rem;
-            animation: contentIn 0.2s ease forwards;
-        }
-        @keyframes contentIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
+/* Horizontal rule after H1 */
+.prose-rules h1 + .page-lead {
+    margin-top: 8px;
+}
 
-        /* ─── TOC / "Auf dieser Seite" ─── */
-        .toc-box {
-            border-left: 2px solid var(--c-border);
-            padding: 0 0 0 1rem;
-            margin-bottom: 2.5rem;
-        }
-        .toc-box h3 {
-            font-size: 0.6875rem !important;
-            font-weight: 700 !important;
-            color: var(--c-text-4) !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.08em !important;
-            margin: 0 0 0.625rem !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            border: none;
-        }
-        .toc-box .toc-actions { display: flex; gap: 0.75rem; }
-        .toc-box .toc-actions button {
-            font-size: 0.75rem; font-weight: 500;
-            color: var(--c-text-4);
-            transition: color 0.12s;
-            background: none; border: none;
-        }
-        .toc-box .toc-actions button:hover { color: var(--c-amber-d); }
-        .toc-list { display: flex; flex-direction: column; gap: 0.0625rem; }
-        .toc-list a {
-            font-size: 0.8125rem; font-weight: 500;
-            color: var(--c-text-3);
-            padding: 0.25rem 0;
-            display: flex; align-items: center; gap: 0.5rem;
-            transition: color 0.1s;
-        }
-        .toc-list a:hover { color: var(--c-amber-d); }
+/* ─── TOC BOX ─── */
+.toc-box {
+    background: var(--c-card);
+    border: 1px solid var(--c-border-ll);
+    border-left: 3px solid var(--c-accent);
+    border-radius: var(--r);
+    padding: 18px 20px;
+    margin-bottom: 32px;
+}
+.toc-box h3 {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: var(--c-text-muted) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    margin: 0 0 10px !important;
+}
+.toc-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.toc-list li { padding: 0; }
+.toc-list a {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13.5px; color: var(--c-text-2) !important;
+    text-decoration: none !important;
+    padding: 4px 6px;
+    border-radius: 5px;
+    transition: background 0.1s, color 0.1s;
+    font-family: 'Lora', serif;
+}
+.toc-list a:hover {
+    background: var(--c-bg-alt);
+    color: var(--c-accent) !important;
+}
+.toc-actions button {
+    font-size: 11px !important;
+    color: var(--c-text-muted) !important;
+    font-family: 'Lora', serif;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.1s, color 0.1s;
+}
+.toc-actions button:hover {
+    background: var(--c-bg-alt);
+    color: var(--c-gold) !important;
+}
 
-        /* ─── INFO / CALLOUT BOX ─── */
-        .bg-amber-50.border-l-4 {
-            background: var(--c-amber-bg) !important;
-            border-left: 3px solid var(--c-amber) !important;
-            border-radius: 0 var(--r) var(--r) 0 !important;
-            padding: 1rem 1.25rem !important;
-            font-size: 0.875rem !important;
-            color: #78350f !important;
-        }
+/* ─── SECTION ACCORDION (details/summary) ─── */
+.section-details {
+    margin-bottom: 8px;
+    border: 1px solid var(--c-border-ll);
+    border-radius: var(--r);
+    overflow: hidden;
+    background: var(--c-card);
+    transition: border-color 0.15s;
+}
+.section-details:hover { border-color: var(--c-border); }
+.section-details[open] {
+    border-color: var(--c-border);
+    border-left: 3px solid var(--c-gold);
+}
+.section-summary {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    gap: 10px;
+    transition: background 0.1s;
+    list-style: none;
+}
+.section-summary:hover { background: var(--c-bg-alt); }
+.section-details[open] .section-summary { background: var(--c-card-2); }
+.summary-title {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--c-text);
+    flex: 1;
+}
+.sum-marker {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--c-accent);
+    color: #f0ddd0;
+    border-radius: 4px;
+    font-size: 11px; font-weight: 700;
+    font-family: 'Lora', serif;
+    flex-shrink: 0;
+}
+.summary-icon {
+    color: var(--c-text-muted);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+.section-details[open] .summary-icon { transform: rotate(180deg); }
+.details-content {
+    padding: 16px 18px 18px;
+    border-top: 1px solid var(--c-border-ll);
+    font-size: 15px; color: var(--c-text-2);
+    line-height: 1.75;
+}
+.details-content p { color: var(--c-text-2); margin-bottom: 12px; font-size: 15px; }
+.details-content ul, .details-content ol { padding-left: 20px; margin-bottom: 10px; }
+.details-content li { margin-bottom: 8px; }
+.details-content strong { color: var(--c-text); font-weight: 600; }
+.details-content a {
+    color: var(--c-gold) !important;
+    text-decoration: underline;
+    text-decoration-color: rgba(160,98,26,0.4);
+    text-underline-offset: 2px;
+}
+.details-content a:hover { color: var(--c-gold-bright) !important; }
 
-        /* ─── CHART ─── */
-        .chart-container {
-            position: relative; width: 100%;
-            max-width: 400px; margin: 0 auto;
-            height: 300px;
-        }
-        @media (min-width: 768px) { .chart-container { height: 350px; } }
+/* Sub-accordion (ancestry cards in chars tab) */
+.sub-accordion-list { list-style: none; padding: 0 !important; }
+.sub-accordion-list > li {
+    background: var(--c-bg-alt) !important;
+    border: 1px solid var(--c-border-ll) !important;
+    border-radius: var(--r) !important;
+}
+.sub-accordion-list > li details > summary {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--c-text);
+    padding: 12px 14px;
+    background: transparent;
+    transition: background 0.1s;
+}
+.sub-accordion-list > li details > summary:hover { background: var(--c-bg-deep); }
+.sub-accordion-list > li details > div {
+    border-top: 1px solid var(--c-border-ll);
+    padding: 12px 14px;
+    background: var(--c-card);
+}
+.sub-accordion-list > li .text-stone-700 { color: var(--c-text-2); }
+.meta-text {
+    display: block;
+    font-size: 12px;
+    color: var(--c-text-muted);
+    margin-bottom: 10px;
+    font-style: italic;
+    line-height: 1.5;
+}
 
-        /* ━━━━━━━━━━━━━━━━━━ DASHBOARD (dark — unchanged) ━━━━━━━━━━━━━━━━━━ */
-        #tab-dashboard { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        #tab-dashboard input[type=number], #tab-dashboard input[type=text] { font-size: 16px !important; }
-        #tab-dashboard input[type=number]::-webkit-inner-spin-button,
-        #tab-dashboard input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .city-card { background-size: cover; background-position: center; position: relative; min-height: 140px; border-radius: 1rem; border: 1px solid #334155; margin-bottom: 1rem; overflow: hidden; }
-        .city-overlay { background: linear-gradient(90deg, rgba(15,23,42,0.98) 35%, rgba(15,23,42,0.7) 100%); position: absolute; inset: 0; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; }
-        .sticky-header { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); background: rgba(15,23,42,0.9); border-bottom: 1px solid #334155; }
-        #tab-dashboard input[type=range] { height: 8px; border-radius: 5px; background: #334155; appearance: none; }
+/* Class cards in chars tab */
+.prose-rules .bg-stone-50 {
+    background: var(--c-card) !important;
+}
+.prose-rules .border-stone-200 {
+    border-color: var(--c-border-ll) !important;
+}
+.prose-rules h3.text-amber-700 {
+    color: var(--c-gold) !important;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    margin: 0;
+}
 
-        /* ━━━━━━━━━━━━━━━━━━ MAP ━━━━━━━━━━━━━━━━━━ */
-        body.hide-metropole .marker-metropole { display: none !important; }
-        body.hide-provinz   .marker-provinz   { display: none !important; }
-        body.hide-markt     .marker-markt     { display: none !important; }
-        body.hide-dorf      .marker-dorf      { display: none !important; }
-        #map-tooltip {
-            position: absolute; pointer-events: none;
-            background: rgba(15,23,42,0.95); backdrop-filter: blur(4px);
-            border: 1px solid #475569; color: white;
-            padding: 8px 12px; border-radius: 8px;
-            font-size: 11px; font-family: monospace; z-index: 100;
-            opacity: 0; transition: opacity 0.2s ease;
-            transform: translate(-50%, -120%);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
-            white-space: nowrap;
-        }
-        #map-tooltip.visible { opacity: 1; }
+/* Notiz / Feedback button */
+.notiz-btn {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    background: var(--c-bg-alt);
+    border: 1px solid var(--c-border-ll);
+    color: var(--c-text-muted);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+}
+.notiz-btn:hover { background: var(--c-border-ll); color: var(--c-text-2); }
 
-        /* ━━━━━━━━━━━━━━━━━━ MOBILE / IPAD ━━━━━━━━━━━━━━━━━━ */
-        .content-tab, #dashboard-root { padding-bottom: 120px !important; }
-        #tab-map-focus aside.w-64 { padding-bottom: 100px !important; }
-        .map-fullscreen {
-            position: fixed !important; top: 0 !important; left: 0 !important;
-            width: 100vw !important; height: 100dvh !important;
-            z-index: 99999 !important; border-radius: 0 !important; margin: 0 !important;
-        }
+/* Badge */
+.sb-badge {
+    font-size: 10px; font-weight: 700;
+    background: rgba(160,98,26,0.15);
+    color: var(--c-gold);
+    border: 1px solid rgba(160,98,26,0.3);
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    font-family: 'Lora', serif;
+    vertical-align: middle;
+}
+
+/* Ancestry detail box */
+.prose-rules .bg-stone-100 {
+    background: var(--c-bg-alt) !important;
+    border-color: var(--c-border-ll) !important;
+}
+
+/* Char links styled */
+.prose-rules button.text-amber-600 {
+    color: var(--c-gold) !important;
+    font-size: 12px;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: color 0.1s;
+    font-family: 'Lora', serif;
+}
+.prose-rules button.text-amber-600:hover { color: var(--c-gold-bright) !important; }
+
+/* Cult demographic boxes */
+.prose-rules .bg-stone-100 { background: var(--c-bg-alt) !important; }
+.prose-rules .bg-green-50 { background: #e8f0e0 !important; }
+.prose-rules .bg-red-50   { background: #f0e0e0 !important; }
+.prose-rules .bg-blue-50  { background: #e0e8f0 !important; }
+.prose-rules .bg-stone-800 { background: #1e1b16 !important; }
+
+/* Char example links */
+.prose-rules .bg-stone-50.border.border-stone-200 {
+    background: var(--c-card) !important;
+    border-color: var(--c-border-ll) !important;
+}
+
+/* ─── QUIZ SECTION ─── */
+#quiz-container {
+    background: var(--c-card) !important;
+    border-color: var(--c-border-ll) !important;
+}
+.prose-rules .bg-white { background: var(--c-card) !important; }
+
+/* ─── CULTS TOOL ─── */
+#tab-cults { background: var(--c-bg); }
+#tab-cults .border-stone-200 { border-color: var(--c-border-ll) !important; }
+#tab-cults .bg-stone-50 { background: var(--c-card) !important; }
+
+/* ─── DASHBOARD ─── */
+#tab-dashboard { background: var(--c-bg); }
+
+/* ─── MAP ─── */
+#tab-map-focus { background: var(--c-bg); }
+
+/* ─── FEEDBACK MODAL ─── */
+#feedback-modal .bg-white {
+    background: var(--c-card) !important;
+    border-color: var(--c-border-ll) !important;
+}
+#feedback-modal input, #feedback-modal textarea {
+    background: var(--c-bg-alt) !important;
+    border-color: var(--c-border-ll) !important;
+    color: var(--c-text) !important;
+    font-family: 'Lora', serif;
+}
+#feedback-modal h3 { color: var(--c-text) !important; font-family: 'Playfair Display', serif; }
+#feedback-modal button.bg-gray-900 {
+    background: var(--c-nav) !important;
+    color: var(--c-nav-text) !important;
+}
+#feedback-modal button.bg-gray-900:hover { background: var(--c-accent) !important; }
+
+/* ─── FEEDBACK / NOTES TAB ─── */
+.feedback-cart-item {
+    background: var(--c-card) !important;
+    border-color: var(--c-border-ll) !important;
+}
+
+/* ─── STORYBOOK ─── */
+#tab-storybook { }
+
+/* ─── HIDDEN COMPAT IDs for JS ─── */
+#breadcrumb-current { display: none; }
+#top-header { display: none; }
+
+/* ─── ACTIVE NAV STATE ─── */
+.sb-item.active,
+.nav-dropdown-item.active {
+    background: rgba(126,28,28,0.2);
+    color: var(--c-gold-bright);
+}
+
+/* ─── RESPONSIVE NAV ─── */
+@media (max-width: 768px) {
+    .nav-logo-sub { display: none; }
+    .nav-center { gap: 0; }
+    .nav-btn { padding: 5px 7px; font-size: 12px; }
+    .nav-search-input { width: 120px; }
+    .nav-search-input:focus { width: 160px; }
+    .stat-tile { min-width: 110px; }
+    .overview-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+    .nav-search-wrap { display: none; }
+    .hero-title { font-size: 28px; }
+}
+
+/* ─── SCROLLBAR OVERVIEW ─── */
+#section-overview::-webkit-scrollbar { width: 6px; }
+#section-overview::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
+
+/* ─── TOC BOX: Desktop verstecken ─── */
+@media (min-width: 769px) {
+    .toc-box { display: none !important; }
+}
+/* TOC Box auf Mobile: eingeklappt by default */
+.toc-box { }
+.toc-box-header {
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    user-select: none;
+}
+.toc-box-toggle {
+    font-size: 11px; color: var(--c-text-muted);
+    transition: transform 0.2s;
+    margin-left: 8px;
+}
+.toc-box.toc-open .toc-box-toggle { transform: rotate(180deg); }
+.toc-box .toc-list,
+.toc-box .toc-actions { display: none; margin-top: 8px; }
+.toc-box.toc-open .toc-list { display: flex; }
+.toc-box.toc-open .toc-actions { display: flex; }
+
+/* ─── OVERVIEW CHIP (klickbar) ─── */
+.overview-chip-link {
+    font-size: 10px;
+    background: var(--c-bg-alt);
+    color: var(--c-text-3);
+    border: 1px solid var(--c-border-ll);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: 'Lora', serif;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.overview-chip-link:hover {
+    background: var(--c-bg-deep);
+    color: var(--c-gold);
+    border-color: var(--c-border);
+}
+
+/* ─── STAT TILE klickbar ─── */
+.stat-tile-link {
+    cursor: pointer;
+    text-decoration: none;
+}
+.stat-tile-link:hover .stat-value { color: #e8a840; }
+.stat-tile-link:hover { border-color: rgba(196,168,120,0.5) !important; background: rgba(255,255,255,0.09) !important; }
     </style>
 </head>
-<body class="flex h-screen w-full overflow-hidden">
+<body>
+<!-- ═══════════════════════════════════════════════════════════════
+     TOP NAVIGATION BAR
+═══════════════════════════════════════════════════════════════ -->
+<nav id="topnav">
 
-    <!-- Mobile overlay -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/30 z-20 hidden lg:hidden backdrop-blur-sm" onclick="toggleSidebar(false)"></div>
+    <!-- Brand -->
+    <div class="nav-logo" onclick="showOverview()">
+        <div class="nav-logo-icon">✦</div>
+        <div>
+            <div class="nav-logo-name">Osmieen</div>
+            <div class="nav-logo-sub">Chroniken der Theokratie</div>
+        </div>
+    </div>
 
-    <!-- ═══════════════════════════════════════════════
-         SIDEBAR
-    ═══════════════════════════════════════════════ -->
-    <aside id="sidebar" class="z-30 flex-shrink-0 absolute lg:relative inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out" style="width: var(--sb-w); max-width: 85vw;">
-        <div id="resizer" class="absolute top-0 right-0 w-px h-full cursor-col-resize hidden lg:block z-40 transition-colors"></div>
+    <!-- Main Menu -->
+    <div class="nav-center">
 
-        <!-- Logo -->
-        <div class="sb-header">
-            <div class="sb-logo">
-                <div class="sb-logo-mark">O</div>
-                <div class="sb-logo-text">
-                    <div class="sb-logo-name">Osmieen</div>
-                    <div class="sb-logo-sub">Kampagnen-Wiki</div>
-                </div>
-            </div>
-            <button onclick="toggleSidebar(false)" class="sb-close-btn lg:hidden">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <!-- Übersicht -->
+        <button class="nav-btn" onclick="showOverview()">Übersicht</button>
+
+        <!-- Die Welt -->
+        <div class="nav-dropdown-wrap">
+            <button class="nav-btn" onclick="toggleDropdown('dd-welt', this)">
+                Die Welt <span class="nav-btn-arrow">▾</span>
             </button>
-        </div>
-
-        <!-- Search -->
-        <div class="sb-search-wrap" id="sb-search-wrap">
-            <div class="sb-search" onclick="this.querySelector('input').focus()">
-                <svg class="sb-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                <input id="sidebar-search-input" class="sb-search-input" placeholder="Seite oder Abschnitt suchen..." oninput="runSearch(this.value)">
-                <kbd class="sb-search-kbd" id="sidebar-search-kbd">/</kbd>
-            </div>
-            <div id="search-results" class="search-results hidden"></div>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="sb-nav custom-scrollbar">
-
-            <div class="sb-section">
-                <span class="sb-section-label">Regelwerk</span>
-                <button onclick="switchTab('tab-rules')"   id="btn-rules"  class="sb-item active">Basisregeln</button>
-                <button onclick="switchTab('tab-chars')"   id="btn-chars"  class="sb-item">Charaktererstellung</button>
-            </div>
-
-            <div class="sb-section">
-                <span class="sb-section-label">Lore & Welt</span>
-                <button onclick="switchTab('tab-world')"      id="btn-world"      class="sb-item">Die Welt Osmieen</button>
-                <button onclick="switchTab('tab-theocracy')"  id="btn-theocracy"  class="sb-item">Kulte & Theokratie</button>
-                <button onclick="switchTab('tab-life')"       id="btn-life"       class="sb-item">Alltag & Justiz</button>
-                <button onclick="switchTab('tab-shadows')"    id="btn-shadows"    class="sb-item">Schattenkriege</button>
-                <button onclick="switchTab('tab-propaganda')" id="btn-propaganda" class="sb-item">Propaganda & Feiertage</button>
-                <button onclick="switchTab('tab-military')"   id="btn-military"   class="sb-item">Militär & Isolation</button>
-            </div>
-
-            <div class="sb-section">
-                <span class="sb-section-label">Anhänge</span>
-                <button onclick="switchTab('tab-ancestries')"     id="btn-ancestries"     class="sb-item">Abstammungs-Archiv <span class="sb-item-icon">🧬</span></button>
-                <button onclick="switchTab('tab-agrarsystem')"    id="btn-agrarsystem"    class="sb-item">Agrarsystem <span class="sb-badge">Idee</span></button>
-                <button onclick="switchTab('tab-blutprozession')" id="btn-blutprozession" class="sb-item">Blutprozession <span class="sb-badge">Idee</span></button>
-                <button onclick="switchTab('tab-cults')"          id="btn-cults"          class="sb-item">Vampirkulte <span class="sb-item-icon">🩸</span></button>
-            </div>
-
-            <div class="sb-section">
-                <span class="sb-section-label">Interaktiv</span>
-                <button onclick="switchTab('tab-quiz')"       id="btn-quiz"       class="sb-item">Kult-Quiz <span class="sb-item-icon">🔮</span></button>
-                <button onclick="switchTab('tab-race-quiz')"  id="btn-race-quiz"  class="sb-item">Volk-Quiz <span class="sb-item-icon">🧬</span></button>
-                <button onclick="switchTab('tab-dashboard')"  id="btn-dashboard"  class="sb-item">Dashboard <span class="sb-item-icon">📱</span></button>
-                <button onclick="switchTab('tab-map-focus')"  id="btn-map-focus"  class="sb-item">Karten-Ansicht <span class="sb-item-icon">🗺️</span></button>
-                <button onclick="switchTab('tab-storybook')"  id="btn-storybook"  class="sb-item">Storybook <span class="sb-item-icon">📖</span></button>
-                <button onclick="switchTab('tab-feedback')"   id="btn-feedback"   class="sb-item">Feedback
-                    <span id="feedback-badge" class="sb-badge hidden" style="background:#fee2e2;color:#b91c1c;border-color:#fca5a5;">0</span>
-                </button>
-            </div>
-
-        </nav>
-
-        <!-- Music Player -->
-        <div class="sb-footer">
-            <audio id="bg-music" loop><source src="osmieen_theme.mp3" type="audio/mpeg"></audio>
-            <span class="sb-music-label">Soundtrack</span>
-            <div class="sb-music-controls">
-                <button onclick="skipMusic(-30)" class="sb-music-btn" title="-30s"><span style="font-size:0.6rem;font-weight:700;">−30</span></button>
-                <button id="btn-play-music" onclick="toggleMusic()" class="sb-music-btn play">▶</button>
-                <button onclick="skipMusic(30)" class="sb-music-btn" title="+30s"><span style="font-size:0.6rem;font-weight:700;">+30</span></button>
-                <div class="sb-music-info">
-                    <span id="music-status" class="sb-music-status">Pausiert</span>
-                    <span class="sb-music-track">Osmieen Theme</span>
+            <div id="dd-welt" class="nav-dropdown">
+                <div class="nav-dropdown-group">
+                    <div class="nav-dropdown-group-label">Geographie & Gesellschaft</div>
+                    <button id="btn-world" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-world')">
+                        <span class="nav-dropdown-item-icon">🌍</span><span class="nav-dropdown-item-label">Die Welt Osmieen</span>
+                    </button>
+                    <button id="btn-theocracy" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-theocracy')">
+                        <span class="nav-dropdown-item-icon">🏛️</span><span class="nav-dropdown-item-label">Theokratie & Kulte</span>
+                    </button>
+                    <button id="btn-life" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-life')">
+                        <span class="nav-dropdown-item-icon">👁️</span><span class="nav-dropdown-item-label">Alltag & Überwachung</span>
+                    </button>
                 </div>
             </div>
-            <div class="sb-music-progress">
-                <span id="music-current-time" class="sb-music-time">0:00</span>
-                <input type="range" id="music-progress" class="sb-range" min="0" max="100" value="0" oninput="seekMusic(this.value)">
-                <span id="music-total-time" class="sb-music-time">0:00</span>
-            </div>
-            <div class="sb-music-progress" style="margin-top:0.375rem;">
-                <span class="sb-music-time" style="opacity:0.5;">🔈</span>
-                <input type="range" id="music-volume" class="sb-range" min="0" max="1" step="0.01" value="0.2" oninput="setVolume(this.value)">
-                <span class="sb-music-time" style="opacity:0.5;">🔊</span>
-            </div>
         </div>
-    </aside>
 
-    <!-- ═══════════════════════════════════════════════
-         MAIN AREA
-    ═══════════════════════════════════════════════ -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden relative w-full">
-
-        <!-- Top Bar -->
-        <div id="top-header">
-            <div class="topbar-left">
-                <button onclick="toggleSidebar(true)" class="topbar-hamburger lg:hidden">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
-                <nav class="topbar-breadcrumb">
-                    <span>Osmieen</span>
-                    <span class="bc-sep">›</span>
-                    <span id="breadcrumb-current" class="bc-current">Basisregeln</span>
-                </nav>
-            </div>
-            <div class="topbar-chip hidden sm:inline-flex">
-                <span class="dot"></span>
-                Daggerheart Kampagne
+        <!-- Die Völker -->
+        <div class="nav-dropdown-wrap">
+            <button class="nav-btn" onclick="toggleDropdown('dd-voelker', this)">
+                Die Völker <span class="nav-btn-arrow">▾</span>
+            </button>
+            <div id="dd-voelker" class="nav-dropdown">
+                <div class="nav-dropdown-group">
+                    <div class="nav-dropdown-group-label">Abstammungen & Klassen</div>
+                    <button id="btn-ancestries" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-ancestries')">
+                        <span class="nav-dropdown-item-icon">🧬</span><span class="nav-dropdown-item-label">Abstammungen (Archiv)</span>
+                    </button>
+                    <button id="btn-chars" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-chars')">
+                        <span class="nav-dropdown-item-icon">⚔️</span><span class="nav-dropdown-item-label">Charaktererstellung</span>
+                    </button>
+                    <button id="btn-agrarsystem" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-agrarsystem')">
+                        <span class="nav-dropdown-item-icon">🌾</span><span class="nav-dropdown-item-label">Agrarsystem</span>
+                        <span class="nav-dropdown-item-badge">Idee</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <main class="flex-1 h-full overflow-y-auto custom-scrollbar relative scroll-smooth" style="background:var(--c-bg-subtle);">
+        <!-- Im Verborgenen -->
+        <div class="nav-dropdown-wrap">
+            <button class="nav-btn" onclick="toggleDropdown('dd-verborgen', this)">
+                Im Verborgenen <span class="nav-btn-arrow">▾</span>
+            </button>
+            <div id="dd-verborgen" class="nav-dropdown">
+                <div class="nav-dropdown-group">
+                    <div class="nav-dropdown-group-label">Macht & Schatten</div>
+                    <button id="btn-shadows" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-shadows')">
+                        <span class="nav-dropdown-item-icon">🗡️</span><span class="nav-dropdown-item-label">Schattenkriege & Untergrund</span>
+                    </button>
+                    <button id="btn-propaganda" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-propaganda')">
+                        <span class="nav-dropdown-item-icon">♟️</span><span class="nav-dropdown-item-label">Propaganda & Feiertage</span>
+                    </button>
+                    <button id="btn-military" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-military')">
+                        <span class="nav-dropdown-item-icon">⚔️</span><span class="nav-dropdown-item-label">Militär & Isolation</span>
+                    </button>
+                    <button id="btn-blutprozession" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-blutprozession')">
+                        <span class="nav-dropdown-item-icon">🩸</span><span class="nav-dropdown-item-label">Die Blutprozession</span>
+                        <span class="nav-dropdown-item-badge">Idee</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kulte & Spiel -->
+        <div class="nav-dropdown-wrap">
+            <button class="nav-btn" onclick="toggleDropdown('dd-spiel', this)">
+                Kulte & Spiel <span class="nav-btn-arrow">▾</span>
+            </button>
+            <div id="dd-spiel" class="nav-dropdown">
+                <div class="nav-dropdown-group">
+                    <div class="nav-dropdown-group-label">Interaktive Tools</div>
+                    <button id="btn-cults" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-cults')">
+                        <span class="nav-dropdown-item-icon">🩸</span><span class="nav-dropdown-item-label">Kult-Explorer</span>
+                    </button>
+                    <button id="btn-quiz" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-quiz')">
+                        <span class="nav-dropdown-item-icon">🔮</span><span class="nav-dropdown-item-label">Welcher Kult bin ich?</span>
+                    </button>
+                    <button id="btn-race-quiz" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-race-quiz')">
+                        <span class="nav-dropdown-item-icon">🧬</span><span class="nav-dropdown-item-label">Abstammungs-Quiz</span>
+                    </button>
+                </div>
+                <div class="nav-dropdown-divider"></div>
+                <div class="nav-dropdown-group">
+                    <div class="nav-dropdown-group-label">Regeln & Kampagne</div>
+                    <button id="btn-rules" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-rules')">
+                        <span class="nav-dropdown-item-icon">📜</span><span class="nav-dropdown-item-label">Regelwerk (Daggerheart)</span>
+                    </button>
+                    <button id="btn-dashboard" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-dashboard')">
+                        <span class="nav-dropdown-item-icon">📊</span><span class="nav-dropdown-item-label">Dashboard</span>
+                    </button>
+                    <button id="btn-map-focus" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-map-focus')">
+                        <span class="nav-dropdown-item-icon">🗺️</span><span class="nav-dropdown-item-label">Karte & Fokus</span>
+                    </button>
+                    <button id="btn-storybook" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-storybook')">
+                        <span class="nav-dropdown-item-icon">📖</span><span class="nav-dropdown-item-label">Storybook</span>
+                    </button>
+                    <button id="btn-feedback" class="nav-dropdown-item sb-item" onclick="closeDropdowns(); switchTab('tab-feedback')">
+                        <span class="nav-dropdown-item-icon">💬</span><span class="nav-dropdown-item-label">Notizen & Feedback</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div><!-- /nav-center -->
+
+    <!-- Right side: search + music -->
+    <div class="nav-right">
+        <div class="nav-search-wrap">
+            <span class="nav-search-icon">🔍</span>
+            <input type="text" class="nav-search-input" id="nav-search-input" placeholder="Suchen…"
+                   oninput="runNavSearch(this.value)" onfocus="openNavSearch()" onblur="setTimeout(closeNavSearch,200)">
+            <div id="nav-search-results" class="nav-search-results"></div>
+        </div>
+        <button class="nav-icon-btn" onclick="toggleMusicPanel()" title="Musik">♪</button>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HIDDEN COMPATIBILITY ELEMENTS (for original JS)
+═══════════════════════════════════════════════════════════════ -->
+<div id="sidebar" style="display:none !important; position:absolute; pointer-events:none; width:0; height:0; overflow:hidden;"></div>
+<div id="sidebarOverlay" style="display:none !important; position:absolute; pointer-events:none;"></div>
+<div id="resizer" style="display:none !important; position:absolute; pointer-events:none;"></div>
+<nav id="breadcrumb-current" style="display:none !important;"></nav>
+<div id="top-header" style="display:none !important;"></div>
+
+<!-- Hidden sb-nav for search index building (original JS uses .sb-nav .sb-item) -->
+<nav class="sb-nav" style="display:none !important; position:absolute; pointer-events:none; overflow:hidden; width:0; height:0;">
+    <button id="btn-rules-hidden"           class="sb-item" data-tab="tab-rules"          onclick="switchTab('tab-rules')">Basisregeln</button>
+    <button id="btn-chars-hidden"           class="sb-item" data-tab="tab-chars"          onclick="switchTab('tab-chars')">Charaktererstellung</button>
+    <button id="btn-world-hidden"           class="sb-item" data-tab="tab-world"          onclick="switchTab('tab-world')">Die Welt Osmieen</button>
+    <button id="btn-theocracy-hidden"       class="sb-item" data-tab="tab-theocracy"      onclick="switchTab('tab-theocracy')">Theokratie &amp; Kulte</button>
+    <button id="btn-life-hidden"            class="sb-item" data-tab="tab-life"           onclick="switchTab('tab-life')">Alltag &amp; Überwachung</button>
+    <button id="btn-shadows-hidden"         class="sb-item" data-tab="tab-shadows"        onclick="switchTab('tab-shadows')">Schattenkriege</button>
+    <button id="btn-propaganda-hidden"      class="sb-item" data-tab="tab-propaganda"     onclick="switchTab('tab-propaganda')">Propaganda &amp; Feiertage</button>
+    <button id="btn-military-hidden"        class="sb-item" data-tab="tab-military"       onclick="switchTab('tab-military')">Militär &amp; Isolation</button>
+    <button id="btn-ancestries-hidden"      class="sb-item" data-tab="tab-ancestries"     onclick="switchTab('tab-ancestries')">Abstammungen</button>
+    <button id="btn-agrarsystem-hidden"     class="sb-item" data-tab="tab-agrarsystem"    onclick="switchTab('tab-agrarsystem')">Agrarsystem</button>
+    <button id="btn-cults-hidden"           class="sb-item" data-tab="tab-cults"          onclick="switchTab('tab-cults')">Kult-Explorer</button>
+    <button id="btn-blutprozession-hidden"  class="sb-item" data-tab="tab-blutprozession" onclick="switchTab('tab-blutprozession')">Blutprozession</button>
+    <button id="btn-quiz-hidden"            class="sb-item" data-tab="tab-quiz"           onclick="switchTab('tab-quiz')">Kult-Quiz</button>
+    <button id="btn-race-quiz-hidden"       class="sb-item" data-tab="tab-race-quiz"      onclick="switchTab('tab-race-quiz')">Abstammungs-Quiz</button>
+    <button id="btn-dashboard-hidden"       class="sb-item" data-tab="tab-dashboard"      onclick="switchTab('tab-dashboard')">Dashboard</button>
+    <button id="btn-map-focus-hidden"       class="sb-item" data-tab="tab-map-focus"      onclick="switchTab('tab-map-focus')">Karte &amp; Fokus</button>
+    <button id="btn-storybook-hidden"       class="sb-item" data-tab="tab-storybook"      onclick="switchTab('tab-storybook')">Storybook</button>
+    <button id="btn-feedback-hidden"        class="sb-item" data-tab="tab-feedback"       onclick="switchTab('tab-feedback')">Notizen &amp; Feedback</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MUSIC PANEL (floating popup)
+═══════════════════════════════════════════════════════════════ -->
+<audio id="bg-music" loop>
+    <source src="osmieen_theme.mp3" type="audio/mpeg">
+</audio>
+<div id="music-panel" class="music-panel">
+    <div class="music-panel-title">♪ Hintergrundmusik</div>
+    <div class="music-track-name" id="music-track-name">osmieen_theme.mp3</div>
+    <div class="music-controls">
+        <button class="music-btn" id="music-play-btn" onclick="toggleMusicPlay()">▶ Play</button>
+        <button class="music-btn" onclick="stopMusic()">■ Stop</button>
+    </div>
+    <div class="music-progress-row">
+        <span>🔈</span>
+        <input type="range" class="music-range" id="music-volume" min="0" max="1" step="0.01" value="0.2" oninput="setVolume(this.value)">
+        <span>🔊</span>
+    </div>
+    <div class="music-progress-row" style="margin-top:8px;">
+        <span id="music-current-time" style="font-size:10px;color:var(--c-nav-muted);min-width:30px;">0:00</span>
+        <input type="range" class="music-range" id="music-seek" min="0" max="100" step="0.1" value="0" oninput="seekMusic(this.value)">
+        <span id="music-total-time" style="font-size:10px;color:var(--c-nav-muted);min-width:30px;">0:00</span>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN CONTENT AREA
+═══════════════════════════════════════════════════════════════ -->
+<div id="content-area">
+
+    <!-- ── OVERVIEW SECTION (default landing) ── -->
+    <div id="section-overview">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="hero-eyebrow">Kampagnen-Kompendium · Daggerheart</div>
+            <h1 class="hero-title">Chroniken von <span>Osmieen</span></h1>
+            <p class="hero-subtitle">Eine Welt unter der ewigen Herrschaft der Vampirgötter — dunkel, erbarmungslos und voller verborgener Wahrheiten.</p>
+            <div class="hero-divider">
+                <div class="hero-divider-line"></div>
+                <span class="hero-divider-icon">✦</span>
+                <div class="hero-divider-line"></div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-tile stat-tile-link" onclick="crossReference('tab-world','world-2')" title="Zur Demografie">
+                    <div class="stat-value" id="stat-population">19,0 Mio.</div>
+                    <div class="stat-label">Einwohner</div>
+                </div>
+                <div class="stat-tile stat-tile-link" onclick="switchTab('tab-theocracy')" title="Zur Theokratie">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Vampirgötter</div>
+                </div>
+                <div class="stat-tile stat-tile-link" onclick="crossReference('tab-theocracy','theo-3')" title="Zur Vampir-Verteilung">
+                    <div class="stat-value" id="stat-vampires">~380.000</div>
+                    <div class="stat-label">Vampire</div>
+                </div>
+                <div class="stat-tile stat-tile-link" onclick="switchTab('tab-ancestries')" title="Zu den Abstammungen">
+                    <div class="stat-value">17</div>
+                    <div class="stat-label">Spielbare Völker</div>
+                </div>
+                <div class="stat-tile stat-tile-link" onclick="crossReference('tab-propaganda','prop-2')" title="Zu den Feiertagen">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Feiertage / Jahr</div>
+                </div>
+                <div class="stat-tile stat-tile-link" onclick="crossReference('tab-world','world-5')" title="Zu den Metropolen">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Metropolen</div>
+                </div>
+            </div>
+        </div>
+        <!-- Overview cards -->
+        <div class="overview-body">
+            <div class="overview-grid">
+                <div class="overview-card" onclick="switchTab('tab-world')">
+                    <div class="overview-card-icon">🌍</div>
+                    <div class="overview-card-title">Die Welt Osmieen</div>
+                    <div class="overview-card-desc">Geographie, Demografie, Wirtschaft und die Infrastruktur unter vampirischer Herrschaft.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-world','world-1')">Geografie</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-world','world-2')">Demografie &amp; Vampire</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-world','world-3')">Züge &amp; Infrastruktur</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-world','world-5')">5 Metropolen</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-world','world-7')">Handelsdynastien</button>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-theocracy')">
+                    <div class="overview-card-icon">🏛️</div>
+                    <div class="overview-card-title">Theokratie & Kulte</div>
+                    <div class="overview-card-desc">Die fünf Vampirgötter, ihre Farbkulte und das verschachtelte politische Geflecht der Theokratie.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-theocracy','theo-1')">Gesetz &amp; Führung</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-theocracy','theo-4')">Vampir-Eigenschaften</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-theocracy','theo-5')">Mehrfarbige Kulte</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); switchTab('tab-cults')">→ Kult-Explorer</button>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-life')">
+                    <div class="overview-card-icon">👁️</div>
+                    <div class="overview-card-title">Alltag & Überwachung</div>
+                    <div class="overview-card-desc">Bildung, Blutmarken, Arbeitsquoten, Justiz und das tägliche Leben unter dem theokratischen Joch.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-life','life-6')">Blutmarke</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-life','life-9')">Arbeitsquoten</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-life','life-11')">Justiz &amp; Strafen</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-life','life-10')">Medizin &amp; Quacksalber</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-life','life-1')">Kindheit &amp; Bildung</button>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-shadows')">
+                    <div class="overview-card-icon">🌑</div>
+                    <div class="overview-card-title">Im Verborgenen</div>
+                    <div class="overview-card-desc">Schattenkriege, Propaganda, Militär und die Blutprozession — das verdeckte Fundament der Theokratie.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-shadows','shadows-1')">Schattenkriege</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); switchTab('tab-propaganda')">Propaganda</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); switchTab('tab-military')">Militär</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); switchTab('tab-blutprozession')">Blutprozession</button>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-cults')">
+                    <div class="overview-card-icon">🩸</div>
+                    <div class="overview-card-title">Kult-Explorer</div>
+                    <div class="overview-card-desc">Alle Kult-Kombinationen interaktiv erkunden — mit Stärken, Schwächen und Radar-Charts.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); openCultsTool('mono')">Fundamentale Kulte</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); openCultsTool('guilds')">Mehrfarbige Pakte</button>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-quiz')">
+                    <div class="overview-card-icon">🔮</div>
+                    <div class="overview-card-title">Kult-Quiz</div>
+                    <div class="overview-card-desc">Psychologischer Test: Welchem Vampirgott würde die Theokratie dich zuordnen?</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">7 Schnellfragen</span>
+                        <span class="overview-chip">30 Tiefenanalyse</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-race-quiz')">
+                    <div class="overview-card-icon">🧬</div>
+                    <div class="overview-card-title">Abstammungs-Quiz</div>
+                    <div class="overview-card-desc">Welche der 17 Abstammungen passt zu deiner Spielweise? Finde es in wenigen Fragen heraus.</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">Interaktiv</span>
+                        <span class="overview-chip">Alle 17 Völker</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-dashboard')">
+                    <div class="overview-card-icon">📊</div>
+                    <div class="overview-card-title">Dashboard</div>
+                    <div class="overview-card-desc">Statistische Übersicht der Welt: Bevölkerung, Kulte, Städte und Wirtschaft auf einen Blick.</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">Charts</span>
+                        <span class="overview-chip">Statistiken</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-map-focus')">
+                    <div class="overview-card-icon">🗺️</div>
+                    <div class="overview-card-title">Karte & Fokus</div>
+                    <div class="overview-card-desc">Interaktive Karte von Osmieen mit Fokuspunkten auf Städte, Regionen und Ereignisse.</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">Karte</span>
+                        <span class="overview-chip">Regionen</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-ancestries')">
+                    <div class="overview-card-icon">🧬</div>
+                    <div class="overview-card-title">Abstammungen (Archiv)</div>
+                    <div class="overview-card-desc">Alle 17 spielbaren Abstammungen mit vollständiger Lore, Mechaniken und Volljährigkeitsregeln.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-ancestries','ancestry-drakona')">Drakona</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-ancestries','ancestry-elf')">Elf</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-ancestries','ancestry-faerie')">Fee</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-ancestries','ancestry-faun')">Faun</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-ancestries','ancestry-goblin')">Goblin</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-ancestries','ancestry-giant')">Riese</button>
+                        <span class="overview-chip">+11 weitere</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-agrarsystem')">
+                    <div class="overview-card-icon">🌾</div>
+                    <div class="overview-card-title">Agrarsystem</div>
+                    <div class="overview-card-desc">Die ländliche Wirtschaft: Höfe, Marktflecken und der Nahrungsfluss zu den Metropolen.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-agrarsystem','agrar-1')">Dorfwirtschaft</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-agrarsystem','agrar-2')">Marktflecken</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-agrarsystem','agrar-3')">Nahrungsfluss</button>
+                        <span class="overview-chip" style="background:rgba(160,98,26,0.12);color:var(--c-gold);border-color:rgba(160,98,26,0.3);">Idee</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-rules')">
+                    <div class="overview-card-icon">📜</div>
+                    <div class="overview-card-title">Regelwerk (Daggerheart)</div>
+                    <div class="overview-card-desc">Daggerheart-Kernregeln für Osmieen: Attribute, Hope & Fear, Damage Thresholds.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-rules','rules-1')">Basisregeln</button>
+                        <span class="overview-chip">Hope &amp; Fear</span>
+                        <span class="overview-chip">2W12-System</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-chars')">
+                    <div class="overview-card-icon">⚔️</div>
+                    <div class="overview-card-title">Charaktererstellung</div>
+                    <div class="overview-card-desc">Abstammungsübersicht, alle 9 spielbaren Klassen mit Domains und Beispiel-Charakter.</div>
+                    <div class="overview-chips">
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-chars','chars-1')">Abstammungen</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-chars','chars-2')">9 Klassen</button>
+                        <button class="overview-chip-link" onclick="event.stopPropagation(); crossReference('tab-chars','chars-3')">Beispiel-PDF</button>
+                    </div>
+                </div>
+                <div class="overview-card" style="border-style:dashed; opacity:0.65; cursor:default;">
+                    <div class="overview-card-icon">🎒</div>
+                    <div class="overview-card-title">Hintergründe <span style="font-size:11px;font-family:'Lora',serif;font-weight:400;color:var(--c-text-muted);font-style:italic;">(in Arbeit)</span></div>
+                    <div class="overview-card-desc">Die spielbaren Hintergründe aus Daggerheart — angepasst an die Theokratie von Osmieen.</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">Demnächst</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-storybook')">
+                    <div class="overview-card-icon">📖</div>
+                    <div class="overview-card-title">Storybook</div>
+                    <div class="overview-card-desc">Erzählungen, Szenen und Prosa aus der Welt von Osmieen.</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">Lore</span>
+                        <span class="overview-chip">Geschichten</span>
+                    </div>
+                </div>
+                <div class="overview-card" onclick="switchTab('tab-feedback')">
+                    <div class="overview-card-icon">💬</div>
+                    <div class="overview-card-title">Notizen & Feedback</div>
+                    <div class="overview-card-desc">Dein persönlicher Notizzettel — Ideen, Korrekturen und Anmerkungen zur Kampagne.</div>
+                    <div class="overview-chips">
+                        <span class="overview-chip">Notizen</span>
+                        <span class="overview-chip">Vorschläge</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /section-overview -->
+    <!-- ── ALL CONTENT TABS ── -->
+    <div id="tabs-wrapper" class="hidden">
+        <main class="kompendium-scroll">
             <section id="tab-rules" class="content-tab max-w-3xl mx-auto px-8 lg:px-12 prose-rules block">
                 <h1>Das Regelwerk (Daggerheart)</h1>
                 <p class="page-lead">Dieses Kapitel fasst die harten Mechaniken und Regeln zusammen, nach denen die Kampagne in Osmieen gespielt wird.</p>
@@ -1258,7 +1885,7 @@
                     </summary>
                     <div class="details-content">
                         <ul>
-                            <li><strong>Einwohnerzahl:</strong> 15 bis 20 Millionen (Durchschnittswert für Berechnungen: 17,5 Millionen).</li>
+                            <li><strong>Einwohnerzahl:</strong> 15 bis 20 Millionen (Durchschnittswert für Berechnungen: 19 Millionen).</li>
                             <li><strong>Populationsdichte:</strong> Extrem gering (2 Personen pro km²).</li>
                             <li><strong>Die Untoten Herrscher:</strong> Es gibt <a href="javascript:void(0)" onclick="crossReference('tab-theocracy', 'theo-1')" class="text-amber-600 hover:text-amber-700 underline decoration-1 underline-offset-2 transition font-medium">5 Vampirgötter</a>, die jeweils einer Farbe zugeordnet werden können (Weiße Gott-Hochkönigin: <em>Elidia</em>, Blauer Gott: <em>Efaro</em>, Schwarze Göttin: <em>Erebia</em>, Rote Göttin: <em>Porfira</em>, Grüner Gott: <em>Nileo</em>). Vampire in Osmieen sind eine komplett eigene Rasse. Sie sind Untote. Wer zu einem Vampir wird, stirbt faktisch und wird in einem neuen, untoten Körper neu erschaffen.</li>
                             <li><strong>Der Blutbedarf:</strong> Vampire "essen" Blut nicht in den Mengen, wie Menschen Nahrung benötigen. Das abgelieferte Blut der Sterblichen wird an den Blutschreinen direkt magisch in Blut-Substrat (unverarbeiteter Blutstaub) verkocht um ihn haltbar zu machen. Verarbeitetes Blutpulver ist eine hochkonzentrierte magische Energiequelle. Daher brauchen Vampire verhältnismäßig wenig Blut, um selbst zu überleben – die „Reststoffe“ des Blut-Substrats werden für den Betrieb der Züge, der Infrastruktur und der Magie verwendet.</li>
@@ -1375,7 +2002,7 @@
                         <svg class="summary-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                     </summary>
                     <div class="details-content">
-                        <p>Basierend auf ca. 17,5 Millionen Menschen verteilt sich die Anhängerschaft (inklusive der jeweiligen Mischkulte) wie folgt <a href="javascript:void(0)" onclick="openCultsTool('mono')" class="text-amber-600 hover:text-amber-700 underline decoration-1 underline-offset-2 transition font-medium">(siehe interaktives Tool: Fundamentale Kulte)</a>:</p>
+                        <p>Basierend auf ca. 19 Millionen Menschen verteilt sich die Anhängerschaft (inklusive der jeweiligen Mischkulte) wie folgt <a href="javascript:void(0)" onclick="openCultsTool('mono')" class="text-amber-600 hover:text-amber-700 underline decoration-1 underline-offset-2 transition font-medium">(siehe interaktives Tool: Fundamentale Kulte)</a>:</p>
                         <div class="space-y-3 mt-4">
                             <div class="p-4 bg-stone-100 rounded border border-stone-200"><strong>Weiß-dominierte Kulte (Gesetz & Ordnung)</strong><br>Als Rückgrat der Theokratie, der Bürokratie und des Gesetzes stellt dieser Kult die größte Gruppe. Sie verwalten die „Herde“ und sorgen für die grundlegende Stabilität.</div>
                             <div class="p-4 bg-green-50 rounded border border-green-200"><strong>Grün-dominierte Kulte (Natur & Instinkt)</strong><br>Die ländliche Bevölkerung in den tiefsten Wildnissen, die Jäger und jene, die in der harten Natur Osmieens überleben. Sie sind am dezentralsten organisiert.</div>
@@ -2755,8 +3382,10 @@
                 </div>
             </section>
 
+
         </main>
-    </div>
+    </div><!-- /tabs-wrapper -->
+
 <div id="feedback-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative">
             <div class="bg-white border-b border-gray-100 p-4 flex justify-between items-center">
@@ -2776,7 +3405,166 @@
             </div>
         </div>
     </div>
+</div><!-- /content-area -->
+
 <script>
+// -- WELTDATEN — zentrale Quelle für Bevölkerung & Vampire · Hier nur anpassen, automatisch synchronisiert sich alles --
+var WORLD_POPULATION = 19000000; // 19 Millionen (Durchschnittswert aus 15–20 Mio.)
+
+function updateHeroStats() {
+    var pop = WORLD_POPULATION;
+    var vampRaw = pop / 50;
+    var vampRounded = Math.round(vampRaw / 50000) * 50000;
+
+    // Bevölkerung formatieren
+    var popMio = (pop / 1000000).toLocaleString('de-DE', {minimumFractionDigits:1, maximumFractionDigits:1});
+    var popEl = document.getElementById('stat-population');
+    if (popEl) popEl.textContent = popMio + ' Mio.';
+
+    // Vampire formatieren (z.B. ~350.000)
+    var vampStr = '~' + vampRounded.toLocaleString('de-DE');
+    var vampEl = document.getElementById('stat-vampires');
+    if (vampEl) vampEl.textContent = vampStr;
+}
+
+// -- TOC BOX — auf Mobile klappbar machen --
+function initTocBoxes() {
+    if (window.innerWidth >= 769) return; // Desktop: schon per CSS hidden
+    document.querySelectorAll('.toc-box').forEach(function(box) {
+        // Verhindere doppelte Initialisierung
+        if (box.dataset.tocInit) return;
+        box.dataset.tocInit = '1';
+
+        // H3-Element als Toggle-Header neu wrappen
+        var h3 = box.querySelector('h3');
+        var actionsDiv = box.querySelector('.toc-actions');
+        if (!h3) return;
+
+        // Header-Div erstellen
+        var header = document.createElement('div');
+        header.className = 'toc-box-header';
+
+        var toggleIcon = document.createElement('span');
+        toggleIcon.className = 'toc-box-toggle';
+        toggleIcon.textContent = '▼';
+
+        header.appendChild(h3.cloneNode(true));
+        header.appendChild(toggleIcon);
+        h3.replaceWith(header);
+        if (actionsDiv) actionsDiv.style.display = 'none';
+
+        // Toggle-Funktion
+        header.addEventListener('click', function() {
+            box.classList.toggle('toc-open');
+            var list = box.querySelector('.toc-list');
+            var acts = box.querySelector('.toc-actions');
+            if (box.classList.contains('toc-open')) {
+                if (list) list.style.display = 'flex';
+                if (acts) acts.style.display = 'flex';
+            } else {
+                if (list) list.style.display = 'none';
+                if (acts) acts.style.display = 'none';
+            }
+        });
+    });
+}
+
+// -- KOMPENDIUM NAV LOGIC --
+
+// --- Dropdown toggle ---
+function toggleDropdown(id, btn) {
+    const dd = document.getElementById(id);
+    const wasOpen = dd.classList.contains('open');
+    // Close all dropdowns first
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('open'));
+    if (!wasOpen) {
+        dd.classList.add('open');
+        btn.classList.add('open');
+    }
+}
+function closeDropdowns() {
+    document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('open'));
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-dropdown-wrap')) closeDropdowns();
+});
+
+// --- Show overview (landing page) ---
+function showOverview() {
+    closeDropdowns();
+    document.getElementById('section-overview').classList.remove('hidden');
+    document.getElementById('tabs-wrapper').classList.add('hidden');
+    // Remove active state from all nav items
+    document.querySelectorAll('.nav-dropdown-item').forEach(b => b.classList.remove('active'));
+}
+
+// --- Music panel ---
+function toggleMusicPanel() {
+    document.getElementById('music-panel').classList.toggle('open');
+}
+function toggleMusicPlay() {
+    const audio = document.getElementById('bg-music');
+    const btn = document.getElementById('music-play-btn');
+    if (!audio) return;
+    if (audio.paused) { audio.play(); btn.textContent = '⏸ Pause'; }
+    else { audio.pause(); btn.textContent = '▶ Play'; }
+}
+function stopMusic() {
+    const audio = document.getElementById('bg-music');
+    if (!audio) return;
+    audio.pause(); audio.currentTime = 0;
+    document.getElementById('music-play-btn').textContent = '▶ Play';
+}
+
+// --- Nav search ---
+var _navSearchIndex = [];
+function buildNavSearchIndex() {
+    _navSearchIndex = [];
+    document.querySelectorAll('.content-tab').forEach(tab => {
+        const tabId = tab.id;
+        const h1 = tab.querySelector('h1');
+        const tabTitle = h1 ? h1.textContent.trim() : tabId;
+        // Add section summaries
+        tab.querySelectorAll('.section-summary').forEach(s => {
+            const id = s.id || '';
+            const text = s.querySelector('.summary-title') ? s.querySelector('.summary-title').textContent.trim() : s.textContent.trim();
+            _navSearchIndex.push({ tabId, targetId: id, label: text, section: tabTitle });
+        });
+    });
+}
+function runNavSearch(q) {
+    if (!q || q.length < 2) { closeNavSearch(); return; }
+    if (!_navSearchIndex.length) buildNavSearchIndex();
+    const results = _navSearchIndex.filter(item =>
+        item.label.toLowerCase().includes(q.toLowerCase()) ||
+        item.section.toLowerCase().includes(q.toLowerCase())
+    ).slice(0, 10);
+    const el = document.getElementById('nav-search-results');
+    if (!results.length) { el.innerHTML = '<div class="nav-search-result-item" style="color:var(--c-nav-muted);font-style:italic;">Nichts gefunden.</div>'; }
+    else {
+        el.innerHTML = results.map(r =>
+            `<div class="nav-search-result-item" onclick="selectNavResult('${r.tabId}','${r.targetId}')">
+                <span style="font-size:10px;color:var(--c-nav-muted);display:block;">${r.section}</span>
+                ${r.label}
+            </div>`
+        ).join('');
+    }
+    el.classList.add('open');
+}
+function openNavSearch() { if (document.getElementById('nav-search-input').value.length >= 2) document.getElementById('nav-search-results').classList.add('open'); }
+function closeNavSearch() { document.getElementById('nav-search-results').classList.remove('open'); }
+function selectNavResult(tabId, targetId) {
+    closeNavSearch();
+    document.getElementById('nav-search-input').value = '';
+    switchTab(tabId);
+    if (targetId) setTimeout(() => {
+        const el = document.getElementById(targetId);
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }, 120);
+}
+
         // --- 0. NEUE LOGIK FÜR ALLE AUF/ZUKLAPPEN & QUERVERWEISE ---
         function toggleAllDetails(buttonElem, state) {
             const tab = buttonElem.closest('.content-tab');
@@ -4638,6 +5426,82 @@ if(bgMusic) {
                 bgMusic.currentTime += seconds;
             }
         }
+
+// -- OVERVIEW BRIDGE — switchTab override · Wraps original switchTab to also hide overview and show tabs wrapper --
+(function() {
+    var _origSwitchTab = window.switchTab;
+    window.switchTab = function(tabId) {
+        // Hide overview, show tabs wrapper
+        var ov = document.getElementById('section-overview');
+        var tw = document.getElementById('tabs-wrapper');
+        if (ov) ov.classList.add('hidden');
+        if (tw) tw.classList.remove('hidden');
+        // Call original
+        if (typeof _origSwitchTab === 'function') _origSwitchTab(tabId);
+        // Update active state in dropdown nav items
+        document.querySelectorAll('.nav-dropdown-item').forEach(function(b) {
+            b.classList.remove('active');
+        });
+        // Find matching nav item by ID pattern (btn-XXX where XXX is the part after "tab-")
+        var shortId = tabId.replace('tab-', '');
+        var navBtn = document.getElementById('btn-' + shortId);
+        if (navBtn) navBtn.classList.add('active');
+        // Scroll kompendium-scroll to top
+        var ms = document.querySelector('.kompendium-scroll');
+        if (ms) ms.scrollTop = 0;
+        // TOC Boxen auf Mobile initialisieren (nach Tab-Wechsel, wenn Inhalt sichtbar ist)
+        setTimeout(initTocBoxes, 50);
+    };
+
+    // Sync Hero-Stats von Bevölkerungs-Sliders
+    function syncPopFromSlider(val) {
+        var mio = parseFloat(val);
+        if (!isNaN(mio) && mio > 0) {
+            WORLD_POPULATION = Math.round(mio * 1000000);
+            updateHeroStats();
+        }
+    }
+    function hookPopSliders() {
+        // Dashboard: input-pop-mio (number input) + range-pop-mio (range)
+        ['input-pop-mio', 'range-pop-mio'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', function() { syncPopFromSlider(this.value); });
+                el.addEventListener('change', function() { syncPopFromSlider(this.value); });
+            }
+        });
+        // Karte: f-input-pop (number input) + f-range-pop (range)
+        ['f-input-pop', 'f-range-pop'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', function() { syncPopFromSlider(this.value); });
+                el.addEventListener('change', function() { syncPopFromSlider(this.value); });
+            }
+        });
+    }
+
+    // Initialisierungen beim Laden
+    document.addEventListener('DOMContentLoaded', function() {
+        updateHeroStats();
+        hookPopSliders();
+
+        // Music seek bar sync
+        var audio = document.getElementById('bg-music');
+        var seekBar = document.getElementById('music-seek');
+        var curTime = document.getElementById('music-current-time');
+        var totTime = document.getElementById('music-total-time');
+        if (audio && seekBar) {
+            audio.addEventListener('timeupdate', function() {
+                if (!audio.duration) return;
+                seekBar.max = Math.floor(audio.duration);
+                seekBar.value = Math.floor(audio.currentTime);
+                var fmt = function(s) { return Math.floor(s/60)+':'+(('0'+Math.floor(s%60)).slice(-2)); };
+                if (curTime) curTime.textContent = fmt(audio.currentTime);
+                if (totTime) totTime.textContent = fmt(audio.duration);
+            });
+        }
+    });
+})();
 </script>
 </body>
 </html>
